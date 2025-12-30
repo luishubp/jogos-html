@@ -1,91 +1,49 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jogos HTML — Comunitário</title>
+  <meta charset="UTF-8">
+  <title>Site Comunitário Jogos HTML</title>
   <style>
-    :root{--bg:#0f1724;--card:#0b1220;--muted:#9aa4b2;--accent:#14b8a6}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:linear-gradient(180deg,#071025 0%, #0f1724 100%);color:#e6eef6;}
-    header{padding:24px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-    h1{margin:0;font-size:20px}
-    .controls{display:flex;gap:8px;align-items:center}
-    .btn{background:var(--accent);color:#012;padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:600}
-    main{padding:18px;max-width:1000px;margin:0 auto}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.05));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
-    .thumb{width:100%;height:140px;background:#071023;border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-    .thumb img{width:100%;height:100%;object-fit:cover}
-    .meta{margin-top:8px}
-    .title{font-weight:700}
-    .author{color:var(--muted);font-size:13px;margin-top:4px}
-    footer{padding:18px;text-align:center;color:var(--muted);font-size:13px}
+    body {
+      margin: 0;
+      background: #0f1724;
+      color: #e6eef6;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0b1220;
+    }
+    .btn {
+      background: #14b8a6;
+      color: #012;
+      padding: 10px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    main {
+      padding: 30px;
+    }
   </style>
 </head>
 <body>
+
   <header>
-    <div>
-      <h1>Jogos HTML — Comunitário</h1>
-      <div style="color:var(--muted);font-size:13px">Abra games em HTML diretamente no navegador</div>
-    </div>
-    <div class="controls">
-      <!-- PERSONALIZE: já definido para seu repositório -->
-      <a class="btn" id="btn-add" href="#" target="_blank" rel="noopener">Adicionar seu jogo</a>
-    </div>
+    <h1>🎮 Site Comunitário Jogos HTML</h1>
+    <a class="btn"
+       href="https://github.com/luishubp/jogos-html/new/main/games?filename=meu-jogo/index.html"
+       target="_blank">
+       Adicionar seu jogo
+    </a>
   </header>
 
   <main>
-    <section id="list">
-      <div id="loading" style="color:var(--muted);margin-bottom:12px">Carregando jogos...</div>
-      <div class="grid" id="gamesGrid" aria-live="polite"></div>
-      <div id="empty" style="display:none;color:var(--muted);margin-top:12px">Nenhum jogo ainda. Seja o primeiro a adicionar!</div>
-    </section>
+    <p>Em breve, jogos criados pela comunidade aparecerão aqui.</p>
   </main>
 
-  <footer>
-    Use o link "Adicionar seu jogo" para criar um novo arquivo na pasta /games via GitHub (ou abra um PR).
-  </footer>
-
-  <script>
-    // Definido para o seu usuário/repositório
-    const GITHUB_USER = "luishubp";
-    const GITHUB_REPO = "jogos-html";
-
-    // link para adicionar arquivo via GitHub web UI (preencher filename na URL)
-    const addBase = `https://github.com/${GITHUB_USER}/${GITHUB_REPO}/new/main/games?filename=`;
-    document.getElementById('btn-add').href = addBase + "meu-jogo/index.html";
-
-    async function loadGames(){
-      try{
-        const res = await fetch("/games/games.json", {cache: "no-store"});
-        if(!res.ok) throw new Error("games.json não encontrado");
-        const data = await res.json();
-        const grid = document.getElementById('gamesGrid');
-        document.getElementById('loading').style.display = 'none';
-        if(!data.games || data.games.length === 0){
-          document.getElementById('empty').style.display = 'block';
-          return;
-        }
-        for(const g of data.games){
-          const card = document.createElement('article');
-          card.className = 'card';
-          const thumbSrc = g.thumbnail || (g.url ? g.url.replace(/index\.html$/, 'thumb.png') : '');
-          card.innerHTML = `
-            <div class="thumb"><img src="${thumbSrc}" alt="${g.title}"></div>
-            <div class="meta">
-              <div class="title"><a href="${g.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${g.title}</a></div>
-              <div class="author">${g.author || 'Anônimo'}</div>
-              <div style="margin-top:8px;color:var(--muted);font-size:13px">${g.description || ''}</div>
-            </div>
-          `;
-          grid.appendChild(card);
-        }
-      }catch(err){
-        document.getElementById('loading').textContent = "Erro ao carregar jogos: " + err.message;
-      }
-    }
-
-    loadGames();
-  </script>
 </body>
 </html>
