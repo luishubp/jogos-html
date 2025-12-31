@@ -2,72 +2,48 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Site Comunitário de Jogos HTML</title>
+
   <style>
     body {
-      margin:0;
+      margin: 0;
       font-family: Arial, sans-serif;
       background: #0f1724;
       color: #e6eef6;
       text-align: center;
       padding: 40px;
     }
+
     h1 {
       font-size: 28px;
       margin-bottom: 24px;
     }
-    .game-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      align-items: center;
-    }
-    .game-card {
-      width: 90%;
-      max-width: 360px;
-      padding: 18px;
-      background: #0b1220;
-      border: 1px solid #1e2940;
-      border-radius: 10px;
-    }
-    .game-card a {
-      display: block;
-      margin-top: 8px;
-      padding: 10px 0;
+
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
       background: #14b8a6;
       color: #012;
       text-decoration: none;
       font-weight: bold;
-      border-radius: 6px;
+      border-radius: 8px;
+      margin-top: 20px;
     }
-    .game-card a:hover {
+
+    .btn:hover {
       background: #0fa28e;
     }
   </style>
 </head>
+
 <body>
 
   <h1>🎮 Site Comunitário de Jogos HTML</h1>
+  <p>Escolha um jogo abaixo:</p>
 
-  <div class="game-list">
-
-    <!-- Card do jogo FNAF-like -->
-    <div class="game-card">
-      <div><strong>FNAF-like</strong></div>
-      <a href="games/meu-jogo/index.html" target="_blank">Jogar</a>
-    </div>
-
-    <!-- Aqui você pode adicionar outros jogos assim -->
-    <!--
-    <div class="game-card">
-      <div><strong>Outro Jogo</strong></div>
-      <a href="games/outro-jogo/index.html" target="_blank">Jogar</a>
-    </div>
-    -->
-
-  </div>
+  <!-- BOTÃO CORRETO -->
+  <a href="./games/meu-jogo/" class="btn">Jogar</a>
 
 </body>
-</html> 
-<a href="./games/fnaf/" class="btn">Jogar</a>
+</html>
