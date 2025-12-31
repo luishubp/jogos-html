@@ -1,49 +1,44 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
   <title>Site Comunitário de Jogos HTML</title>
-
   <style>
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
       background: #0f1724;
       color: #e6eef6;
+      font-family: Arial, sans-serif;
       text-align: center;
       padding: 40px;
     }
-
-    h1 {
-      font-size: 28px;
-      margin-bottom: 24px;
+    .game {
+      background: #0b1220;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 300px;
+      margin: 0 auto;
     }
-
-    .btn {
-      display: inline-block;
-      padding: 14px 28px;
+    a {
+      display: block;
+      margin-top: 12px;
+      padding: 10px;
       background: #14b8a6;
       color: #012;
       text-decoration: none;
       font-weight: bold;
-      border-radius: 8px;
-      margin-top: 20px;
-    }
-
-    .btn:hover {
-      background: #0fa28e;
+      border-radius: 6px;
     }
   </style>
 </head>
-
 <body>
 
   <h1>🎮 Site Comunitário de Jogos HTML</h1>
   <p>Escolha um jogo abaixo:</p>
 
-  <!-- BOTÃO CORRETO -->
-  <a href="./games/meu-jogo/" class="btn">Jogar</a>
+  <div class="game">
+    <strong>Night Watch (FNAF-like)</strong>
+    <a href="./games/meu-jogo/">Jogar</a>
+  </div>
 
 </body>
 </html>
