@@ -1,41 +1,260 @@
-<!doctype html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Site Comunitário de Jogos HTML</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f1724;
-      color: #e6eef6;
-      text-align: center;
-      padding: 40px;
-    }
-    h1 {
-      margin-bottom: 30px;
-    }
-    a {
-      display: inline-block;
-      padding: 14px 28px;
-      background: #14b8a6;
-      color: #012;
-      text-decoration: none;
-      font-weight: bold;
-      border-radius: 8px;
-    }
-    a:hover {
-      background: #0fa28e;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Five Nights at Freddy's - Web Remake</title>
+    <style>
+        body { margin: 0; background: #000; color: #fff; font-family: 'Courier New', monospace; overflow: hidden; user-select: none; }
+        #game-container { position: relative; width: 1024px; height: 576px; margin: 20px auto; border: 4px solid #333; overflow: hidden; background: #111; }
+        
+        /* Office Layout */
+        #office { width: 100%; height: 100%; position: relative; transition: transform 0.1s; }
+        .wall { position: absolute; width: 120%; height: 100%; background: linear-gradient(to right, #222, #444, #222); left: -10%; }
+        
+        /* UI Elements */
+        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .stats { position: absolute; top: 20px; right: 20px; font-size: 24px; pointer-events: auto; }
+        .power-bar { position: absolute; bottom: 20px; left: 20px; font-size: 18px; pointer-events: auto; }
+        
+        /* Doors & Lights Buttons */
+        .btn { position: absolute; width: 50px; height: 80px; cursor: pointer; pointer-events: auto; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #555; }
+        #btn-left-door { left: 50px; top: 250px; background: #900; }
+        #btn-right-door { right: 50px; top: 250px; background: #900; }
+        #btn-left-light { left: 50px; top: 340px; background: #990; }
+        #btn-right-light { right: 50px; top: 340px; background: #990; }
+
+        /* Camera System */
+        #monitor-toggle { position: absolute; bottom: 0; left: 25%; width: 50%; height: 40px; background: rgba(255,255,255,0.2); border-top: 5px solid #fff; cursor: pointer; pointer-events: auto; text-align: center; }
+        #camera-tablet { position: absolute; top: 5%; left: 5%; width: 90%; height: 80%; background: #000; border: 10px solid #222; display: none; pointer-events: auto; z-index: 10; }
+        .cam-btn { width: 60px; height: 40px; background: #444; margin: 5px; cursor: pointer; color: white; border: none; }
+        .cam-btn:hover { background: #666; }
+        .active-cam { background: #0f0 !important; color: #000; }
+
+        /* Visual Effects */
+        .scare-flash { position: absolute; top:0; left:0; width:100%; height:100%; background: red; display:none; z-index:100; justify-content:center; align-items:center; font-size: 100px; }
+        #static-fx { position: absolute; top:0; left:0; width:100%; height:100%; background: url('https://media.giphy.com/media/oEI9uWUic_GCM/giphy.gif'); opacity: 0.1; pointer-events: none; }
+    </style>
 </head>
 <body>
 
-  <h1>🎮 Site Comunitário de Jogos HTML</h1>
-  <p>Escolha um jogo abaixo:</p>
+<div id="game-container">
+    <div id="office">
+        <div class="wall"></div>
+        <div id="btn-left-door" class="btn" onclick="game.toggleDoor('left')">DOOR</div>
+        <div id="btn-left-light" class="btn" onmousedown="game.setLight('left', true)" onmouseup="game.setLight('left', false)">LIT</div>
+        
+        <div id="btn-right-door" class="btn" onclick="game.toggleDoor('right')">DOOR</div>
+        <div id="btn-right-light" class="btn" onmousedown="game.setLight('right', true)" onmouseup="game.setLight('right', false)">LIT</div>
+        
+        <div id="office-view" style="position:absolute; width:100%; height:100%; display:flex; justify-content:center; align-items:center; font-size:40px;">
+            SALA DE SEGURANÇA
+        </div>
+    </div>
 
-  <a href="games/meu-jogo/">Jogar</a>
+    <div id="camera-tablet">
+        <div id="cam-display" style="width:100%; height:100%; position:relative; background:#111; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+            <div id="cam-name" style="position:absolute; top:20px; left:20px; font-size:24px; color:#0f0;">CAM 1A</div>
+            <div id="cam-content" style="font-size:30px; text-align:center;">SHOW STAGE</div>
+            <div id="cam-map" style="position:absolute; bottom:20px; right:20px; border:1px solid #fff; padding:10px;">
+                <button class="cam-btn active-cam" onclick="game.switchCam('1A')">1A</button>
+                <button class="cam-btn" onclick="game.switchCam('1B')">1B</button>
+                <button class="cam-btn" onclick="game.switchCam('2A')">2A</button>
+                <button class="cam-btn" onclick="game.switchCam('3')">3</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="static-fx"></div>
+    <div id="ui-layer">
+        <div class="stats">
+            <span id="clock">12 AM</span><br>
+            <small id="night-display">Night 1</small>
+        </div>
+        <div class="power-bar">
+            Power: <span id="power-usage">100</span>%<br>
+            Usage: <span id="usage-pips">I</span>
+        </div>
+        <div id="monitor-toggle" onclick="game.toggleMonitor()">MONITOR</div>
+    </div>
+
+    <div id="jumpscare" class="scare-flash">
+        AAAAAAAH!
+    </div>
+</div>
+
+<script>
+/**
+ * Lógica do Jogo - FNAF JS Engine
+ */
+class FNAFGame {
+    constructor() {
+        this.night = 1;
+        this.power = 100.0;
+        this.hour = 0;
+        this.isGameOver = false;
+        this.monitorOpen = false;
+        this.currentCam = '1A';
+        
+        this.doors = { left: false, right: false };
+        this.lights = { left: false, right: false };
+        
+        // IA e Posicionamento (0: Palco, 1: Corredor, 2: Porta, 3: Office)
+        this.enemies = {
+            'Freddy': { pos: '1A', difficulty: 1 },
+            'Bonnie': { pos: '1A', difficulty: 3 },
+            'Chica': { pos: '1A', difficulty: 2 },
+            'Foxy': { pos: '3', difficulty: 1, stage: 0 } // Foxy usa estágio em vez de pos
+        };
+
+        this.init();
+    }
+
+    init() {
+        // Ciclo de Energia (cada 1s reduz baseado no uso)
+        setInterval(() => this.updatePower(), 1000);
+        // Ciclo de Tempo (cada 60s muda a hora)
+        setInterval(() => this.updateClock(), 45000);
+        // Ciclo de IA (cada 5s tenta mover)
+        setInterval(() => this.updateAI(), 5000);
+        
+        this.render();
+    }
+
+    updatePower() {
+        if (this.isGameOver) return;
+
+        let usage = 0.1; // Consumo passivo
+        if (this.doors.left) usage += 0.4;
+        if (this.doors.right) usage += 0.4;
+        if (this.lights.left || this.lights.right) usage += 0.2;
+        if (this.monitorOpen) usage += 0.3;
+
+        this.power -= usage;
+        if (this.power <= 0) {
+            this.power = 0;
+            this.blackout();
+        }
+        document.getElementById('power-usage').innerText = Math.floor(this.power);
+    }
+
+    updateClock() {
+        if (this.isGameOver) return;
+        this.hour++;
+        if (this.hour >= 6) this.winNight();
+        document.getElementById('clock').innerText = this.hour + " AM";
+    }
+
+    toggleDoor(side) {
+        if (this.power <= 0) return;
+        this.doors[side] = !this.doors[side];
+        document.getElementById(`btn-${side}-door`).style.background = this.doors[side] ? "#090" : "#900";
+    }
+
+    setLight(side, state) {
+        if (this.power <= 0) return;
+        this.lights[side] = state;
+        const office = document.getElementById('office-view');
+        if (state) {
+            office.style.background = "#fff";
+            office.innerText = this.checkDoorForEnemy(side) ? "HÁ ALGO NA PORTA!" : "CORREDOR VAZIO";
+        } else {
+            office.style.background = "transparent";
+            office.innerText = "SALA DE SEGURANÇA";
+        }
+    }
+
+    toggleMonitor() {
+        if (this.power <= 0) return;
+        this.monitorOpen = !this.monitorOpen;
+        document.getElementById('camera-tablet').style.display = this.monitorOpen ? 'block' : 'none';
+    }
+
+    switchCam(camId) {
+        this.currentCam = camId;
+        document.getElementById('cam-name').innerText = "CAM " + camId;
+        document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active-cam'));
+        // Atualiza visual da câmera baseado na posição dos inimigos
+        this.updateCamDisplay();
+    }
+
+    updateAI() {
+        if (this.isGameOver || this.power <= 0) return;
+
+        // Lógica Simplificada do Bonnie (Lado Esquerdo)
+        if (Math.random() * 20 < this.enemies.Bonnie.difficulty + this.night) {
+            this.moveEnemy('Bonnie', ['1A', '1B', '2A', 'DoorL', 'Office']);
+        }
+    }
+
+    moveEnemy(name, path) {
+        let currentIdx = path.indexOf(this.enemies[name].pos);
+        if (currentIdx < path.length - 1) {
+            let nextPos = path[currentIdx + 1];
+            
+            // Se tentar entrar na sala
+            if (nextPos === 'Office') {
+                if (this.doors.left) {
+                    this.enemies[name].pos = '1B'; // Volta pro corredor
+                } else {
+                    this.triggerJumpscare();
+                }
+            } else {
+                this.enemies[name].pos = nextPos;
+            }
+        }
+    }
+
+    checkDoorForEnemy(side) {
+        if (side === 'left') return this.enemies.Bonnie.pos === 'DoorL';
+        return false;
+    }
+
+    updateCamDisplay() {
+        let content = "ÁREA VAZIA";
+        for (let name in this.enemies) {
+            if (this.enemies[name].pos === this.currentCam) {
+                content = "MOVIMENTO DETECTADO: " + name;
+            }
+        }
+        document.getElementById('cam-content').innerText = content;
+    }
+
+    blackout() {
+        this.isGameOver = true;
+        document.getElementById('office').style.display = 'none';
+        document.getElementById('camera-tablet').style.display = 'none';
+        setTimeout(() => this.triggerJumpscare(), 5000);
+    }
+
+    triggerJumpscare() {
+        if (this.isGameOver && this.power > 0) return;
+        this.isGameOver = true;
+        document.getElementById('jumpscare').style.display = 'flex';
+        setTimeout(() => location.reload(), 3000);
+    }
+
+    winNight() {
+        alert("6 AM - VOCÊ SOBREVIVEU À NOITE " + this.night);
+        this.night++;
+        this.power = 100;
+        this.hour = 0;
+        location.reload();
+    }
+
+    render() {
+        // Mouse look effect
+        window.addEventListener('mousemove', (e) => {
+            if (!this.monitorOpen) {
+                let move = (e.clientX / window.innerWidth - 0.5) * 40;
+                document.getElementById('office').style.transform = `translateX(${-move}px)`;
+            }
+        });
+    }
+}
+
+const game = new FNAFGame();
+</script>
 
 </body>
 </html>
+
