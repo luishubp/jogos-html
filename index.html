@@ -1,102 +1,87 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="pt-BR">
 <head>
-    <title>Alien Space Wars - Prototipo Grok</title>
-    <style>body { margin: 0; background: #000; } canvas { display: block; }</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>🎮 Site Comunitário de Jogos HTML</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f1724;
+      color: #e6eef6;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
+
+    .game-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .game-card {
+      width: 90%;
+      max-width: 380px;
+      padding: 20px;
+      background: #0b1220;
+      border: 1px solid #1e2940;
+      border-radius: 12px;
+    }
+
+    .game-title {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+
+    .game-card a {
+      display: block;
+      padding: 12px;
+      background: #14b8a6;
+      color: #012;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+
+    .game-card a:hover {
+      background: #0fa28e;
+    }
+  </style>
 </head>
 <body>
-<canvas id="game"></canvas>
-<script>
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
-canvas.width = 800;
-canvas.height = 600;
 
-let player = { x: 50, y: 300, w: 40, h: 30, speed: 5, hp: 100 };
-let bullets = [];
-let aliens = [];
-let particles = [];
-let score = 0;
-let keys = {};
+  <h1>🎮 Site Comunitário de Jogos HTML</h1>
+  <p>Escolha um jogo abaixo:</p>
 
-document.addEventListener('keydown', e => keys[e.code] = true);
-document.addEventListener('keyup', e => keys[e.code] = false);
+  <div class="game-list">
 
-function shoot() {
-    bullets.push({ x: player.x + player.w, y: player.y + player.h/2 - 2, w: 10, h: 4, speed: 8 });
-}
-setInterval(shoot, 200); // Auto-fire pra testar
+    <!-- JOGO 1 -->
+    <div class="game-card">
+      <div class="game-title">🚀 Alien Space Wars</div>
+      <a href="games/alien-space-wars/">Jogar</a>
+    </div>
 
-function update() {
-    // Player
-    if (keys['ArrowUp'] && player.y > 0) player.y -= player.speed;
-    if (keys['ArrowDown'] && player.y < canvas.height - player.h) player.y += player.speed;
-    if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
-    if (keys['ArrowRight'] && player.x < canvas.width - player.w) player.x += player.speed;
-    if (keys['Space']) shoot();
+    <!-- JOGO 2 (exemplo) -->
+    <!--
+    <div class="game-card">
+      <div class="game-title">👁️ Night Watch</div>
+      <a href="games/night-watch/">Jogar</a>
+    </div>
+    -->
 
-    // Bullets
-    bullets = bullets.filter(b => {
-        b.x += b.speed;
-        return b.x < canvas.width;
-    });
+  </div>
 
-    // Aliens spawn
-    if (Math.random() < 0.02) {
-        aliens.push({ x: canvas.width, y: Math.random() * (canvas.height - 40), w: 40, h: 30, speed: 2 + Math.random() * 2 });
-    }
-    aliens.forEach(a => {
-        a.x -= a.speed;
-        // Colisão player-alien
-        if (a.x < player.x + player.w && a.x + a.w > player.x && a.y < player.y + player.h && a.y + a.h > player.y) {
-            player.hp -= 10;
-            a.x = -100; // Remove
-        }
-    });
-    aliens = aliens.filter(a => a.x > -50);
-
-    // Colisão bullets-aliens
-    bullets.forEach((b, bi) => {
-        aliens.forEach((a, ai) => {
-            if (b.x < a.x + a.w && b.x + b.w > a.x && b.y < a.y + a.h && b.y + b.h > a.y) {
-                score += 10;
-                createParticles(a.x + a.w/2, a.y + a.h/2);
-                bullets.splice(bi, 1);
-                aliens.splice(ai, 1);
-            }
-        });
-    });
-
-    // Particles explosão
-    particles = particles.filter(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life--;
-        return p.life > 0;
-    });
-}
-
-function createParticles(x, y) {
-    for (let i = 0; i < 10; i++) {
-        particles.push({
-            x, y,
-            vx: (Math.random() - 0.5) * 10,
-            vy: (Math.random() - 0.5) * 10,
-            life: 20
-        });
-    }
-}
-
-function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Estrelas bg
-    ctx.fillStyle = '#fff';
-    for (let i = 0; i < 100; i++) {
-        ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 1, 1);
-    }
-
-    // Player (nave cyborg)
+</body>
+</html>    // Player (nave cyborg)
     ctx.fillStyle = '#0f0';
     ctx.fillRect(player.x, player.y, player.w, player.h);
     ctx.fillStyle = '#fff';
