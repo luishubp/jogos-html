@@ -1,96 +1,146 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Five Nights at Freddy's - Web Remake</title>
-    <style>
-        body { margin: 0; background: #000; color: #fff; font-family: 'Courier New', monospace; overflow: hidden; user-select: none; }
-        #game-container { position: relative; width: 1024px; height: 576px; margin: 20px auto; border: 4px solid #333; overflow: hidden; background: #111; }
-        
-        /* Office Layout */
-        #office { width: 100%; height: 100%; position: relative; transition: transform 0.1s; }
-        .wall { position: absolute; width: 120%; height: 100%; background: linear-gradient(to right, #222, #444, #222); left: -10%; }
-        
-        /* UI Elements */
-        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        .stats { position: absolute; top: 20px; right: 20px; font-size: 24px; pointer-events: auto; }
-        .power-bar { position: absolute; bottom: 20px; left: 20px; font-size: 18px; pointer-events: auto; }
-        
-        /* Doors & Lights Buttons */
-        .btn { position: absolute; width: 50px; height: 80px; cursor: pointer; pointer-events: auto; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #555; }
-        #btn-left-door { left: 50px; top: 250px; background: #900; }
-        #btn-right-door { right: 50px; top: 250px; background: #900; }
-        #btn-left-light { left: 50px; top: 340px; background: #990; }
-        #btn-right-light { right: 50px; top: 340px; background: #990; }
-
-        /* Camera System */
-        #monitor-toggle { position: absolute; bottom: 0; left: 25%; width: 50%; height: 40px; background: rgba(255,255,255,0.2); border-top: 5px solid #fff; cursor: pointer; pointer-events: auto; text-align: center; }
-        #camera-tablet { position: absolute; top: 5%; left: 5%; width: 90%; height: 80%; background: #000; border: 10px solid #222; display: none; pointer-events: auto; z-index: 10; }
-        .cam-btn { width: 60px; height: 40px; background: #444; margin: 5px; cursor: pointer; color: white; border: none; }
-        .cam-btn:hover { background: #666; }
-        .active-cam { background: #0f0 !important; color: #000; }
-
-        /* Visual Effects */
-        .scare-flash { position: absolute; top:0; left:0; width:100%; height:100%; background: red; display:none; z-index:100; justify-content:center; align-items:center; font-size: 100px; }
-        #static-fx { position: absolute; top:0; left:0; width:100%; height:100%; background: url('https://media.giphy.com/media/oEI9uWUic_GCM/giphy.gif'); opacity: 0.1; pointer-events: none; }
-    </style>
+    <title>Alien Space Wars - Prototipo Grok</title>
+    <style>body { margin: 0; background: #000; } canvas { display: block; }</style>
 </head>
 <body>
-
-<div id="game-container">
-    <div id="office">
-        <div class="wall"></div>
-        <div id="btn-left-door" class="btn" onclick="game.toggleDoor('left')">DOOR</div>
-        <div id="btn-left-light" class="btn" onmousedown="game.setLight('left', true)" onmouseup="game.setLight('left', false)">LIT</div>
-        
-        <div id="btn-right-door" class="btn" onclick="game.toggleDoor('right')">DOOR</div>
-        <div id="btn-right-light" class="btn" onmousedown="game.setLight('right', true)" onmouseup="game.setLight('right', false)">LIT</div>
-        
-        <div id="office-view" style="position:absolute; width:100%; height:100%; display:flex; justify-content:center; align-items:center; font-size:40px;">
-            SALA DE SEGURANÇA
-        </div>
-    </div>
-
-    <div id="camera-tablet">
-        <div id="cam-display" style="width:100%; height:100%; position:relative; background:#111; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-            <div id="cam-name" style="position:absolute; top:20px; left:20px; font-size:24px; color:#0f0;">CAM 1A</div>
-            <div id="cam-content" style="font-size:30px; text-align:center;">SHOW STAGE</div>
-            <div id="cam-map" style="position:absolute; bottom:20px; right:20px; border:1px solid #fff; padding:10px;">
-                <button class="cam-btn active-cam" onclick="game.switchCam('1A')">1A</button>
-                <button class="cam-btn" onclick="game.switchCam('1B')">1B</button>
-                <button class="cam-btn" onclick="game.switchCam('2A')">2A</button>
-                <button class="cam-btn" onclick="game.switchCam('3')">3</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="static-fx"></div>
-    <div id="ui-layer">
-        <div class="stats">
-            <span id="clock">12 AM</span><br>
-            <small id="night-display">Night 1</small>
-        </div>
-        <div class="power-bar">
-            Power: <span id="power-usage">100</span>%<br>
-            Usage: <span id="usage-pips">I</span>
-        </div>
-        <div id="monitor-toggle" onclick="game.toggleMonitor()">MONITOR</div>
-    </div>
-
-    <div id="jumpscare" class="scare-flash">
-        AAAAAAAH!
-    </div>
-</div>
-
+<canvas id="game"></canvas>
 <script>
-/**
- * Lógica do Jogo - FNAF JS Engine
- */
-class FNAFGame {
-    constructor() {
-        this.night = 1;
-        this.power = 100.0;
-        this.hour = 0;
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+canvas.width = 800;
+canvas.height = 600;
+
+let player = { x: 50, y: 300, w: 40, h: 30, speed: 5, hp: 100 };
+let bullets = [];
+let aliens = [];
+let particles = [];
+let score = 0;
+let keys = {};
+
+document.addEventListener('keydown', e => keys[e.code] = true);
+document.addEventListener('keyup', e => keys[e.code] = false);
+
+function shoot() {
+    bullets.push({ x: player.x + player.w, y: player.y + player.h/2 - 2, w: 10, h: 4, speed: 8 });
+}
+setInterval(shoot, 200); // Auto-fire pra testar
+
+function update() {
+    // Player
+    if (keys['ArrowUp'] && player.y > 0) player.y -= player.speed;
+    if (keys['ArrowDown'] && player.y < canvas.height - player.h) player.y += player.speed;
+    if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
+    if (keys['ArrowRight'] && player.x < canvas.width - player.w) player.x += player.speed;
+    if (keys['Space']) shoot();
+
+    // Bullets
+    bullets = bullets.filter(b => {
+        b.x += b.speed;
+        return b.x < canvas.width;
+    });
+
+    // Aliens spawn
+    if (Math.random() < 0.02) {
+        aliens.push({ x: canvas.width, y: Math.random() * (canvas.height - 40), w: 40, h: 30, speed: 2 + Math.random() * 2 });
+    }
+    aliens.forEach(a => {
+        a.x -= a.speed;
+        // Colisão player-alien
+        if (a.x < player.x + player.w && a.x + a.w > player.x && a.y < player.y + player.h && a.y + a.h > player.y) {
+            player.hp -= 10;
+            a.x = -100; // Remove
+        }
+    });
+    aliens = aliens.filter(a => a.x > -50);
+
+    // Colisão bullets-aliens
+    bullets.forEach((b, bi) => {
+        aliens.forEach((a, ai) => {
+            if (b.x < a.x + a.w && b.x + b.w > a.x && b.y < a.y + a.h && b.y + b.h > a.y) {
+                score += 10;
+                createParticles(a.x + a.w/2, a.y + a.h/2);
+                bullets.splice(bi, 1);
+                aliens.splice(ai, 1);
+            }
+        });
+    });
+
+    // Particles explosão
+    particles = particles.filter(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+        return p.life > 0;
+    });
+}
+
+function createParticles(x, y) {
+    for (let i = 0; i < 10; i++) {
+        particles.push({
+            x, y,
+            vx: (Math.random() - 0.5) * 10,
+            vy: (Math.random() - 0.5) * 10,
+            life: 20
+        });
+    }
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Estrelas bg
+    ctx.fillStyle = '#fff';
+    for (let i = 0; i < 100; i++) {
+        ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 1, 1);
+    }
+
+    // Player (nave cyborg)
+    ctx.fillStyle = '#0f0';
+    ctx.fillRect(player.x, player.y, player.w, player.h);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(player.x + 5, player.y + 5, 10, 5); // Cockpit
+
+    // Bullets
+    ctx.fillStyle = '#ff0';
+    bullets.forEach(b => ctx.fillRect(b.x, b.y, b.w, b.h));
+
+    // Aliens (verdes xenomorfos)
+    ctx.fillStyle = '#f00';
+    aliens.forEach(a => {
+        ctx.fillRect(a.x, a.y, a.w, a.h);
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(a.x + 10, a.y + 5, 5, 5); // Olho
+        ctx.fillStyle = '#f00';
+    });
+
+    // Particles
+    particles.forEach(p => {
+        ctx.fillStyle = `rgba(255, ${Math.floor(255 * p.life / 20)}, 0, ${p.life / 20})`;
+        ctx.fillRect(p.x, p.y, 3, 3);
+    });
+
+    // UI
+    ctx.fillStyle = '#fff';
+    ctx.font = '20px Arial';
+    ctx.fillText(`Score: ${score}`, 10, 30);
+    ctx.fillText(`HP: ${player.hp}`, 10, 60);
+    if (player.hp <= 0) {
+        ctx.fillStyle = '#f00';
+        ctx.fillText('GAME OVER! Reload pra jogar de novo', 200, 300);
+    }
+}
+
+function loop() {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>        this.hour = 0;
         this.isGameOver = false;
         this.monitorOpen = false;
         this.currentCam = '1A';
