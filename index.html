@@ -1,84 +1,51 @@
+
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>🎮 Site Comunitário de Jogos HTML</title>
-
+  <meta charset="UTF-8">
+  <title>Site Comunitário de Jogos HTML</title>
   <style>
     body {
-      margin: 0;
+      background:#0f1724;
+      color:#e6eef6;
       font-family: Arial, sans-serif;
-      background: #0f1724;
-      color: #e6eef6;
-      text-align: center;
-      padding: 40px;
+      text-align:center;
+      padding:40px;
     }
-
-    h1 {
-      font-size: 28px;
-      margin-bottom: 30px;
+    .card {
+      background:#0b1220;
+      border:1px solid #1e2940;
+      border-radius:10px;
+      padding:20px;
+      margin:15px auto;
+      max-width:360px;
     }
-
-    .game-list {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      align-items: center;
-    }
-
-    .game-card {
-      width: 90%;
-      max-width: 380px;
-      padding: 20px;
-      background: #0b1220;
-      border: 1px solid #1e2940;
-      border-radius: 12px;
-    }
-
-    .game-title {
-      font-size: 20px;
-      margin-bottom: 12px;
-    }
-
-    .game-card a {
-      display: block;
-      padding: 12px;
-      background: #14b8a6;
-      color: #012;
-      text-decoration: none;
-      font-weight: bold;
-      border-radius: 8px;
-      transition: 0.2s;
-    }
-
-    .game-card a:hover {
-      background: #0fa28e;
+    a {
+      display:block;
+      margin-top:10px;
+      padding:10px;
+      background:#14b8a6;
+      color:#012;
+      text-decoration:none;
+      font-weight:bold;
+      border-radius:6px;
     }
   </style>
 </head>
 <body>
 
-  <h1>🎮 Site Comunitário de Jogos HTML</h1>
-  <p>Escolha um jogo abaixo:</p>
+<h1>🎮 Site Comunitário de Jogos HTML</h1>
+<p>Escolha um jogo abaixo:</p>
 
-  <div class="game-list">
+<div class="card">
+  <strong>🚀 Alien Space Wars</strong>
+  <a href="games/alien-space-wars/">Jogar</a>
+</div>
 
-    <!-- JOGO 1 -->
-    <div class="game-card">
-      <div class="game-title">🚀 Alien Space Wars</div>
-      <a href="games/alien-space-wars/">Jogar</a>
-    </div>
-
-    <!-- JOGO 2 (exemplo) -->
-    <!--
-    <div class="game-card">
-      <div class="game-title">👁️ Night Watch</div>
-      <a href="games/night-watch/">Jogar</a>
-    </div>
-    -->
-
-  </div>
+<div class="card">
+  <strong>👁️ Night Watch (FNAF)</strong>
+  <a href="games/fnaf-night-watch/">Jogar</a>
+</div>
 
 </body>
 </html>
