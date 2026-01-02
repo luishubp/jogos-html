@@ -1,51 +1,145 @@
-
 <!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Site Comunitário de Jogos HTML</title>
+  <title>🎮 Hub de Jogos HTML</title>
+
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      background:#0f1724;
-      color:#e6eef6;
-      font-family: Arial, sans-serif;
-      text-align:center;
-      padding:40px;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #0f1724, #020617);
+      color: #e5e7eb;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #22d3ee, #14b8a6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      color: #9ca3af;
+      margin-bottom: 40px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+    }
+
     .card {
-      background:#0b1220;
-      border:1px solid #1e2940;
-      border-radius:10px;
-      padding:20px;
-      margin:15px auto;
-      max-width:360px;
+      background: linear-gradient(180deg, #0b1220, #020617);
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 25px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent, rgba(34,211,238,0.15), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+
+    .icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+
+    .desc {
+      font-size: 0.95rem;
+      color: #9ca3af;
+      margin-bottom: 20px;
+    }
+
     a {
-      display:block;
-      margin-top:10px;
-      padding:10px;
-      background:#14b8a6;
-      color:#012;
-      text-decoration:none;
-      font-weight:bold;
-      border-radius:6px;
+      display: inline-block;
+      padding: 12px 20px;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #14b8a6, #22d3ee);
+      color: #020617;
+      font-weight: bold;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    a:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(34,211,238,0.4);
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.8rem;
+      color: #6b7280;
     }
   </style>
 </head>
 <body>
 
-<h1>🎮 Site Comunitário de Jogos HTML</h1>
-<p>Escolha um jogo abaixo:</p>
+  <div class="container">
+    <h1>🎮 Hub de Jogos HTML</h1>
+    <p>Escolha um jogo e divirta-se direto no navegador</p>
 
-<div class="card">
-  <strong>🚀 Alien Space Wars</strong>
-  <a href="games/alien-space-wars/">Jogar</a>
-</div>
+    <div class="grid">
+      <div class="card">
+        <div class="icon">🚀</div>
+        <div class="title">Alien Space Wars</div>
+        <div class="desc">Shooter espacial clássico com naves e explosões</div>
+        <a href="games/alien-space-wars/">Jogar</a>
+      </div>
 
-<div class="card">
-  <strong>👁️ Night Watch (FNAF)</strong>
-  <a href="games/fnaf-night-watch/">Jogar</a>
-</div>
+      <div class="card">
+        <div class="icon">👁️</div>
+        <div class="title">Night Watch (FNAF)</div>
+        <div class="desc">Sobreviva à noite monitorando câmeras e portas</div>
+        <a href="games/fnaf-night-watch/">Jogar</a>
+      </div>
+    </div>
+
+    <footer>
+      Feito com HTML + JavaScript • GitHub Pages
+    </footer>
+  </div>
 
 </body>
 </html>
