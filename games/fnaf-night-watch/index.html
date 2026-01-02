@@ -17,52 +17,47 @@
         .menu-btn { background: none; border: 1px solid #fff; color: #fff; padding: 10px 30px; font-family: 'VT323'; font-size: 25px; cursor: pointer; margin-top: 20px; }
         .menu-btn:hover { background: #fff; color: #000; }
         
-        .cn-setup { display: flex; gap: 30px; margin: 20px 0; }
-        .cn-char { text-align: center; font-size: 20px; }
-        .cn-input { width: 60px; background: #111; border: 1px solid #555; color: #fff; font-size: 25px; text-align: center; font-family: 'VT323'; }
-
         /* --- OFFICE --- */
         #office-scene { width: 100%; height: 100%; display: none; }
-        #office { width: 100%; height: 100%; position: relative; background: #080808; box-shadow: inset 0 0 150px #000; }
+        #office { width: 100%; height: 100%; position: relative; background: #0c0c0c; }
         
         .physical-door { position: absolute; top: -100%; width: 15%; height: 100%; background: #1a1a1a; border: 4px solid #000; transition: top 0.15s; z-index: 50; }
         .door-left { left: 5%; } .door-right { right: 5%; }
         .door-closed { top: 0% !important; }
 
-        /* AJUSTE: Luzes agora são muito mais claras e visíveis */
-        .light-effect { position: absolute; width: 40%; height: 100%; opacity: 0; pointer-events: none; z-index: 40; transition: opacity 0.05s; }
-        #light-L { left: 0; background: radial-gradient(circle at 15% 50%, rgba(255,255,230,0.6), transparent 70%); }
-        #light-R { right: 0; background: radial-gradient(circle at 85% 50%, rgba(255,255,230,0.6), transparent 70%); }
+        /* LUZES MELHORADAS */
+        .light-effect { position: absolute; width: 45%; height: 100%; opacity: 0; pointer-events: none; z-index: 40; transition: opacity 0.05s; }
+        #light-L { left: 0; background: radial-gradient(circle at 15% 50%, rgba(255,255,240,0.8), transparent 75%); }
+        #light-R { right: 0; background: radial-gradient(circle at 85% 50%, rgba(255,255,240,0.8), transparent 75%); }
 
-        /* AJUSTE: O vulto agora brilha levemente quando a luz está acesa */
-        .threat-at-door { position: absolute; top: 20%; width: 220px; height: 550px; background: #000; filter: blur(5px) brightness(0.2); z-index: 35; display: none; border-radius: 40%; }
-        .threat-revealed { filter: blur(4px) brightness(0.8) !important; }
+        /* VULTO MAIS VISÍVEL */
+        .threat-at-door { position: absolute; top: 15%; width: 250px; height: 600px; background: #000; filter: blur(4px) brightness(0.1); z-index: 35; display: none; border-radius: 40% 40% 10% 10%; }
+        .threat-visible { display: block !important; filter: blur(3px) brightness(0.7) !important; }
 
         /* --- BOTÕES --- */
-        .door-controls { position: absolute; top: 40%; width: 50px; height: 120px; z-index: 100; display: flex; flex-direction: column; gap: 10px; }
-        .ctrl-left { left: 0.5%; } .ctrl-right { right: 0.5%; }
-        .btn-game { width: 50px; height: 50px; border: 3px solid #444; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; background: #222; user-select: none; color: #fff; }
+        .door-controls { position: absolute; top: 40%; width: 60px; height: 130px; z-index: 100; display: flex; flex-direction: column; gap: 10px; }
+        .ctrl-left { left: 1%; } .ctrl-right { right: 1%; }
+        .btn-game { width: 60px; height: 55px; border: 3px solid #444; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; background: #222; color: #fff; user-select: none; }
         .btn-door.active { background: #900; border-color: #f00; }
-        .btn-light.active { background: #990; border-color: #ff0; color: #000; }
+        .btn-light.active { background: #cc0; border-color: #ff0; color: #000; font-weight: bold; }
 
         /* --- MONITOR --- */
-        #monitor { position: absolute; inset: 0; background: #000; display: none; z-index: 500; border: 15px solid #222; }
-        .static { position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuejgRTpFDkA/giphy.gif'); opacity: 0.12; z-index: 10; pointer-events: none; }
-        .threat-silhouette { position: absolute; width: 140px; height: 320px; background: #000; filter: blur(12px) brightness(0.5); opacity: 0.9; z-index: 5; display: none; }
+        #monitor { position: absolute; inset: 0; background: #000; display: none; z-index: 500; border: 10px solid #222; }
+        .static { position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuejgRTpFDkA/giphy.gif'); opacity: 0.15; z-index: 10; pointer-events: none; }
+        .threat-silhouette { position: absolute; width: 160px; height: 350px; background: #000; filter: blur(10px) brightness(0.4); z-index: 5; display: none; }
 
-        #map { position: absolute; bottom: 30px; right: 30px; width: 280px; height: 220px; background: rgba(0,0,0,0.9); border: 2px solid #555; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 10px; z-index: 20; }
-        .cam-node { background: #111; border: 1px solid #444; color: #fff; cursor: pointer; font-family: 'VT323'; font-size: 16px; }
+        #map { position: absolute; bottom: 30px; right: 30px; width: 280px; height: 220px; background: rgba(0,0,0,0.95); border: 2px solid #555; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; z-index: 20; }
+        .cam-node { background: #111; border: 1px solid #444; color: #fff; cursor: pointer; font-family: 'VT323'; font-size: 18px; }
         .cam-node.active { background: #fff; color: #000; }
 
-        /* --- UI --- */
         .hud { position: absolute; z-index: 1000; padding: 20px; pointer-events: none; }
-        .pwr-box { bottom: 0; left: 0; font-size: 30px; color: var(--pwr-color); }
+        .pwr-box { bottom: 0; left: 0; font-size: 32px; color: var(--pwr-color); }
         .time-box { top: 0; right: 0; font-size: 45px; }
-        #monitor-toggle { position: absolute; bottom: 0; left: 25%; width: 50%; height: 45px; background: rgba(255,255,255,0.05); border: 2px solid #444; z-index: 1000; cursor: pointer; }
+        #monitor-toggle { position: absolute; bottom: 0; left: 25%; width: 50%; height: 45px; background: rgba(255,255,255,0.08); border: 2px solid #444; z-index: 1000; cursor: pointer; }
 
-        #jumpscare { position: absolute; inset: 0; z-index: 10000; display: none; background: #000; justify-content: center; align-items: center; }
-        .glitch { animation: shake 0.05s infinite; filter: invert(1); background: #111; width: 100%; height: 100%; }
-        @keyframes shake { 0% { transform: translate(5px); } 50% { transform: translate(-5px); } }
+        #jumpscare { position: absolute; inset: 0; z-index: 10000; display: none; background: #000; }
+        .glitch { animation: shake 0.05s infinite; filter: invert(1); background: #200; width: 100%; height: 100%; }
+        @keyframes shake { 0% { transform: translate(10px); } 50% { transform: translate(-10px); } }
     </style>
 </head>
 <body>
@@ -71,16 +66,16 @@
     <div id="screen-menu" class="screen active-screen">
         <h1>FNAF REMASTER</h1>
         <button class="menu-btn" onclick="showScreen('screen-cn')">CUSTOM NIGHT</button>
-        <button class="menu-btn" onclick="startGame(2, 2)">NEW GAME</button>
+        <button class="menu-btn" onclick="startGame(5, 5)">NEW GAME</button>
     </div>
 
     <div id="screen-cn" class="screen">
         <h1>CUSTOM NIGHT</h1>
-        <div class="cn-setup">
-            <div class="cn-char">BONNIE<br><input type="number" id="cn-b" class="cn-input" value="0" min="0" max="20"></div>
-            <div class="cn-char">CHICA<br><input type="number" id="cn-c" class="cn-input" value="0" min="0" max="20"></div>
+        <div style="display:flex; gap:30px; margin:20px 0;">
+            <div style="text-align:center;">BONNIE<br><input type="number" id="cn-b" style="width:60px; background:#111; color:#fff; font-size:25px; text-align:center;" value="0" min="0" max="20"></div>
+            <div style="text-align:center;">CHICA<br><input type="number" id="cn-c" style="width:60px; background:#111; color:#fff; font-size:25px; text-align:center;" value="0" min="0" max="20"></div>
         </div>
-        <button class="menu-btn" onclick="startCustom()">START</button>
+        <button class="menu-btn" onclick="startGame(document.getElementById('cn-b').value, document.getElementById('cn-c').value)">START</button>
     </div>
 
     <div id="office-scene">
@@ -89,8 +84,9 @@
             <div id="door-R" class="physical-door door-right"></div>
             <div id="light-L" class="light-effect"></div>
             <div id="light-R" class="light-effect"></div>
-            <div id="threat-L" class="threat-at-door" style="left: 5%;"></div>
-            <div id="threat-R" class="threat-at-door" style="right: 5%;"></div>
+            
+            <div id="threat-L" class="threat-at-door" style="left: 4%;"></div>
+            <div id="threat-R" class="threat-at-door" style="right: 4%;"></div>
 
             <div class="door-controls ctrl-left">
                 <div class="btn-game btn-door" id="btn-door-L" onclick="game.actionDoor('left')">DOOR</div>
@@ -104,10 +100,10 @@
             <div id="monitor">
                 <div class="static"></div>
                 <div id="visual-vulto" class="threat-silhouette"></div>
-                <div id="room-name" style="position:absolute; top:30px; left:30px; font-size:35px;">PALCO PRINCIPAL</div>
+                <div id="room-name" style="position:absolute; top:30px; left:30px; font-size:35px; color:#fff;">PALCO PRINCIPAL</div>
                 <div id="map">
                     <button id="m1A" class="cam-node" onclick="game.switchCam('1A','Palco Principal')">1A</button>
-                    <button id="m2A" class="cam-node" onclick="game.switchCam('2A','Canto Esq')">2A</button>
+                    <button id="m2A" class="cam-node" onclick="game.switchCam('2A','Corredor Esq')">2A</button>
                     <button id="m1B" class="cam-node" onclick="game.switchCam('1B','Área Jantar')">1B</button>
                     <button id="m4B" class="cam-node" onclick="game.switchCam('4B','Corredor Dir')">4B</button>
                 </div>
@@ -126,10 +122,6 @@
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
     if(id !== 'none') document.getElementById(id).classList.add('active-screen');
-}
-
-function startCustom() {
-    startGame(document.getElementById('cn-b').value, document.getElementById('cn-c').value);
 }
 
 function startGame(b, c) {
@@ -152,7 +144,7 @@ class FNAFEngine {
     begin(b, c) {
         this.ai['Bonnie'].lv = b; this.ai['Chica'].lv = c;
         setInterval(() => this.tick(), 1000);
-        setInterval(() => this.moveAI(), 4500);
+        setInterval(() => this.moveAI(), 4000);
         setInterval(() => { this.time++; document.getElementById('clock').innerText = this.time + " AM"; if(this.time==6) location.reload(); }, 60000);
     }
 
@@ -175,32 +167,33 @@ class FNAFEngine {
     }
 
     actionLight(s) {
-        // Toggle da luz
         this.lights[s] = !this.lights[s];
         const side = s==='left'?'L':'R';
         const other = s==='left'?'right':'left';
         
-        // Desligar a outra luz (opcional, como no original)
-        if(this.lights[s]) { this.lights[other] = false; document.getElementById(`light-${side==='L'?'R':'L'}`).style.opacity = 0; document.getElementById(`btn-light-${side==='L'?'R':'L'}`).classList.remove('active'); }
+        // Desliga a outra luz ao ligar uma
+        if(this.lights[s]) { 
+            this.lights[other] = false; 
+            document.getElementById(`light-${side==='L'?'R':'L'}`).style.opacity = 0; 
+            document.getElementById(`btn-light-${side==='L'?'R':'L'}`).classList.remove('active'); 
+        }
 
         document.getElementById(`light-${side}`).style.opacity = this.lights[s] ? 1 : 0;
         document.getElementById(`btn-light-${side}`).classList.toggle('active', this.lights[s]);
-        
-        this.updateThreatVisibility();
+        this.updateVisuals();
     }
 
-    updateThreatVisibility() {
+    updateVisuals() {
         ['L', 'R'].forEach(side => {
             const sideKey = side === 'L' ? 'left' : 'right';
             const enemy = side === 'L' ? this.ai['Bonnie'] : this.ai['Chica'];
             const threatEl = document.getElementById(`threat-${side}`);
             
+            // CONDIÇÃO: Só mostra se a luz estiver ligada E o animatronic estiver na porta
             if(this.lights[sideKey] && enemy.pos === (side === 'L' ? 'DoorL' : 'DoorR')) {
-                threatEl.style.display = 'block';
-                threatEl.classList.add('threat-revealed');
+                threatEl.classList.add('threat-visible');
             } else {
-                threatEl.style.display = 'none';
-                threatEl.classList.remove('threat-revealed');
+                threatEl.classList.remove('threat-visible');
             }
         });
     }
@@ -216,12 +209,13 @@ class FNAFEngine {
         document.getElementById('room-name').innerText = name;
         document.querySelectorAll('.cam-node').forEach(b => b.classList.remove('active'));
         document.getElementById('m'+id).classList.add('active');
+        
         const vulto = document.getElementById('visual-vulto');
         vulto.style.display = 'none';
         for(let n in this.ai) {
             if(this.ai[n].pos === id) {
                 vulto.style.display = 'block';
-                vulto.style.left = Math.random() * 60 + "%";
+                vulto.style.left = (20 + Math.random() * 40) + "%";
             }
         }
     }
@@ -233,12 +227,12 @@ class FNAFEngine {
                 let idx = e.path.indexOf(e.pos);
                 if(idx === e.path.length - 1) {
                     if(!this.doors[e.pos === 'DoorL' ? 'left' : 'right']) {
-                        setTimeout(() => { if(!this.doors[e.pos === 'DoorL' ? 'left' : 'right']) this.scare(); }, 3500);
-                    } else { e.pos = e.path[0]; } // Volta se a porta tiver fechada
+                        setTimeout(() => { if(!this.doors[e.pos === 'DoorL' ? 'left' : 'right']) this.scare(); }, 4000);
+                    } else { e.pos = e.path[0]; }
                 } else { e.pos = e.path[idx+1]; }
             }
         }
-        this.updateThreatVisibility();
+        this.updateVisuals();
         if(this.monOpen) this.switchCam(this.curCam, document.getElementById('room-name').innerText);
     }
 
