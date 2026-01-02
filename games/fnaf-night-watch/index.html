@@ -2,235 +2,222 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>FNAF: Custom Night Fix</title>
+    <title>FNAF: Ultimate Fix</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; background: #000; color: #fff; font-family: 'VT323', monospace; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        #game-container { position: relative; width: 100vw; height: 56.25vw; max-width: 1280px; max-height: 720px; background: #000; overflow: hidden; border: 2px solid #333; }
+        #game-container { position: relative; width: 100vw; height: 56.25vw; max-width: 1280px; max-height: 720px; background: #000; overflow: hidden; border: 4px solid #222; }
 
-        /* MENU CUSTOM NIGHT */
-        #menu { position: absolute; inset: 0; z-index: 2000; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 10px double #444; }
-        .ai-config { display: flex; gap: 15px; margin-bottom: 20px; }
-        .ai-card { text-align: center; background: #111; padding: 10px; border: 2px solid #333; width: 90px; }
-        .ai-card input { width: 50px; background: #000; color: #fff; border: 1px solid #555; font-family: 'VT323'; font-size: 20px; text-align: center; margin-top: 5px; }
-        .start-btn { padding: 10px 40px; font-family: 'VT323'; font-size: 25px; background: #222; color: #fff; border: 2px solid #555; cursor: pointer; }
-        .start-btn:hover { background: #fff; color: #000; }
+        /* SISTEMA DE MENUS */
+        .screen { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; background: #000; }
+        #main-menu { display: flex; }
+        .active-screen { display: flex !important; }
 
-        /* OFFICE */
-        #office { width: 100%; height: 100%; position: relative; background: #0f0f0f; display: none; }
-        .physical-door { position: absolute; top: -100%; width: 15%; height: 100%; background: #1a1a1a; border: 4px solid #000; transition: top 0.2s; z-index: 50; }
-        .door-left { left: 5%; } .door-right { right: 5%; }
+        .ai-config { display: flex; gap: 10px; margin: 20px 0; }
+        .ai-card { background: #111; padding: 10px; border: 2px solid #333; text-align: center; width: 85px; }
+        .ai-card input { width: 45px; background: #000; color: #fff; border: 1px solid #555; font-family: 'VT323'; font-size: 20px; text-align: center; }
+        
+        button { padding: 10px 25px; font-family: 'VT323'; font-size: 22px; cursor: pointer; background: #222; color: #fff; border: 2px solid #444; }
+        button:hover { background: #fff; color: #000; }
+
+        /* OFFICE & MAP */
+        #office-screen { position: relative; width: 100%; height: 100%; background: #080808; }
+        .door { position: absolute; top: -100%; width: 15%; height: 100%; background: #151515; border: 4px solid #000; transition: top 0.1s; z-index: 50; }
         .door-closed { top: 0% !important; }
         
-        /* LUZES */
-        .light-area { position: absolute; width: 35%; height: 100%; opacity: 0; pointer-events: none; z-index: 40; filter: blur(40px); transition: opacity 0.1s; }
-        #light-L { left: 0; background: rgba(255, 255, 240, 0.4); }
-        #light-R { right: 0; background: rgba(255, 255, 240, 0.4); }
+        .light { position: absolute; width: 35%; height: 100%; opacity: 0; pointer-events: none; z-index: 40; background: rgba(255,255,230,0.35); filter: blur(40px); }
 
-        /* BOTOES LATERAIS */
-        .side-ctrl { position: absolute; top: 40%; display: flex; flex-direction: column; gap: 10px; z-index: 100; }
-        .btn-action { width: 60px; height: 50px; background: #222; border: 2px solid #444; color: #fff; cursor: pointer; font-size: 12px; font-family: 'VT323'; }
-        .btn-red { background: #800 !important; border-color: red !important; }
-        .btn-yellow { background: #880 !important; border-color: yellow !important; color: #000 !important; }
-
-        /* MONITOR */
-        #monitor { position: absolute; inset: 0; background: #000; display: none; z-index: 500; border: 15px solid #222; }
-        .static { position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuejgRTpFDkA/giphy.gif'); opacity: 0.12; z-index: 10; pointer-events: none; }
-        .animatronic-dot { position: absolute; width: 25px; height: 25px; border-radius: 50%; z-index: 5; display: none; filter: blur(2px); border: 2px solid #fff; }
-
-        /* MAPA COMPACTO */
-        #map-panel { position: absolute; bottom: 20px; right: 20px; width: 260px; height: 260px; background: rgba(0,0,0,0.8); border: 2px solid #555; padding: 8px; z-index: 20; }
-        #map-grid { display: grid; grid-template-areas: 
-            ". c1A ." 
-            "c5 c1B c7" 
-            "c1C . c6" 
-            "c3 c2A c4A" 
-            "c2B you c4B"; 
-            gap: 6px; height: 100%; 
+        /* MONITOR & MAPA */
+        #monitor { position: absolute; inset: 0; background: #000; display: none; z-index: 500; border: 10px solid #222; }
+        #map-area { position: absolute; bottom: 20px; right: 20px; width: 250px; height: 260px; background: rgba(0,0,0,0.8); border: 2px solid #555; padding: 10px; z-index: 600; }
+        
+        .map-grid { display: grid; grid-template-areas: 
+            ". c1A ." "c5 c1B c7" "c1C . c6" "c3 c2A c4A" "c2B you c4B"; 
+            gap: 5px; height: 100%; 
         }
-        .cam-btn { background: #1a1a1a; border: 1px solid #666; color: #fff; cursor: pointer; font-size: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .cam-btn.active { background: #fff; color: #000; border-color: #fff; }
-        .you-label { grid-area: you; display: flex; align-items: center; justify-content: center; color: #0f0; border: 1px dashed #0f0; font-size: 14px; }
+        .cam-btn { background: #1a1a1a; border: 1px solid #666; color: #fff; cursor: pointer; font-size: 11px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
+        .cam-btn span { font-size: 9px; color: #888; margin-top: 2px; }
+        .cam-btn.active { background: #fff; color: #000; }
+        .you-label { grid-area: you; color: #0f0; border: 1px dashed #0f0; display: flex; align-items: center; justify-content: center; font-size: 12px; }
 
-        #monitor-lever { position: absolute; bottom: 0; left: 25%; width: 50%; height: 45px; background: rgba(255,255,255,0.05); border: 1px solid #333; z-index: 1000; cursor: pointer; }
-        .hud { position: absolute; z-index: 1000; font-size: 24px; padding: 15px; color: #fff; pointer-events: none; }
+        .dot { position: absolute; width: 25px; height: 25px; border-radius: 50%; display: none; z-index: 100; border: 2px solid #fff; }
+        #monitor-up { position: absolute; bottom: 0; left: 25%; width: 50%; height: 40px; background: rgba(255,255,255,0.1); z-index: 1000; cursor: pointer; border: 1px solid #333; }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <div id="menu">
-        <h1 style="letter-spacing: 5px;">CUSTOM NIGHT</h1>
-        <div class="ai-config">
-            <div class="ai-card" style="color:#90f;">Bonnie<br><input type="number" id="lv-b" value="0" min="0" max="20"></div>
-            <div class="ai-card" style="color:#ff0;">Chica<br><input type="number" id="lv-c" value="0" min="0" max="20"></div>
-            <div class="ai-card" style="color:#63422e;">Freddy<br><input type="number" id="lv-f" value="0" min="0" max="20"></div>
-            <div class="ai-card" style="color:#a00;">Foxy<br><input type="number" id="lv-x" value="0" min="0" max="20"></div>
-        </div>
-        <button class="start-btn" onclick="startGame()">INICIAR NOITE</button>
+    <div id="main-menu" class="screen">
+        <h1 style="font-size: 60px;">FIVE NIGHTS</h1>
+        <button onclick="showScreen('custom-screen')">CUSTOM NIGHT</button>
     </div>
 
-    <div id="office">
-        <div id="door-L" class="physical-door door-left"></div>
-        <div id="door-R" class="physical-door door-right"></div>
-        <div id="light-L" class="light-area"></div>
-        <div id="light-R" class="light-area"></div>
-        
-        <div class="side-ctrl" style="left: 1%;">
-            <button class="btn-action" id="db-l" onclick="game.toggleDoor('left')">DOOR</button>
-            <button class="btn-action" id="lb-l" onclick="game.toggleLight('left')">LIGHT</button>
+    <div id="custom-screen" class="screen">
+        <h2>DEFINIR DIFICULDADE (0-20)</h2>
+        <div class="ai-config">
+            <div class="ai-card" style="color:#90f;">Bonnie<br><input type="number" id="lv-b" value="0" max="20"></div>
+            <div class="ai-card" style="color:#ff0;">Chica<br><input type="number" id="lv-c" value="0" max="20"></div>
+            <div class="ai-card" style="color:#63422e;">Freddy<br><input type="number" id="lv-f" value="0" max="20"></div>
+            <div class="ai-card" style="color:#a00;">Foxy<br><input type="number" id="lv-x" value="0" max="20"></div>
         </div>
-        <div class="side-ctrl" style="right: 1%;">
-            <button class="btn-action" id="db-r" onclick="game.toggleDoor('right')">DOOR</button>
-            <button class="btn-action" id="lb-r" onclick="game.toggleLight('right')">LIGHT</button>
+        <button onclick="startGame()">START NIGHT</button>
+    </div>
+
+    <div id="office-screen" style="display:none;">
+        <div id="dr-L" class="door" style="left:5%;"></div>
+        <div id="dr-R" class="door" style="right:5%;"></div>
+        <div id="li-L" class="light" style="left:0;"></div>
+        <div id="li-R" class="light" style="right:0;"></div>
+
+        <div style="position:absolute; top:40%; left:1%; z-index:100; display:flex; flex-direction:column; gap:10px;">
+            <button onclick="game.toggleDoor('left')">DOOR</button>
+            <button onclick="game.toggleLight('left')">LIGHT</button>
+        </div>
+        <div style="position:absolute; top:40%; right:1%; z-index:100; display:flex; flex-direction:column; gap:10px;">
+            <button onclick="game.toggleDoor('right')">DOOR</button>
+            <button onclick="game.toggleLight('right')">LIGHT</button>
         </div>
 
         <div id="monitor">
-            <div class="static"></div>
-            <div id="v-bonnie" class="animatronic-dot" style="background:#90f;"></div>
-            <div id="v-chica" class="animatronic-dot" style="background:#ff0;"></div>
-            <div id="v-freddy" class="animatronic-dot" style="background:#63422e;"></div>
-            <div id="v-foxy" class="animatronic-dot" style="background:#a00;"></div>
+            <div id="v-Bonnie" class="dot" style="background:#90f;"></div>
+            <div id="v-Chica" class="dot" style="background:#ff0;"></div>
+            <div id="v-Freddy" class="dot" style="background:#63422e;"></div>
+            <div id="v-Foxy" class="dot" style="background:#a00;"></div>
             
-            <div id="cam-display" style="position:absolute; top:20px; left:20px; font-size:30px; text-shadow: 2px 2px #000;">CAM 1A - PALCO</div>
+            <h2 id="cam-tag" style="position:absolute; top:20px; left:20px;">CAM 1A - STAGE</h2>
 
-            <div id="map-panel">
-                <div id="map-grid">
-                    <button class="cam-btn" style="grid-area:c1A" onclick="game.changeCam('1A','PALCO')">1A<span>Stage</span></button>
-                    <button class="cam-btn" style="grid-area:c1B" onclick="game.changeCam('1B','JANTAR')">1B<span>Dining</span></button>
-                    <button class="cam-btn" style="grid-area:c1C" onclick="game.changeCam('1C','COVE')">1C<span>Foxy</span></button>
-                    <button class="cam-btn" style="grid-area:c5" onclick="game.changeCam('5','PEÇAS')">5<span>Back</span></button>
-                    <button class="cam-btn" style="grid-area:c7" onclick="game.changeCam('7','BANHEIRO')">7<span>Rest</span></button>
-                    <button class="cam-btn" style="grid-area:c3" onclick="game.changeCam('3','DEPÓSITO')">3<span>Closet</span></button>
-                    <button class="cam-btn" style="grid-area:c6" onclick="game.changeCam('6','COZINHA')">6<span>Kitchen</span></button>
-                    <button class="cam-btn" style="grid-area:c2A" onclick="game.changeCam('2A','CORREDOR L')">2A<span>Hall</span></button>
-                    <button class="cam-btn" style="grid-area:c2B" onclick="game.changeCam('2B','CANTO L')">2B<span>Corner</span></button>
-                    <button class="cam-btn" style="grid-area:c4A" onclick="game.changeCam('4A','CORREDOR R')">4A<span>Hall</span></button>
-                    <button class="cam-btn" style="grid-area:c4B" onclick="game.changeCam('4B','CANTO R')">4B<span>Corner</span></button>
-                    <div class="you-label">VOCÊ</div>
+            <div id="map-area">
+                <div class="map-grid">
+                    <div class="cam-btn" style="grid-area:c1A" onclick="game.setCam('1A','STAGE')">1A<span>Stage</span></div>
+                    <div class="cam-btn" style="grid-area:c1B" onclick="game.setCam('1B','DINING')">1B<span>Dining</span></div>
+                    <div class="cam-btn" style="grid-area:c1C" onclick="game.setCam('1C','COVE')">1C<span>Cove</span></div>
+                    <div class="cam-btn" style="grid-area:c5" onclick="game.setCam('5','BACK')">5<span>Parts</span></div>
+                    <div class="cam-btn" style="grid-area:c7" onclick="game.setCam('7','REST')">7<span>Toilet</span></div>
+                    <div class="cam-btn" style="grid-area:c3" onclick="game.setCam('3','CLOSET')">3<span>Supply</span></div>
+                    <div class="cam-btn" style="grid-area:c6" onclick="game.setCam('6','KITCHEN')">6<span>Kitchen</span></div>
+                    <div class="cam-btn" style="grid-area:c2A" onclick="game.setCam('2A','HALL L')">2A<span>Hall L</span></div>
+                    <div class="cam-btn" style="grid-area:c2B" onclick="game.setCam('2B','CORNER L')">2B<span>Corner L</span></div>
+                    <div class="cam-btn" style="grid-area:c4A" onclick="game.setCam('4A','HALL R')">4A<span>Hall R</span></div>
+                    <div class="cam-btn" style="grid-area:c4B" onclick="game.setCam('4B','CORNER R')">4B<span>Corner R</span></div>
+                    <div class="you-label">YOU</div>
                 </div>
             </div>
         </div>
 
-        <div class="hud" style="bottom:0; left:0; color:#0f0;">ENERGIA: <span id="pwr-val">100</span>%</div>
-        <div class="hud" style="top:0; right:0;">12 AM</div>
-        <div id="monitor-lever" onclick="game.toggleMonitor()"></div>
+        <div style="position:absolute; bottom:10px; left:10px; color:#0f0; font-size:24px;">PWR: <span id="p-val">100</span>%</div>
+        <div id="monitor-up" onclick="game.toggleMon()"></div>
     </div>
 </div>
 
 <script>
-function startGame() {
-    const val = (id) => Math.min(20, Math.max(0, parseInt(document.getElementById(id).value) || 0));
-    document.getElementById('menu').style.display = 'none';
-    document.getElementById('office').style.display = 'block';
-    game.init(val('lv-b'), val('lv-c'), val('lv-f'), val('lv-x'));
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+    document.getElementById(id).classList.add('active-screen');
 }
 
-class FNAFEngine {
+function startGame() {
+    // TRAVA DO NÚMERO 20
+    const fix = (id) => Math.min(20, Math.max(0, parseInt(document.getElementById(id).value) || 0));
+    document.getElementById('custom-screen').style.display = 'none';
+    document.getElementById('office-screen').style.display = 'block';
+    game.init(fix('lv-b'), fix('lv-c'), fix('lv-f'), fix('lv-x'));
+}
+
+class Engine {
     constructor() {
-        this.pwr = 100; this.isOpen = false; this.curCam = '1A';
-        this.doorState = {left: false, right: false};
-        this.lightState = {left: false, right: false};
+        this.pwr = 100; this.mon = false; this.cam = '1A';
+        this.doors = {left: false, right: false};
+        this.lights = {left: false, right: false};
         this.ai = {
-            'Bonnie': {pos: '1A', path: ['1A','1B','5','2A','2B','OfficeL'], show: ['1A','1B','5','2A','2B']},
-            'Chica': {pos: '1A', path: ['1A','1B','7','4A','4B','OfficeR'], show: ['1A','2B','4B']},
-            'Freddy': {pos: '1A', path: ['1A','1B','7','6','4A','4B','OfficeR'], show: ['1A','1B','7','6','4A','4B']},
+            'Bonnie': {pos: '1A', path: ['1A','1B','5','2A','2B','DoorL'], show: ['1A','1B','5','2A','2B']},
+            'Chica': {pos: '1A', path: ['1A','1B','7','4A','4B','DoorR'], show: ['1A','2B','4B']},
+            'Freddy': {pos: '1A', path: ['1A','1B','7','6','4A','4B','DoorR'], show: ['1A','1B','7','6','4A','4B']},
             'Foxy': {pos: '1C', stage: 0}
         };
     }
 
     init(b, c, f, x) {
         this.ai.Bonnie.lv = b; this.ai.Chica.lv = c; this.ai.Freddy.lv = f; this.ai.Foxy.lv = x;
-        setInterval(() => this.updatePwr(), 1000);
-        setInterval(() => this.processAI(), 4500);
-        this.changeCam('1A', 'PALCO');
+        setInterval(() => {
+            this.pwr -= (0.12 + (this.doors.left?0.4:0) + (this.doors.right?0.4:0) + (this.mon?0.2:0));
+            document.getElementById('p-val').innerText = Math.floor(this.pwr);
+            if(this.pwr <= 0) location.reload();
+        }, 1000);
+        // IA MAIS RÁPIDA (Check a cada 3 segundos em vez de 4.5)
+        setInterval(() => this.moveAI(), 3000);
+        this.setCam('1A', 'STAGE');
     }
 
-    updatePwr() {
-        let drain = 0.12;
-        if(this.doorState.left) drain += 0.4;
-        if(this.doorState.right) drain += 0.4;
-        if(this.isOpen) drain += 0.2;
-        this.pwr -= drain;
-        document.getElementById('pwr-val').innerText = Math.max(0, Math.floor(this.pwr));
-        if(this.pwr <= 0) location.reload();
+    toggleDoor(s) {
+        this.doors[s] = !this.doors[s];
+        document.getElementById(`dr-${s==='left'?'L':'R'}`).classList.toggle('door-closed', this.doors[s]);
     }
 
-    toggleDoor(side) {
-        this.doorState[side] = !this.doorState[side];
-        const id = side === 'left' ? 'door-L' : 'door-R';
-        const btnId = side === 'left' ? 'db-l' : 'db-r';
-        document.getElementById(id).classList.toggle('door-closed', this.doorState[side]);
-        document.getElementById(btnId).classList.toggle('btn-red', this.doorState[side]);
+    toggleLight(s) {
+        this.lights.left = false; this.lights.right = false;
+        this.lights[s] = true; // Simula clique: acende apenas enquanto quiser
+        document.getElementById('li-L').style.opacity = this.lights.left ? 1 : 0;
+        document.getElementById('li-R').style.opacity = this.lights.right ? 1 : 0;
+        // Apaga após 1 segundo para não travar ligada
+        setTimeout(() => {
+            this.lights[s] = false;
+            document.getElementById('li-L').style.opacity = 0;
+            document.getElementById('li-R').style.opacity = 0;
+        }, 1000);
     }
 
-    toggleLight(side) {
-        // Desliga a outra luz antes de ligar a nova
-        const other = side === 'left' ? 'right' : 'left';
-        this.lightState[other] = false;
-        this.lightState[side] = !this.lightState[side];
-
-        document.getElementById('light-L').style.opacity = this.lightState.left ? 1 : 0;
-        document.getElementById('light-R').style.opacity = this.lightState.right ? 1 : 0;
-        
-        document.getElementById('lb-l').classList.toggle('btn-yellow', this.lightState.left);
-        document.getElementById('lb-r').classList.toggle('btn-yellow', this.lightState.right);
+    toggleMon() {
+        this.mon = !this.mon;
+        document.getElementById('monitor').style.display = this.mon ? 'block' : 'none';
     }
 
-    toggleMonitor() {
-        this.isOpen = !this.isOpen;
-        document.getElementById('monitor').style.display = this.isOpen ? 'block' : 'none';
-        if(this.isOpen) this.changeCam(this.curCam, document.getElementById('cam-display').innerText.split(' - ')[1]);
-    }
-
-    changeCam(id, name) {
-        this.curCam = id;
-        document.getElementById('cam-display').innerText = `CAM ${id} - ${name}`;
+    setCam(id, name) {
+        this.cam = id;
+        document.getElementById('cam-tag').innerText = `CAM ${id} - ${name}`;
         document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active'));
-        const activeBtn = Array.from(document.querySelectorAll('.cam-btn')).find(b => b.innerText.includes(id));
-        if(activeBtn) activeBtn.classList.add('active');
+        // Seleciona o botão correto pelo texto
+        Array.from(document.querySelectorAll('.cam-btn')).forEach(b => {
+            if(b.innerText.includes(id)) b.classList.add('active');
+        });
+        this.updateDots();
+    }
 
-        // Atualizar visual dos Animatronics
-        ['bonnie', 'chica', 'freddy', 'foxy'].forEach(name => {
-            const char = this.ai[name.charAt(0).toUpperCase() + name.slice(1)];
+    updateDots() {
+        ['Bonnie', 'Chica', 'Freddy', 'Foxy'].forEach(name => {
+            const char = this.ai[name];
             const dot = document.getElementById('v-' + name);
-            if(char.pos === id && (char.show ? char.show.includes(id) : true)) {
+            if(char.pos === this.cam && (char.show ? char.show.includes(this.cam) : true)) {
                 dot.style.display = 'block';
-                dot.style.left = (30 + Math.random() * 40) + "%";
-                dot.style.top = (30 + Math.random() * 40) + "%";
-            } else {
-                dot.style.display = 'none';
-            }
+                dot.style.left = (Math.random() * 50 + 20) + "%";
+                dot.style.top = (Math.random() * 50 + 20) + "%";
+            } else dot.style.display = 'none';
         });
     }
 
-    processAI() {
+    moveAI() {
         for(let name in this.ai) {
             let e = this.ai[name];
-            if(name === 'Freddy' && (this.isOpen && this.curCam === e.pos)) continue; // Trava Freddy
+            // Regra do Freddy: Não move se estiver sendo olhado
+            if(name === 'Freddy' && this.mon && this.cam === e.pos) continue;
 
             if(Math.random() * 20 < e.lv) {
                 if(name === 'Foxy') {
-                    e.stage++;
-                    if(e.stage > 4) { if(!this.doorState.left) location.reload(); else e.stage = 0; }
+                    e.stage++; if(e.stage > 4) { if(!this.doors.left) location.reload(); else e.stage = 0; }
                 } else {
                     let idx = e.path.indexOf(e.pos);
-                    if(idx < e.path.length - 1) {
-                        e.pos = e.path[idx+1];
-                    } else {
-                        // Tentativa de ataque
+                    if(idx < e.path.length - 1) e.pos = e.path[idx+1];
+                    else {
                         const side = name === 'Bonnie' ? 'left' : 'right';
-                        if(!this.doorState[side]) location.reload(); // Game Over
-                        else e.pos = '1A'; // Volta ao palco
+                        if(!this.doors[side]) location.reload();
+                        else e.pos = '1A';
                     }
                 }
             }
         }
-        if(this.isOpen) this.changeCam(this.curCam, document.getElementById('cam-display').innerText.split(' - ')[1]);
+        if(this.mon) this.updateDots();
     }
 }
-
-const game = new FNAFEngine();
+const game = new Engine();
 </script>
 </body>
-                </html>
+            </html>
