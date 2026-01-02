@@ -2,390 +2,202 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Five Nights at Freddy's - Web Remake UPGRADED</title>
+    <title>Five Nights at Freddy's - Web Remake PERFEITO (PC Edition)</title>
     <style>
-        body { margin: 0; background: #000; color: #fff; font-family: 'Courier New', monospace; overflow: hidden; user-select: none; }
-        #game-container { position: relative; width: 1024px; height: 576px; margin: 20px auto; border: 4px solid #333; overflow: hidden; background: #111; }
+        body { 
+            margin: 0; 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Courier New', monospace; 
+            overflow: hidden; 
+            user-select: none; 
+        }
+        #game-container { 
+            position: relative; 
+            width: 1024px; 
+            height: 576px; 
+            margin: 20px auto; 
+            border: 8px solid #333; 
+            overflow: hidden; 
+            background: #111; 
+            box-shadow: 0 0 50px #900;
+        }
         
-        /* Office Layout */
-        #office { width: 100%; height: 100%; position: relative; transition: transform 0.1s; }
-        .wall { position: absolute; width: 120%; height: 100%; background: linear-gradient(to right, #222, #444, #222); left: -10%; }
+        /* Office */
+        #office { 
+            width: 100%; 
+            height: 100%; 
+            position: relative; 
+            transition: transform 0.2s ease; 
+            background: radial-gradient(circle at center, #222 0%, #111 100%);
+        }
+        .wall { 
+            position: absolute; 
+            width: 120%; 
+            height: 100%; 
+            background: linear-gradient(to right, #222 0%, #444 50%, #222 100%); 
+            left: -10%; 
+        }
         
-        /* UI Elements */
-        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        .stats { position: absolute; top: 20px; right: 20px; font-size: 24px; pointer-events: auto; }
-        .power-bar { position: absolute; bottom: 20px; left: 20px; font-size: 18px; pointer-events: auto; }
-        
-        /* Doors & Lights Buttons */
-        .btn { position: absolute; width: 50px; height: 80px; cursor: pointer; pointer-events: auto; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #555; transition: all 0.1s; }
-        #btn-left-door { left: 50px; top: 250px; background: #900; }
-        #btn-right-door { right: 50px; top: 250px; background: #900; }
-        #btn-left-light { left: 50px; top: 340px; background: #990; }
-        #btn-right-light { right: 50px; top: 340px; background: #990; }
+        /* Botões */
+        .btn { 
+            position: absolute; 
+            width: 60px; 
+            height: 90px; 
+            cursor: pointer; 
+            pointer-events: auto; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+            border: 3px solid #555; 
+            transition: all 0.2s; 
+            font-size: 12px;
+        }
+        .btn:hover { border-color: #fff; box-shadow: 0 0 10px #fff; }
+        .btn.door-closed { background: #090 !important; color: #fff; }
+        .btn.light-on { background: #aa0 !important; }
+        #btn-left-door { left: 40px; top: 240px; background: #900; }
+        #btn-right-door { right: 40px; top: 240px; background: #900; }
+        #btn-left-light { left: 40px; top: 350px; background: #990; }
+        #btn-right-light { right: 40px; top: 350px; background: #990; }
 
-        /* Camera System */
-        #monitor-toggle { position: absolute; bottom: 0; left: 25%; width: 50%; height: 40px; background: rgba(255,255,255,0.2); border-top: 5px solid #fff; cursor: pointer; pointer-events: auto; text-align: center; line-height: 40px; }
-        #camera-tablet { position: absolute; top: 5%; left: 5%; width: 90%; height: 80%; background: #000; border: 10px solid #222; display: none; pointer-events: auto; z-index: 10; }
-        .cam-btn { width: 60px; height: 40px; background: #444; margin: 5px; cursor: pointer; color: white; border: none; font-size: 12px; }
+        /* Office View */
+        #office-view { 
+            position:absolute; 
+            width:100%; 
+            height:100%; 
+            display:flex; 
+            justify-content:center; 
+            align-items:center; 
+            font-size:48px; 
+            text-shadow: 0 0 10px #fff;
+            transition: all 0.3s;
+        }
+        #office-view.danger { color: #f00; font-size: 32px; animation: pulse 0.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* Monitor */
+        #monitor-toggle { 
+            position: absolute; 
+            bottom: 0; 
+            left: 25%; 
+            width: 50%; 
+            height: 50px; 
+            background: rgba(255,255,255,0.1); 
+            border-top: 5px solid #fff; 
+            cursor: pointer; 
+            pointer-events: auto; 
+            text-align: center; 
+            line-height: 50px; 
+            font-size: 20px;
+            transition: background 0.2s;
+        }
+        #monitor-toggle:hover { background: rgba(255,255,255,0.3); }
+        #camera-tablet { 
+            position: absolute; 
+            top: 2%; 
+            left: 2%; 
+            width: 96%; 
+            height: 92%; 
+            background: #000; 
+            border: 15px solid #222; 
+            display: none; 
+            pointer-events: auto; 
+            z-index: 10; 
+        }
+        #cam-display { 
+            width:100%; 
+            height:80%; 
+            position:relative; 
+            background:#111; 
+            display:flex; 
+            flex-direction:column; 
+            justify-content:center; 
+            align-items:center; 
+            border: 5px solid #333;
+        }
+        #cam-name { 
+            position:absolute; 
+            top:20px; 
+            left:20px; 
+            font-size:28px; 
+            color:#0f0; 
+            text-shadow: 0 0 5px #0f0;
+        }
+        #cam-content { 
+            font-size:40px; 
+            text-align:center; 
+            text-shadow: 0 0 10px #fff;
+        }
+        #cam-map { 
+            position:absolute; 
+            bottom:20px; 
+            right:20px; 
+            border:2px solid #fff; 
+            padding:15px; 
+            background: rgba(0,0,0,0.8);
+        }
+        .cam-btn { 
+            width: 70px; 
+            height: 45px; 
+            background: #444; 
+            margin: 5px; 
+            cursor: pointer; 
+            color: white; 
+            border: none; 
+            font-size: 14px; 
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
         .cam-btn:hover { background: #666; }
-        .active-cam { background: #0f0 !important; color: #000; }
+        .active-cam { background: #0f0 !important; color: #000; box-shadow: 0 0 10px #0f0; }
 
-        /* Visual Effects */
-        .scare-flash { position: absolute; top:0; left:0; width:100%; height:100%; background: red; display:none; z-index:100; justify-content:center; align-items:center; font-size: 100px; animation: shake 0.5s infinite; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-        #static-fx { position: absolute; top:0; left:0; width:100%; height:100%; background: url('https://media.giphy.com/media/oEI9uWUic_GCM/giphy.gif'); opacity: 0.05; pointer-events: none; display: none; }
-    </style>
-</head>
-<body>
-
-<div id="game-container">
-    <div id="office">
-        <div class="wall"></div>
-        <div id="btn-left-door" class="btn" onclick="game.toggleDoor('left')" onkeydown="if(event.key==='a') game.toggleDoor('left')">DOOR</div>
-        <div id="btn-left-light" class="btn" onmousedown="game.setLight('left', true)" onmouseup="game.setLight('left', false')">LIGHT</div>
-        
-        <div id="btn-right-door" class="btn" onclick="game.toggleDoor('right')" onkeydown="if(event.key==='d') game.toggleDoor('right')">DOOR</div>
-        <div id="btn-right-light" class="btn" onmousedown="game.setLight('right', true)" onmouseup="game.setLight('right', false')">LIGHT</div>
-        
-        <canvas id="office-view" width="1024" height="576" style="position:absolute; width:100%; height:100%;"></canvas>
-    </div>
-
-    <div id="camera-tablet">
-        <canvas id="cam-display" width="900" height="450" style="width:100%; height:100%; background:#111;"></canvas>
-        <div id="cam-map" style="position:absolute; bottom:20px; right:20px; border:1px solid #fff; padding:10px;">
-            <button class="cam-btn active-cam" onclick="game.switchCam('1A')">1A</button>
-            <button class="cam-btn" onclick="game.switchCam('1B')">1B</button>
-            <button class="cam-btn" onclick="game.switchCam('2A')">2A</button>
-            <button class="cam-btn" onclick="game.switchCam('3')">3 Pirate</button>
-            <button class="cam-btn" onclick="game.switchCam('4A')">4A</button>
-            <button class="cam-btn" onclick="game.switchCam('5')">5</button>
-        </div>
-    </div>
-
-    <div id="static-fx"></div>
-    <div id="ui-layer">
-        <div class="stats">
-            <span id="clock">12 AM</span><br>
-            <small id="night-display">Night 1</small>
-        </div>
-        <div class="power-bar">
-            Power: <span id="power-usage">100</span>%<br>
-            Usage: <span id="usage-pips">I</span>
-        </div>
-        <div id="monitor-toggle" onclick="game.toggleMonitor()">MONITOR</div>
-    </div>
-
-    <div id="jumpscare" class="scare-flash">
-        AAAAAAH!
-    </div>
-</div>
-
-<script>
-class FNAFGame {
-    constructor() {
-        this.night = 1;
-        this.power = 100.0;
-        this.hour = 0;
-        this.isGameOver = false;
-        this.monitorOpen = false;
-        this.currentCam = '1A';
-        this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        this.doors = { left: false, right: false };
-        this.lights = { left: false, right: false };
-        
-        // IA melhorada
-        this.enemies = {
-            'Bonnie': { pos: 0, difficulty: 3 }, // 0:1A, 1:1B, 2:2A, 3:DoorL, 4:Office
-            'Chica': { pos: 0, difficulty: 2 }, // 0:1A, 1:1B, 2:2A, 3:DoorR, 4:Office
-            'Foxy': { stage: 0, difficulty: 1 }, // 0-10 stage, rush se >8
-            'Freddy': { pos: 0, difficulty: 1 } // Ativa se outros bloqueados
-        };
-
-        this.canvasOffice = document.getElementById('office-view');
-        this.ctxOffice = this.canvasOffice.getContext('2d');
-        this.canvasCam = document.getElementById('cam-display');
-        this.ctxCam = this.canvasCam.getContext('2d');
-
-        this.init();
-    }
-
-    init() {
-        setInterval(() => this.updatePower(), 1000);
-        setInterval(() => this.updateClock(), 45000); // ~1min real = 1h game
-        setInterval(() => this.updateAI(), 3000 + Math.random()*2000); // IA mais dinâmica
-        this.renderLoop();
-        this.playAmbient();
-    }
-
-    playSound(frequency, duration, type='sine') {
-        const oscillator = this.audioCtx.createOscillator();
-        const gainNode = this.audioCtx.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(this.audioCtx.destination);
-        oscillator.frequency.value = frequency;
-        oscillator.type = type;
-        gainNode.gain.setValueAtTime(0.3, this.audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + duration);
-        oscillator.start(this.audioCtx.currentTime);
-        oscillator.stop(this.audioCtx.currentTime + duration);
-    }
-
-    playJumpscare() {
-        // Scream caótico
-        for(let i=0; i<10; i++) {
-            setTimeout(() => this.playSound(200 + Math.random()*800, 0.1 + Math.random()*0.3, 'sawtooth'), i*50);
+        /* UI */
+        #ui-layer { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            pointer-events: none; 
         }
-    }
-
-    playAmbient() {
-        // Tensão baixa loop
-        setInterval(() => this.playSound(60 + Math.random()*20, 0.5, 'sine'), 5000);
-    }
-
-    doorSound() {
-        this.playSound(150, 0.2);
-    }
-
-    lightSound() {
-        this.playSound(800, 0.1);
-    }
-
-    updatePower() {
-        if (this.isGameOver) return;
-        let usage = 1; // Base
-        if (this.doors.left) usage += 1;
-        if (this.doors.right) usage += 1;
-        if (this.lights.left) usage += 1;
-        if (this.lights.right) usage += 1;
-        if (this.monitorOpen) usage += 1;
-
-        this.power -= usage * 0.1;
-        if (this.power <= 0) {
-            this.power = 0;
-            this.blackout();
+        .stats { 
+            position: absolute; 
+            top: 20px; 
+            right: 20px; 
+            font-size: 28px; 
+            text-shadow: 0 0 10px #fff;
+            pointer-events: auto; 
         }
-        document.getElementById('power-usage').innerText = Math.floor(this.power);
-
-        // Pips reais
-        let pips = '';
-        for(let i=0; i<Math.min(4, usage); i++) pips += (i<usage-1 ? 'II' : 'I');
-        document.getElementById('usage-pips').innerText = pips || ' ';
-    }
-
-    updateClock() {
-        if (this.isGameOver) return;
-        this.hour++;
-        if (this.hour >= 6) this.winNight();
-        document.getElementById('clock').innerText = this.hour + " AM";
-    }
-
-    toggleDoor(side) {
-        if (this.power <= 0) return;
-        this.doors[side] = !this.doors[side];
-        document.getElementById(`btn-${side}-door`).style.background = this.doors[side] ? "#090" : "#900";
-        this.doorSound();
-        this.checkWinCondition();
-    }
-
-    setLight(side, state) {
-        if (this.power <= 0) return;
-        this.lights[side] = state;
-        document.getElementById(`btn-${side}-light`).style.background = state ? "#aa0" : "#990";
-        this.lightSound();
-        if (state) {
-            const enemyAtDoor = this.checkDoorForEnemy(side);
-            if (enemyAtDoor) {
-                // Shake + som
-                document.getElementById('office').style.animation = 'shake 0.3s';
-                setTimeout(() => document.getElementById('office').style.animation = '', 300);
-                this.playSound(100, 0.5, 'sawtooth');
-            }
-        }
-    }
-
-    toggleMonitor() {
-        if (this.power <= 0) return;
-        this.monitorOpen = !this.monitorOpen;
-        document.getElementById('camera-tablet').style.display = this.monitorOpen ? 'block' : 'none';
-        this.playSound(400, 0.2);
-    }
-
-    switchCam(camId) {
-        this.currentCam = camId;
-        document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active-cam'));
-        event.target.classList.add('active-cam');
-        this.updateCamDisplay();
-    }
-
-    updateAI() {
-        if (this.isGameOver || this.power <= 0) return;
-
-        const diffMultiplier = 1 + (this.night - 1) * 0.5;
-
-        // Bonnie (esquerda)
-        if (Math.random() < (this.enemies.Bonnie.difficulty * diffMultiplier / 20)) {
-            this.moveEnemy('Bonnie', ['1A', '1B', '2A', 'DoorL']);
+        .power-bar { 
+            position: absolute; 
+            bottom: 80px; 
+            left: 20px; 
+            font-size: 20px; 
+            pointer-events: auto; 
+            text-shadow: 0 0 10px #fff;
         }
 
-        // Chica (direita)
-        if (Math.random() < (this.enemies.Chica.difficulty * diffMultiplier / 20)) {
-            this.moveEnemy('Chica', ['1A', '1B', '2A', 'DoorR']);
+        /* Efeitos */
+        .scare-flash { 
+            position: absolute; 
+            top:0; 
+            left:0; 
+            width:100%; 
+            height:100%; 
+            background: #f00; 
+            display:none; 
+            z-index:100; 
+            justify-content:center; 
+            align-items:center; 
+            font-size: 120px; 
+            animation: shake 0.5s infinite, flash 0.1s infinite;
         }
-
-        // Foxy stage
-        if (!this.monitorOpen || this.currentCam !== '3') {
-            this.enemies.Foxy.stage += 0.1;
-            if (this.enemies.Foxy.stage > 10) {
-                this.foxyRush();
-            }
-        } else {
-            this.enemies.Foxy.stage -= 0.05;
-        }
-
-        // Freddy (ativa se portas fechadas)
-        if (this.doors.left && this.doors.right && Math.random() < 0.05 * diffMultiplier) {
-            this.moveEnemy('Freddy', ['1A', '1B', 'DoorL']);
-        }
-
-        this.updateCamDisplay();
-    }
-
-    moveEnemy(name, path) {
-        let currentIdx = path.indexOf(this.enemies[name].pos || path[0]);
-        if (currentIdx < path.length - 1) {
-            let nextPos = path[currentIdx + 1];
-            if (nextPos.includes('Door') ) {
-                const side = nextPos.includes('L') ? 'left' : 'right';
-                if (this.doors[side]) {
-                    // Bloqueado, para
-                    return;
-                }
-            }
-            this.enemies[name].pos = nextPos;
-            if (nextPos === 'Office') {
-                this.triggerJumpscare(name);
-            }
-        }
-    }
-
-    foxyRush() {
-        this.playSound(200, 1, 'sawtooth');
-        setTimeout(() => {
-            if (!this.doors.left) this.triggerJumpscare('Foxy');
-        }, 2000);
-    }
-
-    checkDoorForEnemy(side) {
-        if (side === 'left') return this.enemies.Bonnie.pos === 'DoorL';
-        if (side === 'right') return this.enemies.Chica.pos === 'DoorR';
-        return false;
-    }
-
-    updateCamDisplay() {
-        this.ctxCam.fillStyle = '#111';
-        this.ctxCam.fillRect(0, 0, 900, 450);
-        this.ctxCam.fillStyle = '#0f0';
-        this.ctxCam.font = '30px Courier';
-        this.ctxCam.textAlign = 'center';
-        this.ctxCam.fillText('CAM ' + this.currentCam, 450, 50);
-
-        // Desenhos simples dos animatronics
-        for (let name in this.enemies) {
-            if (this.enemies[name].pos === this.currentCam) {
-                this.drawAnimatronic(name, 450, 250);
-            }
-        }
-        if (this.currentCam === '3') {
-            // Foxy stage bar
-            this.ctxCam.fillStyle = '#f90';
-            this.ctxCam.fillRect(100, 400, this.enemies.Foxy.stage * 7, 20);
-        }
-    }
-
-    drawAnimatronic(name, x, y) {
-        this.ctxCam.fillStyle = '#444';
-        this.ctxCam.beginPath();
-        this.ctxCam.arc(x, y, 80, 0, Math.PI*2);
-        this.ctxCam.fill(); // Cabeça
-        this.ctxCam.fillStyle = '#fff';
-        this.ctxCam.fillRect(x-30, y-20, 15, 15); // Olho esquerdo
-        this.ctxCam.fillRect(x+15, y-20, 15, 15); // Olho direito
-        if (name === 'Foxy') {
-            this.ctxCam.fillStyle = '#f90';
-            this.ctxCam.fillRect(x-60, y+20, 120, 10); // Gancho
-        }
-    }
-
-    checkWinCondition() {
-        // Se portas fechadas e luzes off, Freddy avança
-    }
-
-    blackout() {
-        this.isGameOver = true;
-        document.getElementById('static-fx').style.display = 'block';
-        this.playSound(50, 5, 'sine'); // Zumbido blackout
-        setTimeout(() => this.triggerJumpscare('PowerOut'), 8000);
-    }
-
-    triggerJumpscare(name = '') {
-        this.isGameOver = true;
-        this.playJumpscare();
-        document.getElementById('static-fx').style.opacity = '0.8';
-        document.getElementById('jumpscare').style.display = 'flex';
-        document.body.style.animation = 'shake 0.1s infinite';
-        setTimeout(() => location.reload(), 3000);
-    }
-
-    winNight() {
-        alert(`6 AM - SOBREVIVEU À NOITE ${this.night}! Noite ${this.night+1} pro reload.`);
-        location.reload();
-    }
-
-    renderLoop() {
-        // Office view dinâmico
-        this.ctxOffice.fillStyle = '#222';
-        this.ctxOffice.fillRect(0, 0, 1024, 576);
-        this.ctxOffice.fillStyle = '#fff';
-        this.ctxOffice.font = '40px Courier';
-        this.ctxOffice.textAlign = 'center';
-        this.ctxOffice.fillText('SALA DE SEGURANÇA', 512, 288);
-
-        // Luzes nas portas
-        if (this.lights.left || this.lights.right) {
-            this.ctxOffice.fillStyle = '#aaa';
-            this.ctxOffice.fillRect(0, 0, 1024, 576); // Luz ambiente
-            const enemyMsg = this.checkDoorForEnemy(this.lights.left ? 'left' : 'right') ? "HÁ ALGO NA PORTA!!!" : "CORREDOR VAZIO";
-            this.ctxOffice.fillStyle = '#f00';
-            this.ctxOffice.fillText(enemyMsg, 512, 288);
-        }
-
-        // Mouse look
-        const rect = this.canvasOffice.getBoundingClientRect();
-        const mouseX = (event ? event.clientX - rect.left : 512) / 1024 * 100 - 50;
-        document.getElementById('office').style.transform = `translateX(${mouseX}px)`;
-
-        requestAnimationFrame(() => this.renderLoop());
-    }
-}
-
-// Inicia
-const game = new FNAFGame();
-
-// Mouse look global
-window.addEventListener('mousemove', (e) => {
-    const rect = document.getElementById('game-container').getBoundingClientRect();
-    // Passa pro render
-});
-
-// Teclado extra (A/D portas, Q/E luzes)
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'a' || e.key === 'A') game.toggleDoor('left');
-    if (e.key === 'd' || e.key === 'D') game.toggleDoor('right');
-    if (e.key === 'q' || e.key === 'Q') game.setLight('left', true);
-    if (e.key === 'e' || e.key === 'E') game.setLight('right', true);
-});
-</script>
-
-</body>
-</html>
+        @keyframes shake { 0%, 100% { transform: translate(0); } 25% { transform: translate(-10px, -10px); } 50% { transform: translate(10px, -5px); } 75% { transform: translate(-5px, 10px); } }
+        @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        #static-fx { 
+            position: absolute; 
+            top:0; 
+            left:0; 
+            width
