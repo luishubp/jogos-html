@@ -15,49 +15,51 @@
         .active-screen { display: flex; }
         h1 { font-size: 70px; margin: 0; color: #fff; text-shadow: 2px 2px var(--danger); }
         .menu-btn { background: none; border: 1px solid #fff; color: #fff; padding: 10px 30px; font-family: 'VT323'; font-size: 25px; cursor: pointer; margin-top: 20px; }
-        .menu-btn:hover { background: #fff; color: #000; }
-        
+
         /* --- OFFICE --- */
         #office-scene { width: 100%; height: 100%; display: none; }
-        #office { width: 100%; height: 100%; position: relative; background: #0c0c0c; }
+        #office { width: 100%; height: 100%; position: relative; background: #111; box-shadow: inset 0 0 100px #000; }
         
         .physical-door { position: absolute; top: -100%; width: 15%; height: 100%; background: #1a1a1a; border: 4px solid #000; transition: top 0.15s; z-index: 50; }
         .door-left { left: 5%; } .door-right { right: 5%; }
         .door-closed { top: 0% !important; }
 
-        /* LUZES MELHORADAS */
-        .light-effect { position: absolute; width: 45%; height: 100%; opacity: 0; pointer-events: none; z-index: 40; transition: opacity 0.05s; }
-        #light-L { left: 0; background: radial-gradient(circle at 15% 50%, rgba(255,255,240,0.8), transparent 75%); }
-        #light-R { right: 0; background: radial-gradient(circle at 85% 50%, rgba(255,255,240,0.8), transparent 75%); }
+        .light-effect { position: absolute; width: 45%; height: 100%; opacity: 0; pointer-events: none; z-index: 40; }
+        #light-L { left: 0; background: radial-gradient(circle at 15% 50%, rgba(255,255,200,0.5), transparent 70%); }
+        #light-R { right: 0; background: radial-gradient(circle at 85% 50%, rgba(255,255,200,0.5), transparent 70%); }
 
-        /* VULTO MAIS VISÍVEL */
-        .threat-at-door { position: absolute; top: 15%; width: 250px; height: 600px; background: #000; filter: blur(4px) brightness(0.1); z-index: 35; display: none; border-radius: 40% 40% 10% 10%; }
-        .threat-visible { display: block !important; filter: blur(3px) brightness(0.7) !important; }
+        /* VULTOS COLORIDOS PARA VISIBILIDADE */
+        .threat-at-door { position: absolute; top: 25%; width: 180px; height: 450px; z-index: 35; display: none; filter: brightness(0.4) blur(2px); border-radius: 50px; }
 
         /* --- BOTÕES --- */
         .door-controls { position: absolute; top: 40%; width: 60px; height: 130px; z-index: 100; display: flex; flex-direction: column; gap: 10px; }
         .ctrl-left { left: 1%; } .ctrl-right { right: 1%; }
-        .btn-game { width: 60px; height: 55px; border: 3px solid #444; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; background: #222; color: #fff; user-select: none; }
+        .btn-game { width: 60px; height: 55px; border: 3px solid #444; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; background: #222; color: #fff; }
         .btn-door.active { background: #900; border-color: #f00; }
-        .btn-light.active { background: #cc0; border-color: #ff0; color: #000; font-weight: bold; }
+        .btn-light.active { background: #cc0; border-color: #ff0; color: #000; }
 
         /* --- MONITOR --- */
-        #monitor { position: absolute; inset: 0; background: #000; display: none; z-index: 500; border: 10px solid #222; }
-        .static { position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuejgRTpFDkA/giphy.gif'); opacity: 0.15; z-index: 10; pointer-events: none; }
-        .threat-silhouette { position: absolute; width: 160px; height: 350px; background: #000; filter: blur(10px) brightness(0.4); z-index: 5; display: none; }
+        #monitor { position: absolute; inset: 0; background: #000; display: none; z-index: 500; }
+        .static { position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuejgRTpFDkA/giphy.gif'); opacity: 0.2; z-index: 10; pointer-events: none; }
+        
+        .threat-silhouette { position: absolute; width: 120px; height: 280px; z-index: 5; display: none; filter: blur(5px) brightness(0.6); border-radius: 20px; }
 
-        #map { position: absolute; bottom: 30px; right: 30px; width: 280px; height: 220px; background: rgba(0,0,0,0.95); border: 2px solid #555; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; z-index: 20; }
+        #map { position: absolute; bottom: 30px; right: 30px; width: 280px; height: 220px; background: rgba(0,0,0,0.9); border: 2px solid #555; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; z-index: 20; }
         .cam-node { background: #111; border: 1px solid #444; color: #fff; cursor: pointer; font-family: 'VT323'; font-size: 18px; }
         .cam-node.active { background: #fff; color: #000; }
 
+        /* --- HUD --- */
         .hud { position: absolute; z-index: 1000; padding: 20px; pointer-events: none; }
         .pwr-box { bottom: 0; left: 0; font-size: 32px; color: var(--pwr-color); }
         .time-box { top: 0; right: 0; font-size: 45px; }
-        #monitor-toggle { position: absolute; bottom: 0; left: 25%; width: 50%; height: 45px; background: rgba(255,255,255,0.08); border: 2px solid #444; z-index: 1000; cursor: pointer; }
+        #monitor-toggle { position: absolute; bottom: 0; left: 25%; width: 50%; height: 45px; background: rgba(255,255,255,0.1); border: 2px solid #444; z-index: 1000; cursor: pointer; }
 
-        #jumpscare { position: absolute; inset: 0; z-index: 10000; display: none; background: #000; }
-        .glitch { animation: shake 0.05s infinite; filter: invert(1); background: #200; width: 100%; height: 100%; }
-        @keyframes shake { 0% { transform: translate(10px); } 50% { transform: translate(-10px); } }
+        /* --- JUMPSCARE --- */
+        #jumpscare { position: absolute; inset: 0; z-index: 10000; display: none; background: #400; flex-direction: column; align-items: center; justify-content: center; }
+        .scare-vulto { width: 300px; height: 600px; background: #000; filter: blur(5px); animation: bounce 0.05s infinite; }
+        @keyframes bounce { 0% { transform: scale(1.2) translate(10px); } 50% { transform: scale(1.1) translate(-10px); } 100% { transform: scale(1.3); } }
+        @keyframes shake { 0% { transform: translate(5px, 5px); } 50% { transform: translate(-5px, -5px); } }
+        .shaking { animation: shake 0.04s infinite; }
     </style>
 </head>
 <body>
@@ -85,8 +87,8 @@
             <div id="light-L" class="light-effect"></div>
             <div id="light-R" class="light-effect"></div>
             
-            <div id="threat-L" class="threat-at-door" style="left: 4%;"></div>
-            <div id="threat-R" class="threat-at-door" style="right: 4%;"></div>
+            <div id="threat-L" class="threat-at-door" style="left: 4%; background: #303060;"></div>
+            <div id="threat-R" class="threat-at-door" style="right: 4%; background: #606030;"></div>
 
             <div class="door-controls ctrl-left">
                 <div class="btn-game btn-door" id="btn-door-L" onclick="game.actionDoor('left')">DOOR</div>
@@ -100,7 +102,7 @@
             <div id="monitor">
                 <div class="static"></div>
                 <div id="visual-vulto" class="threat-silhouette"></div>
-                <div id="room-name" style="position:absolute; top:30px; left:30px; font-size:35px; color:#fff;">PALCO PRINCIPAL</div>
+                <div id="room-name" style="position:absolute; top:30px; left:30px; font-size:35px;">PALCO PRINCIPAL</div>
                 <div id="map">
                     <button id="m1A" class="cam-node" onclick="game.switchCam('1A','Palco Principal')">1A</button>
                     <button id="m2A" class="cam-node" onclick="game.switchCam('2A','Corredor Esq')">2A</button>
@@ -115,10 +117,15 @@
         </div>
     </div>
 
-    <div id="jumpscare"><div class="glitch"></div></div>
+    <div id="jumpscare">
+        <div id="scare-anim" class="scare-vulto"></div>
+        <h2 style="font-size:50px; color:white; z-index:100;">GAME OVER</h2>
+    </div>
 </div>
 
 <script>
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
     if(id !== 'none') document.getElementById(id).classList.add('active-screen');
@@ -132,12 +139,13 @@ function startGame(b, c) {
 
 class FNAFEngine {
     constructor() {
+        this.active = true;
         this.pwr = 100; this.time = 0; this.monOpen = false; this.curCam = '1A';
         this.doors = { left: false, right: false };
         this.lights = { left: false, right: false };
         this.ai = {
-            'Bonnie': { pos: '1A', path: ['1A', '2A', 'DoorL'], lv: 0 },
-            'Chica': { pos: '1B', path: ['1B', '4B', 'DoorR'], lv: 0 }
+            'Bonnie': { pos: '1A', path: ['1A', '2A', 'DoorL'], lv: 0, color: '#303060' },
+            'Chica': { pos: '1B', path: ['1B', '4B', 'DoorR'], lv: 0, color: '#606030' }
         };
     }
 
@@ -149,11 +157,11 @@ class FNAFEngine {
     }
 
     tick() {
-        let usage = 0.1;
+        if(!this.active) return;
+        let usage = 0.15;
         if(this.doors.left) usage += 0.4;
         if(this.doors.right) usage += 0.4;
-        if(this.lights.left) usage += 0.2;
-        if(this.lights.right) usage += 0.2;
+        if(this.lights.left || this.lights.right) usage += 0.2;
         if(this.monOpen) usage += 0.3;
         this.pwr -= usage;
         document.getElementById('pwr-val').innerText = Math.max(0, Math.floor(this.pwr));
@@ -169,15 +177,6 @@ class FNAFEngine {
     actionLight(s) {
         this.lights[s] = !this.lights[s];
         const side = s==='left'?'L':'R';
-        const other = s==='left'?'right':'left';
-        
-        // Desliga a outra luz ao ligar uma
-        if(this.lights[s]) { 
-            this.lights[other] = false; 
-            document.getElementById(`light-${side==='L'?'R':'L'}`).style.opacity = 0; 
-            document.getElementById(`btn-light-${side==='L'?'R':'L'}`).classList.remove('active'); 
-        }
-
         document.getElementById(`light-${side}`).style.opacity = this.lights[s] ? 1 : 0;
         document.getElementById(`btn-light-${side}`).classList.toggle('active', this.lights[s]);
         this.updateVisuals();
@@ -188,13 +187,9 @@ class FNAFEngine {
             const sideKey = side === 'L' ? 'left' : 'right';
             const enemy = side === 'L' ? this.ai['Bonnie'] : this.ai['Chica'];
             const threatEl = document.getElementById(`threat-${side}`);
-            
-            // CONDIÇÃO: Só mostra se a luz estiver ligada E o animatronic estiver na porta
             if(this.lights[sideKey] && enemy.pos === (side === 'L' ? 'DoorL' : 'DoorR')) {
-                threatEl.classList.add('threat-visible');
-            } else {
-                threatEl.classList.remove('threat-visible');
-            }
+                threatEl.style.display = 'block';
+            } else { threatEl.style.display = 'none'; }
         });
     }
 
@@ -215,19 +210,21 @@ class FNAFEngine {
         for(let n in this.ai) {
             if(this.ai[n].pos === id) {
                 vulto.style.display = 'block';
+                vulto.style.background = this.ai[n].color;
                 vulto.style.left = (20 + Math.random() * 40) + "%";
             }
         }
     }
 
     moveAI() {
+        if(!this.active) return;
         for(let n in this.ai) {
             let e = this.ai[n];
             if(Math.random() * 20 < e.lv) {
                 let idx = e.path.indexOf(e.pos);
                 if(idx === e.path.length - 1) {
                     if(!this.doors[e.pos === 'DoorL' ? 'left' : 'right']) {
-                        setTimeout(() => { if(!this.doors[e.pos === 'DoorL' ? 'left' : 'right']) this.scare(); }, 4000);
+                        setTimeout(() => { if(!this.doors[e.pos === 'DoorL' ? 'left' : 'right']) this.scare(e.color); }, 3000);
                     } else { e.pos = e.path[0]; }
                 } else { e.pos = e.path[idx+1]; }
             }
@@ -236,8 +233,31 @@ class FNAFEngine {
         if(this.monOpen) this.switchCam(this.curCam, document.getElementById('room-name').innerText);
     }
 
-    scare() {
-        document.getElementById('jumpscare').style.display = 'flex';
+    scare(color) {
+        if(!this.active) return;
+        this.active = false;
+        
+        // Som Bizarro (Sintetizado)
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 1.5);
+        gain.gain.setValueAtTime(1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+
+        // Visual
+        const js = document.getElementById('jumpscare');
+        const anim = document.getElementById('scare-anim');
+        const container = document.getElementById('game-container');
+        
+        container.classList.add('shaking');
+        anim.style.background = color;
+        js.style.display = 'flex';
+        
         setTimeout(() => location.reload(), 2000);
     }
 }
