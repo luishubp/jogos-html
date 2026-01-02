@@ -18,48 +18,50 @@
 
         /* --- OFFICE --- */
         #office-scene { width: 100%; height: 100%; display: none; }
-        #office { width: 100%; height: 100%; position: relative; background: #111; box-shadow: inset 0 0 100px #000; }
+        #office { width: 100%; height: 100%; position: relative; background: #080808; }
         
         .physical-door { position: absolute; top: -100%; width: 15%; height: 100%; background: #1a1a1a; border: 4px solid #000; transition: top 0.15s; z-index: 50; }
         .door-left { left: 5%; } .door-right { right: 5%; }
         .door-closed { top: 0% !important; }
 
-        .light-effect { position: absolute; width: 45%; height: 100%; opacity: 0; pointer-events: none; z-index: 40; }
-        #light-L { left: 0; background: radial-gradient(circle at 15% 50%, rgba(255,255,200,0.5), transparent 70%); }
-        #light-R { right: 0; background: radial-gradient(circle at 85% 50%, rgba(255,255,200,0.5), transparent 70%); }
+        .light-effect { position: absolute; width: 45%; height: 100%; opacity: 0; pointer-events: none; z-index: 40; transition: opacity 0.05s; }
+        #light-L { left: 0; background: radial-gradient(circle at 15% 50%, rgba(255,255,240,0.6), transparent 75%); }
+        #light-R { right: 0; background: radial-gradient(circle at 85% 50%, rgba(255,255,240,0.6), transparent 75%); }
 
-        /* VULTOS COLORIDOS PARA VISIBILIDADE */
-        .threat-at-door { position: absolute; top: 25%; width: 180px; height: 450px; z-index: 35; display: none; filter: brightness(0.4) blur(2px); border-radius: 50px; }
+        /* REPRESENTAÇÃO NA PORTA (Cores Fortes) */
+        .threat-at-door { position: absolute; top: 30%; width: 80px; height: 80px; border-radius: 50%; z-index: 45; display: none; filter: blur(5px); box-shadow: 0 0 50px currentColor; }
 
         /* --- BOTÕES --- */
         .door-controls { position: absolute; top: 40%; width: 60px; height: 130px; z-index: 100; display: flex; flex-direction: column; gap: 10px; }
         .ctrl-left { left: 1%; } .ctrl-right { right: 1%; }
-        .btn-game { width: 60px; height: 55px; border: 3px solid #444; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; background: #222; color: #fff; }
+        .btn-game { width: 60px; height: 55px; border: 3px solid #444; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; background: #222; color: #fff; user-select: none; }
         .btn-door.active { background: #900; border-color: #f00; }
         .btn-light.active { background: #cc0; border-color: #ff0; color: #000; }
 
         /* --- MONITOR --- */
-        #monitor { position: absolute; inset: 0; background: #000; display: none; z-index: 500; }
-        .static { position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuejgRTpFDkA/giphy.gif'); opacity: 0.2; z-index: 10; pointer-events: none; }
+        #monitor { position: absolute; inset: 0; background: #000; display: none; z-index: 500; border: 15px solid #222; }
+        .static { position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuejgRTpFDkA/giphy.gif'); opacity: 0.15; z-index: 10; pointer-events: none; }
         
-        .threat-silhouette { position: absolute; width: 120px; height: 280px; z-index: 5; display: none; filter: blur(5px) brightness(0.6); border-radius: 20px; }
+        .threat-point { position: absolute; width: 40px; height: 40px; border-radius: 50%; z-index: 5; display: none; filter: blur(2px); box-shadow: 0 0 30px currentColor; }
 
-        #map { position: absolute; bottom: 30px; right: 30px; width: 280px; height: 220px; background: rgba(0,0,0,0.9); border: 2px solid #555; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; z-index: 20; }
+        #map { position: absolute; bottom: 30px; right: 30px; width: 280px; height: 220px; background: rgba(0,0,0,0.95); border: 2px solid #555; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; z-index: 20; }
         .cam-node { background: #111; border: 1px solid #444; color: #fff; cursor: pointer; font-family: 'VT323'; font-size: 18px; }
         .cam-node.active { background: #fff; color: #000; }
 
-        /* --- HUD --- */
+        /* --- JUMPSCARE --- */
+        #jumpscare { position: absolute; inset: 0; z-index: 10000; display: none; background: #000; justify-content: center; align-items: center; }
+        .scare-visual { font-size: 400px; filter: invert(1) drop-shadow(0 0 20px red); }
+        .scare-shake { animation: shakeGame 0.05s infinite; }
+        @keyframes shakeGame { 
+            0% { transform: translate(15px, 15px); background: #200; }
+            50% { transform: translate(-15px, -15px); background: #000; }
+            100% { transform: translate(10px, -10px); background: #400; }
+        }
+
         .hud { position: absolute; z-index: 1000; padding: 20px; pointer-events: none; }
         .pwr-box { bottom: 0; left: 0; font-size: 32px; color: var(--pwr-color); }
         .time-box { top: 0; right: 0; font-size: 45px; }
-        #monitor-toggle { position: absolute; bottom: 0; left: 25%; width: 50%; height: 45px; background: rgba(255,255,255,0.1); border: 2px solid #444; z-index: 1000; cursor: pointer; }
-
-        /* --- JUMPSCARE --- */
-        #jumpscare { position: absolute; inset: 0; z-index: 10000; display: none; background: #400; flex-direction: column; align-items: center; justify-content: center; }
-        .scare-vulto { width: 300px; height: 600px; background: #000; filter: blur(5px); animation: bounce 0.05s infinite; }
-        @keyframes bounce { 0% { transform: scale(1.2) translate(10px); } 50% { transform: scale(1.1) translate(-10px); } 100% { transform: scale(1.3); } }
-        @keyframes shake { 0% { transform: translate(5px, 5px); } 50% { transform: translate(-5px, -5px); } }
-        .shaking { animation: shake 0.04s infinite; }
+        #monitor-toggle { position: absolute; bottom: 0; left: 25%; width: 50%; height: 45px; background: rgba(255,255,255,0.1); border: 2px solid #555; z-index: 1000; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -74,10 +76,10 @@
     <div id="screen-cn" class="screen">
         <h1>CUSTOM NIGHT</h1>
         <div style="display:flex; gap:30px; margin:20px 0;">
-            <div style="text-align:center;">BONNIE<br><input type="number" id="cn-b" style="width:60px; background:#111; color:#fff; font-size:25px; text-align:center;" value="0" min="0" max="20"></div>
-            <div style="text-align:center;">CHICA<br><input type="number" id="cn-c" style="width:60px; background:#111; color:#fff; font-size:25px; text-align:center;" value="0" min="0" max="20"></div>
+            <div style="text-align:center;">BONNIE (Roxo)<br><input type="number" id="cn-b" style="width:60px; background:#111; color:#fff; font-size:25px; text-align:center;" value="0" min="0" max="20"></div>
+            <div style="text-align:center;">CHICA (Amarelo)<br><input type="number" id="cn-c" style="width:60px; background:#111; color:#fff; font-size:25px; text-align:center;" value="0" min="0" max="20"></div>
         </div>
-        <button class="menu-btn" onclick="startGame(document.getElementById('cn-b').value, document.getElementById('cn-c').value)">START</button>
+        <button class="menu-btn" onclick="startGame(document.getElementById('cn-b').value, document.getElementById('cn-c').value)">START 20/20/20/20</button>
     </div>
 
     <div id="office-scene">
@@ -87,8 +89,8 @@
             <div id="light-L" class="light-effect"></div>
             <div id="light-R" class="light-effect"></div>
             
-            <div id="threat-L" class="threat-at-door" style="left: 4%; background: #303060;"></div>
-            <div id="threat-R" class="threat-at-door" style="right: 4%; background: #606030;"></div>
+            <div id="threat-L" class="threat-at-door" style="left: 10%; color: #90f;"></div>
+            <div id="threat-R" class="threat-at-door" style="right: 10%; color: #ff0;"></div>
 
             <div class="door-controls ctrl-left">
                 <div class="btn-game btn-door" id="btn-door-L" onclick="game.actionDoor('left')">DOOR</div>
@@ -101,12 +103,12 @@
 
             <div id="monitor">
                 <div class="static"></div>
-                <div id="visual-vulto" class="threat-silhouette"></div>
-                <div id="room-name" style="position:absolute; top:30px; left:30px; font-size:35px;">PALCO PRINCIPAL</div>
+                <div id="vulto-cam" class="threat-point"></div>
+                <div id="room-name" style="position:absolute; top:30px; left:30px; font-size:35px; color:#fff;">PALCO PRINCIPAL</div>
                 <div id="map">
                     <button id="m1A" class="cam-node" onclick="game.switchCam('1A','Palco Principal')">1A</button>
-                    <button id="m2A" class="cam-node" onclick="game.switchCam('2A','Corredor Esq')">2A</button>
                     <button id="m1B" class="cam-node" onclick="game.switchCam('1B','Área Jantar')">1B</button>
+                    <button id="m2A" class="cam-node" onclick="game.switchCam('2A','Corredor Esq')">2A</button>
                     <button id="m4B" class="cam-node" onclick="game.switchCam('4B','Corredor Dir')">4B</button>
                 </div>
             </div>
@@ -117,15 +119,12 @@
         </div>
     </div>
 
-    <div id="jumpscare">
-        <div id="scare-anim" class="scare-vulto"></div>
-        <h2 style="font-size:50px; color:white; z-index:100;">GAME OVER</h2>
+    <div id="jumpscare" class="scare-shake">
+        <div id="scare-icon" class="scare-visual">💀</div>
     </div>
 </div>
 
 <script>
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
     if(id !== 'none') document.getElementById(id).classList.add('active-screen');
@@ -139,13 +138,12 @@ function startGame(b, c) {
 
 class FNAFEngine {
     constructor() {
-        this.active = true;
         this.pwr = 100; this.time = 0; this.monOpen = false; this.curCam = '1A';
         this.doors = { left: false, right: false };
         this.lights = { left: false, right: false };
         this.ai = {
-            'Bonnie': { pos: '1A', path: ['1A', '2A', 'DoorL'], lv: 0, color: '#303060' },
-            'Chica': { pos: '1B', path: ['1B', '4B', 'DoorR'], lv: 0, color: '#606030' }
+            'Bonnie': { pos: '1A', path: ['1A', '1B', 'DoorL'], lv: 0, color: '#90f' },
+            'Chica': { pos: '2A', path: ['2A', '4B', 'DoorR'], lv: 0, color: '#ff0' }
         };
     }
 
@@ -153,12 +151,15 @@ class FNAFEngine {
         this.ai['Bonnie'].lv = b; this.ai['Chica'].lv = c;
         setInterval(() => this.tick(), 1000);
         setInterval(() => this.moveAI(), 4000);
-        setInterval(() => { this.time++; document.getElementById('clock').innerText = this.time + " AM"; if(this.time==6) location.reload(); }, 60000);
+        setInterval(() => { 
+            this.time++; 
+            document.getElementById('clock').innerText = this.time + " AM"; 
+            if(this.time==6) { alert("Sobreviveu!"); location.reload(); }
+        }, 60000);
     }
 
     tick() {
-        if(!this.active) return;
-        let usage = 0.15;
+        let usage = 0.1;
         if(this.doors.left) usage += 0.4;
         if(this.doors.right) usage += 0.4;
         if(this.lights.left || this.lights.right) usage += 0.2;
@@ -175,10 +176,16 @@ class FNAFEngine {
     }
 
     actionLight(s) {
-        this.lights[s] = !this.lights[s];
         const side = s==='left'?'L':'R';
+        const other = s==='left'?'R':'L';
+        this.lights[s] = !this.lights[s];
+        this.lights[s === 'left' ? 'right' : 'left'] = false; // Desliga a outra
+
         document.getElementById(`light-${side}`).style.opacity = this.lights[s] ? 1 : 0;
+        document.getElementById(`light-${other}`).style.opacity = 0;
         document.getElementById(`btn-light-${side}`).classList.toggle('active', this.lights[s]);
+        document.getElementById(`btn-light-${other}`).classList.remove('active');
+        
         this.updateVisuals();
     }
 
@@ -187,9 +194,13 @@ class FNAFEngine {
             const sideKey = side === 'L' ? 'left' : 'right';
             const enemy = side === 'L' ? this.ai['Bonnie'] : this.ai['Chica'];
             const threatEl = document.getElementById(`threat-${side}`);
+            
             if(this.lights[sideKey] && enemy.pos === (side === 'L' ? 'DoorL' : 'DoorR')) {
                 threatEl.style.display = 'block';
-            } else { threatEl.style.display = 'none'; }
+                threatEl.style.backgroundColor = enemy.color;
+            } else {
+                threatEl.style.display = 'none';
+            }
         });
     }
 
@@ -205,58 +216,52 @@ class FNAFEngine {
         document.querySelectorAll('.cam-node').forEach(b => b.classList.remove('active'));
         document.getElementById('m'+id).classList.add('active');
         
-        const vulto = document.getElementById('visual-vulto');
-        vulto.style.display = 'none';
+        const point = document.getElementById('vulto-cam');
+        point.style.display = 'none';
         for(let n in this.ai) {
             if(this.ai[n].pos === id) {
-                vulto.style.display = 'block';
-                vulto.style.background = this.ai[n].color;
-                vulto.style.left = (20 + Math.random() * 40) + "%";
+                point.style.display = 'block';
+                point.style.backgroundColor = this.ai[n].color;
+                point.style.left = (Math.random() * 70 + 10) + "%";
+                point.style.top = (Math.random() * 50 + 20) + "%";
             }
         }
     }
 
     moveAI() {
-        if(!this.active) return;
         for(let n in this.ai) {
             let e = this.ai[n];
             if(Math.random() * 20 < e.lv) {
                 let idx = e.path.indexOf(e.pos);
-                if(idx === e.path.length - 1) {
+                if(idx === e.path.length - 1) { // Estão na porta
                     if(!this.doors[e.pos === 'DoorL' ? 'left' : 'right']) {
-                        setTimeout(() => { if(!this.doors[e.pos === 'DoorL' ? 'left' : 'right']) this.scare(e.color); }, 3000);
+                        setTimeout(() => { 
+                            if(!this.doors[e.pos === 'DoorL' ? 'left' : 'right']) this.scare(e.color); 
+                        }, 3000);
                     } else { e.pos = e.path[0]; }
                 } else { e.pos = e.path[idx+1]; }
             }
         }
-        this.updateVisuals();
         if(this.monOpen) this.switchCam(this.curCam, document.getElementById('room-name').innerText);
+        this.updateVisuals();
     }
 
     scare(color) {
-        if(!this.active) return;
-        this.active = false;
-        
-        // Som Bizarro (Sintetizado)
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(100, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 1.5);
-        gain.gain.setValueAtTime(1, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-
-        // Visual
         const js = document.getElementById('jumpscare');
-        const anim = document.getElementById('scare-anim');
-        const container = document.getElementById('game-container');
-        
-        container.classList.add('shaking');
-        anim.style.background = color;
         js.style.display = 'flex';
+        document.getElementById('scare-icon').style.color = color;
+        
+        // Som bizarro via Audio API
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(100, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 1);
+        gain.gain.setValueAtTime(0.5, ctx.currentTime);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
         
         setTimeout(() => location.reload(), 2000);
     }
