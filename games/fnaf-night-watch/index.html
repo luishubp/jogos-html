@@ -2,231 +2,241 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>FNAF Remastered - Fix V3</title>
+    <title>FNAF Remastered - Custom Night</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
-        :root { --primary-color: #88ff88; }
+        :root { --primary-color: #88ff88; --danger: #ff0000; }
         body { margin: 0; background: #000; color: #fff; font-family: 'VT323', monospace; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
         
         #game-container { position: relative; width: 100vw; height: 56.25vw; max-width: 1280px; max-height: 720px; border: 2px solid #333; overflow: hidden; background: #050505; }
 
-        /* --- SALA DE SEGURANÇA --- */
-        #office { 
-            width: 100%; height: 100%; position: relative;
-            background: 
-                linear-gradient(to bottom, #111 0%, #222 50%, #111 100%),
-                repeating-linear-gradient(90deg, #151515 0px, #151515 100px, #1a1a1a 101px, #1a1a1a 200px);
-        }
+        /* --- MENUS --- */
+        .screen { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 3000; background: #000; }
+        .active-screen { display: flex; }
+        h1 { font-size: 80px; margin: 0; color: var(--danger); text-shadow: 3px 3px #300; }
+        .menu-btn { background: none; border: 1px solid #fff; color: #fff; padding: 10px 40px; font-family: 'VT323'; font-size: 30px; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .menu-btn:hover { background: #fff; color: #000; }
         
-        .physical-door { position: absolute; top: -100%; width: 12%; height: 100%; background: linear-gradient(to right, #222, #444, #222); border: 2px solid #111; transition: top 0.3s ease-in; z-index: 40; }
-        .door-left { left: 8%; }
-        .door-right { right: 8%; }
+        .cn-row { display: flex; gap: 40px; margin-bottom: 30px; }
+        .cn-char { text-align: center; }
+        .cn-char div { font-size: 60px; }
+        .cn-input { width: 60px; background: #222; border: 1px solid var(--primary-color); color: var(--primary-color); font-family: 'VT323'; font-size: 30px; text-align: center; }
+
+        /* --- OFFICE & LUZES --- */
+        #office { width: 100%; height: 100%; position: relative; background: linear-gradient(to bottom, #111, #222, #111); }
+        .physical-door { position: absolute; top: -100%; width: 12%; height: 100%; background: #333; border: 2px solid #111; transition: top 0.2s; z-index: 40; }
+        .door-left { left: 8%; } .door-right { right: 8%; }
         .door-closed { top: 0% !important; }
 
-        /* --- LUZES E ANIMATRONICS NAS PORTAS --- */
-        .office-light { position: absolute; width: 30%; height: 100%; opacity: 0; pointer-events: none; z-index: 30; transition: opacity 0.1s; }
-        #light-L { left: 0; background: radial-gradient(circle at 0% 50%, rgba(255,255,200,0.3), transparent); }
-        #light-R { right: 0; background: radial-gradient(circle at 100% 50%, rgba(255,255,200,0.3), transparent); }
+        .office-light { position: absolute; width: 30%; height: 100%; opacity: 0; pointer-events: none; z-index: 30; }
+        #light-L { left: 0; background: rgba(255, 255, 200, 0.2); }
+        #light-R { right: 0; background: rgba(255, 255, 200, 0.2); }
 
-        .animatronic-at-door { position: absolute; top: 35%; font-size: 90px; z-index: 25; filter: brightness(0); transition: filter 0.1s; display: none; }
-        #bonnie-door { left: 5%; }
-        #chica-door { right: 5%; }
+        .anim-door { position: absolute; top: 35%; font-size: 100px; z-index: 25; display: none; }
+        #bonnie-door { left: 5%; } #chica-door { right: 5%; }
 
-        /* --- PAINÉIS --- */
-        .control-panel { position: absolute; top: 30%; width: 60px; height: 160px; background: #222; border: 1px solid #444; display: flex; flex-direction: column; align-items: center; justify-content: space-around; z-index: 100; }
-        .panel-left { left: 0; border-radius: 0 5px 5px 0; }
-        .panel-right { right: 0; border-radius: 5px 0 0 5px; }
-        .btn { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; border: 2px solid #000; user-select: none; }
+        /* --- INTERFACE --- */
+        .control-panel { position: absolute; top: 30%; width: 60px; height: 160px; background: #222; display: flex; flex-direction: column; align-items: center; justify-content: space-around; z-index: 100; }
+        .btn { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; border: 2px solid #000; user-select: none; text-align: center; line-height: 45px; }
         .btn-door.active { background: #f00; box-shadow: 0 0 10px #f00; }
         .btn-light.active { background: #ff0; color: #000; }
 
-        /* --- MONITOR --- */
-        #camera-tablet { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: none; z-index: 500; }
-        #map-area { position: absolute; bottom: 20px; right: 20px; width: 180px; height: 180px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; z-index: 600; }
-        .cam-btn { background: rgba(0,50,0,0.7); color: #fff; border: 1px solid var(--primary-color); cursor: pointer; font-family: 'VT323'; }
+        #camera-tablet { position: absolute; inset: 0; background: #000; display: none; z-index: 500; padding: 20px; }
+        #map-area { position: absolute; bottom: 20px; right: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .cam-btn { background: rgba(0,50,0,0.5); border: 1px solid var(--primary-color); color: #fff; cursor: pointer; padding: 10px; font-family: 'VT323'; }
         .cam-btn.active { background: var(--primary-color); color: #000; }
 
-        #monitor-trigger { position: absolute; bottom: 0; left: 30%; width: 40%; height: 45px; background: rgba(255,255,255,0.1); border: 2px solid #fff; z-index: 1000; text-align: center; line-height: 45px; cursor: pointer; color: #fff; font-size: 20px; }
-
-        .ui-power { position: absolute; bottom: 15px; left: 15px; z-index: 1000; font-size: 24px; color: var(--primary-color); }
-        .ui-clock { position: absolute; top: 15px; right: 15px; z-index: 1000; font-size: 35px; color: #fff; }
+        .ui { position: absolute; z-index: 1000; padding: 15px; font-size: 30px; }
+        .ui-pwr { bottom: 0; left: 0; color: var(--primary-color); }
+        .ui-clk { top: 0; right: 0; }
+        #mon-trig { position: absolute; bottom: 0; left: 30%; width: 40%; height: 40px; background: rgba(255,255,255,0.1); border: 1px solid #fff; z-index: 1000; cursor: pointer; text-align: center; line-height: 40px; }
 
         /* --- JUMPSCARE --- */
-        #jumpscare { position: absolute; top:0; left:0; width:100%; height:100%; background:#000; z-index:2000; display:none; flex-direction:column; justify-content:center; align-items:center; font-size:60px; color:red; text-align: center; }
-        
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-3px, -2px) rotate(-1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            50% { transform: translate(-1px, 2px) rotate(1deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        #jumpscare { position: absolute; inset: 0; z-index: 5000; display: none; background: #000; flex-direction: column; justify-content: center; align-items: center; }
+        .scare-text { font-size: 250px; }
+
+        @keyframes glitch {
+            0% { background: #f00; transform: scale(1.1); }
+            50% { background: #000; transform: scale(0.9); }
+            100% { background: #00f; transform: scale(1.2); }
         }
+        .scare-active { animation: glitch 0.05s infinite; }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <div id="office">
-        <div id="visual-door-L" class="physical-door door-left"></div>
-        <div id="visual-door-R" class="physical-door door-right"></div>
-        
-        <div id="bonnie-door" class="animatronic-at-door">🐰</div>
-        <div id="chica-door" class="animatronic-at-door">🐥</div>
-
-        <div id="light-L" class="office-light"></div>
-        <div id="light-R" class="office-light"></div>
-        
-        <div class="control-panel panel-left">
-            <div id="btn-L-door" class="btn btn-door" onclick="game.toggleDoor('left')" style="background:#400;">DOOR</div>
-            <div id="btn-L-light" class="btn btn-light" onmousedown="game.setLight('left',true)" onmouseup="game.setLight('left',false)" style="background:#440;">LIT</div>
-        </div>
-        <div class="control-panel panel-right">
-            <div id="btn-R-door" class="btn btn-door" onclick="game.toggleDoor('right')" style="background:#400;">DOOR</div>
-            <div id="btn-R-light" class="btn btn-light" onmousedown="game.setLight('right',true)" onmouseup="game.setLight('right',false)" style="background:#440;">LIT</div>
-        </div>
+    <div id="screen-menu" class="screen active-screen">
+        <h1>FNAF REMASTERED</h1>
+        <button class="menu-btn" onclick="showScreen('screen-cn')">CUSTOM NIGHT</button>
+        <button class="menu-btn" onclick="startGame(1, 1)">START GAME (Easy)</button>
     </div>
 
-    <div id="camera-tablet">
-        <div style="padding:20px;">
-            <div id="cam-display" style="width:100%; height:350px; background:#080808; border:2px solid #333; position:relative; display:flex; justify-content:center; align-items:center;">
-                <div id="enemy-sprite" style="width:100px; height:100px; border-radius:50%; filter:blur(10px); display:none;"></div>
-                <div id="cam-label" style="position:absolute; top:10px; left:10px; font-size:25px; color:var(--primary-color);">CAM 1A</div>
+    <div id="screen-cn" class="screen">
+        <h1>CUSTOM NIGHT</h1>
+        <div class="cn-row">
+            <div class="cn-char"><div>🐰</div><p>BONNIE</p><input type="number" id="lv-bonnie" class="cn-input" value="0" min="0" max="20"></div>
+            <div class="cn-char"><div>🐥</div><p>CHICA</p><input type="number" id="lv-chica" class="cn-input" value="0" min="0" max="20"></div>
+        </div>
+        <button class="menu-btn" onclick="startCustomGame()">READY</button>
+    </div>
+
+    <div id="office" class="game-scene">
+        <div id="v-door-L" class="physical-door door-left"></div>
+        <div id="v-door-R" class="physical-door door-right"></div>
+        <div id="bonnie-door" class="anim-door">🐰</div>
+        <div id="chica-door" class="anim-door">🐥</div>
+        <div id="light-L" class="office-light"></div>
+        <div id="light-R" class="office-light"></div>
+
+        <div class="control-panel" style="left:0; border-radius: 0 5px 5px 0;">
+            <div id="b-L-d" class="btn btn-door" onclick="game.toggleDoor('left')">D</div>
+            <div id="b-L-l" class="btn btn-light" onmousedown="game.setLight('left',true)" onmouseup="game.setLight('left',false)">L</div>
+        </div>
+        <div class="control-panel" style="right:0; border-radius: 5px 0 0 5px;">
+            <div id="b-R-d" class="btn btn-door" onclick="game.toggleDoor('right')">D</div>
+            <div id="b-R-l" class="btn btn-light" onmousedown="game.setLight('right',true)" onmouseup="game.setLight('right',false)">L</div>
+        </div>
+
+        <div id="camera-tablet">
+            <div id="cam-display" style="width:100%; height:70%; background:#080808; border:2px solid #333; position:relative; display:flex; justify-content:center; align-items:center;">
+                <div id="enemy-sprite" style="width:80px; height:80px; border-radius:50%; filter:blur(15px); display:none;"></div>
+                <div id="cam-lbl" style="position:absolute; top:20px; left:20px; font-size:40px; color:var(--primary-color);">CAM 1A</div>
             </div>
             <div id="map-area">
                 <button id="b1A" class="cam-btn" onclick="game.switchCam('1A')">1A</button>
-                <button id="b1B" class="cam-btn" onclick="game.switchCam('1B')">1B</button>
                 <button id="b2A" class="cam-btn" onclick="game.switchCam('2A')">2A</button>
+                <button id="b1B" class="cam-btn" onclick="game.switchCam('1B')">1B</button>
                 <button id="b4B" class="cam-btn" onclick="game.switchCam('4B')">4B</button>
             </div>
         </div>
+
+        <div class="ui ui-pwr">POWER: <span id="pwr">100</span>%</div>
+        <div class="ui ui-clk" id="clk">12 AM</div>
+        <div id="mon-trig" onclick="game.toggleMon()">MONITOR</div>
     </div>
 
-    <div class="ui-power">POWER: <span id="pwr">100</span>%</div>
-    <div class="ui-clock" id="clk">12 AM</div>
-    <div id="monitor-trigger" onclick="game.toggleMonitor()">ABRIR MONITOR</div>
-    <div id="jumpscare"></div>
+    <div id="jumpscare">
+        <div id="scare-icon" class="scare-text"></div>
+        <h2 style="font-size:40px">YOU DIED</h2>
+    </div>
 </div>
 
 <script>
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+    document.getElementById(id).classList.add('active-screen');
+}
+
+function startCustomGame() {
+    const bLv = parseInt(document.getElementById('lv-bonnie').value);
+    const cLv = parseInt(document.getElementById('lv-chica').value);
+    startGame(bLv, cLv);
+}
+
+function startGame(bLv, cLv) {
+    showScreen('none');
+    game.start(bLv, cLv);
+}
+
 class FNAFGame {
     constructor() {
-        this.power = 100.0;
+        this.active = false;
+        this.power = 100;
         this.hour = 0;
-        this.monitorOpen = false;
-        this.currentCam = '1A';
         this.doors = { left: false, right: false };
+        this.currentCam = '1A';
         this.enemies = {
-            'Bonnie': { pos: '1B', color: 'purple', side: 'left', home: '1B', path: ['1B', '4B', 'DoorL'], visualId: 'bonnie-door', char: '🐰' },
-            'Chica': { pos: '1A', color: 'yellow', side: 'right', home: '1A', path: ['1A', '2A', 'DoorR'], visualId: 'chica-door', char: '🐥' }
+            'Bonnie': { pos: '1A', side: 'left', path: ['1A', '2A', 'DoorL'], char: '🐰', id: 'bonnie-door', color: 'purple' },
+            'Chica': { pos: '1B', side: 'right', path: ['1B', '4B', 'DoorR'], char: '🐥', id: 'chica-door', color: 'yellow' }
         };
-        this.init();
     }
 
-    init() {
-        setInterval(() => this.updateClock(), 60000); 
-        setInterval(() => this.tick(), 1000);
-        setInterval(() => this.moveAI(), 5000);
+    start(bLv, cLv) {
+        this.active = true;
+        this.enemies['Bonnie'].lv = bLv;
+        this.enemies['Chica'].lv = cLv;
+        this.mainLoop = setInterval(() => this.tick(), 1000);
+        this.aiLoop = setInterval(() => this.moveAI(), 4000);
+        this.clockLoop = setInterval(() => this.updateClock(), 60000);
     }
 
     tick() {
-        let usage = 0.12;
-        if(this.doors.left) usage += 0.3;
-        if(this.doors.right) usage += 0.3;
-        if(this.monitorOpen) usage += 0.3;
-        this.power -= usage;
-        document.getElementById('pwr').innerText = Math.max(0, Math.floor(this.power));
+        if(!this.active) return;
+        let drain = 0.1;
+        if(this.doors.left) drain += 0.4;
+        if(this.doors.right) drain += 0.4;
+        if(this.monitorOpen) drain += 0.3;
+        this.power -= drain;
+        document.getElementById('pwr').innerText = Math.floor(this.power);
         if(this.power <= 0) location.reload();
     }
 
     updateClock() {
         this.hour++;
-        if(this.hour >= 6) { alert("6 AM - VOCÊ VENCEU!"); location.reload(); }
         document.getElementById('clk').innerText = this.hour + " AM";
+        if(this.hour >= 6) { alert("YOU WIN!"); location.reload(); }
     }
 
     toggleDoor(side) {
         this.doors[side] = !this.doors[side];
-        document.getElementById(`visual-door-${side==='left'?'L':'R'}`).classList.toggle('door-closed', this.doors[side]);
-        document.getElementById(`btn-${side==='left'?'L':'R'}-door`).classList.toggle('active', this.doors[side]);
+        document.getElementById(`v-door-${side==='left'?'L':'R'}`).classList.toggle('door-closed', this.doors[side]);
+        document.getElementById(`b-${side==='left'?'L':'R'}-d`).classList.toggle('active', this.doors[side]);
     }
 
     setLight(side, state) {
-        const lightEl = document.getElementById(`light-${side==='left'?'L':'R'}`);
-        lightEl.style.opacity = state ? 1 : 0;
-        document.getElementById(`btn-${side==='left'?'L':'R'}-light`).classList.toggle('active', state);
+        document.getElementById(`light-${side==='left'?'L':'R'}`).style.opacity = state ? 1 : 0;
+        document.getElementById(`b-${side==='left'?'L':'R'}-l`).classList.toggle('active', state);
         
-        // Lógica de Revelar Animatronic
-        for(let name in this.enemies) {
-            let e = this.enemies[name];
-            let isAtThisDoor = e.pos === (side === 'left' ? 'DoorL' : 'DoorR');
-            if(isAtThisDoor) {
-                const sprite = document.getElementById(e.visualId);
-                sprite.style.display = 'block';
-                sprite.style.filter = state ? 'brightness(1) contrast(1.2)' : 'brightness(0)';
-            }
+        const enemy = side === 'left' ? this.enemies['Bonnie'] : this.enemies['Chica'];
+        const el = document.getElementById(enemy.id);
+        if(enemy.pos === (side === 'left' ? 'DoorL' : 'DoorR')) {
+            el.style.display = state ? 'block' : 'none';
         }
     }
 
-    toggleMonitor() {
+    toggleMon() {
         this.monitorOpen = !this.monitorOpen;
         document.getElementById('camera-tablet').style.display = this.monitorOpen ? 'block' : 'none';
-        document.getElementById('monitor-trigger').innerText = this.monitorOpen ? "FECHAR MONITOR" : "ABRIR MONITOR";
         if(this.monitorOpen) this.switchCam(this.currentCam);
     }
 
-    switchCam(id) {
-        this.currentCam = id;
-        document.getElementById('cam-label').innerText = "CAM " + id;
-        document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('b'+id).classList.add('active');
-        this.updateCamVisual();
-    }
-
-    updateCamVisual() {
+    switchCam(cam) {
+        this.currentCam = cam;
+        document.getElementById('cam-lbl').innerText = "CAM " + cam;
         const sprite = document.getElementById('enemy-sprite');
         sprite.style.display = 'none';
-        for(let name in this.enemies) {
-            if(this.enemies[name].pos === this.currentCam) {
+        for(let n in this.enemies) {
+            if(this.enemies[n].pos === cam) {
                 sprite.style.display = 'block';
-                sprite.style.background = this.enemies[name].color;
-                sprite.style.marginLeft = (Math.random()*60 - 30) + "px";
+                sprite.style.background = this.enemies[n].color;
             }
         }
     }
 
     moveAI() {
-        for(let name in this.enemies) {
-            let e = this.enemies[name];
-            if(Math.random() > 0.4) {
-                let currentIdx = e.path.indexOf(e.pos);
-                
-                // Chegou na porta
-                if(e.pos === (e.side === 'left' ? 'DoorL' : 'DoorR')) {
-                    if(this.doors[e.side]) {
-                        e.pos = e.home; // Porta fechada, volta pro início
-                        document.getElementById(e.visualId).style.display = 'none';
-                    } else {
-                        // Se não fechou a porta em 3 segundos após ele chegar... Jumpscare!
-                        setTimeout(() => {
-                            if(!this.doors[e.side] && e.pos.includes('Door')) {
-                                this.triggerJumpscare(e.char);
-                            }
-                        }, 3000);
-                    }
+        for(let n in this.enemies) {
+            let e = this.enemies[n];
+            if(Math.random() * 20 < e.lv) {
+                let idx = e.path.indexOf(e.pos);
+                if(idx === e.path.length - 1) { // Tá na porta
+                    if(!this.doors[e.side]) this.jumpscare(e.char);
+                    else { e.pos = e.path[0]; document.getElementById(e.id).style.display = 'none'; }
                 } else {
-                    e.pos = e.path[currentIdx + 1];
+                    e.pos = e.path[idx + 1];
                 }
             }
         }
-        if(this.monitorOpen) this.updateCamVisual();
+        if(this.monitorOpen) this.switchCam(this.currentCam);
     }
 
-    triggerJumpscare(char) {
+    jumpscare(char) {
+        this.active = false;
         const js = document.getElementById('jumpscare');
-        js.innerHTML = `<div style="font-size:200px; animation: shake 0.1s infinite;">${char}</div><br>GAME OVER`;
         js.style.display = 'flex';
-        document.body.style.animation = "shake 0.1s infinite";
-        setTimeout(() => location.reload(), 3000);
+        js.classList.add('scare-active');
+        document.getElementById('scare-icon').innerText = char;
+        setTimeout(() => location.reload(), 2000);
     }
 }
 const game = new FNAFGame();
