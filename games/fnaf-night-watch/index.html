@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Five Nights at Freddy's - Remastered</title>
+    <title>FNAF Remastered - Com Estática</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,14 +12,13 @@
 
         body { margin: 0; background: #050505; color: #fff; font-family: 'VT323', monospace; overflow: hidden; user-select: none; }
         
-        /* Container Principal com efeito de tela curva (sutil) */
         #game-container { 
             position: relative; width: 100vw; height: 100vh; max-width: 1280px; max-height: 720px; 
             margin: 0 auto; border: 2px solid #333; overflow: hidden; background: #000; 
             box-shadow: 0 0 50px rgba(0,0,0,0.9);
         }
         
-        /* Efeitos de Monitor CRT (Scanlines e Vignette) */
+        /* Scanlines e Vignette (Tela antiga) */
         .crt-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 900;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
@@ -27,35 +26,54 @@
             box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
         }
 
+        /* ================= NOVO: Efeito de Estática ================= */
+        #static-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 150;
+            /* Imagem base64 de ruído pequeno que se repete */
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAElBMVEUAAAD8/Pz///+/v7////8AAACVuDOpAAAABnRSTlMABw8XIzM3Zsi7AAAAWUlEQVQ4y2NgwA3YQZSwIkkxiCgRVAQjFYRBCIsgE4RBCIuAEkQoCCpBhIJoEFEhKASiQZSIRBDRIGpElIhEEMkgoiKQSESCCBHVIKJElIhEEKMgogRIAQBo0iM7s3H4cQAAAABJRU5ErkJggg==');
+            background-repeat: repeat;
+            background-size: 150px 150px; /* Estica o ruído para ficar "pixelado" */
+            opacity: 0; pointer-events: none; mix-blend-mode: screen;
+        }
+
+        /* Classe ativada pelo Javascript para iniciar a animação */
+        .static-active {
+            animation: static-shift 0.2s steps(4) infinite alternate;
+            opacity: 0.7 !important;
+        }
+
+        @keyframes static-shift {
+            0% { background-position: 0 0; opacity: 0.6; }
+            25% { background-position: -50px -50px; opacity: 0.8; filter: invert(1); }
+            50% { background-position: 20px 80px; opacity: 0.5; }
+            75% { background-position: -80px 10px; opacity: 0.9; filter: invert(0); }
+            100% { background-position: 60px -30px; opacity: 0.7; }
+        }
+        /* ============================================================ */
+
         /* Layout do Escritório */
         #office { 
             width: 100%; height: 100%; position: relative; transition: transform 0.1s ease-out; 
             background: radial-gradient(circle at 50% 50%, #222 10%, #000 80%);
         }
-        
-        /* Efeito visual da sala */
         .room-visual {
             position: absolute; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
-            font-size: 100px; color: #111; text-shadow: 0 0 5px #000;
-            font-weight: bold;
+            font-size: 100px; color: #111; text-shadow: 0 0 5px #000; font-weight: bold;
         }
 
-        /* Botões de Porta/Luz */
+        /* Botões laterais */
         .control-panel { position: absolute; top: 30%; width: 80px; height: 200px; background: #222; border: 2px solid #444; display: flex; flex-direction: column; align-items: center; justify-content: space-around; padding: 10px 0; border-radius: 5px; z-index: 50; }
         .panel-left { left: 0; border-radius: 0 10px 10px 0; border-left: none; }
         .panel-right { right: 0; border-radius: 10px 0 0 10px; border-right: none; }
 
         .btn { 
             width: 60px; height: 60px; border-radius: 50%; border: 3px solid #111; cursor: pointer; 
-            box-shadow: 0 5px 0 #000; transition: all 0.1s;
-            display: flex; align-items: center; justify-content: center; font-size: 18px; color: #000; font-weight: bold;
+            box-shadow: 0 5px 0 #000; transition: all 0.1s; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #000; font-weight: bold;
         }
         .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #000; }
-        
         .btn-door { background: #500; color: #aaa; }
         .btn-door.closed { background: #f00; color: #fff; box-shadow: 0 0 15px #f00; }
-        
         .btn-light { background: #aaa; color: #555; }
         .btn-light.on { background: #ff0; color: #000; box-shadow: 0 0 20px #ff0; }
 
@@ -63,28 +81,32 @@
         #monitor-trigger { 
             position: absolute; bottom: 10px; left: 25%; width: 50%; height: 30px; 
             border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.5);
-            cursor: pointer; text-align: center; line-height: 30px; z-index: 100;
-            transition: 0.3s;
+            cursor: pointer; text-align: center; line-height: 30px; z-index: 100; transition: 0.3s;
         }
         #monitor-trigger:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
         #camera-tablet { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             background: #000; border: 5px solid #333; display: none; z-index: 80; 
-            animation: turnOn 0.2s;
         }
 
         #cam-feed { 
             width: 100%; height: 100%; position: relative; 
+            /* Fundo base para quando não há imagem */
             background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, #111 4px);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
+
+        /* O conteúdo da câmera (texto/imagem) que some durante a estática */
+        #cam-content-wrapper {
+            transition: opacity 0.1s;
+            text-align: center;
+        }
         
-        /* Mapa das Câmeras */
         #map-overlay { 
             position: absolute; bottom: 50px; right: 50px; width: 200px; height: 150px; 
             border: 2px solid var(--primary-color); background: rgba(0,20,0,0.8);
-            display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 10px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 10px; z-index: 160;
         }
         .cam-btn { 
             background: #003300; color: var(--primary-color); border: 1px solid var(--primary-color); cursor: pointer; 
@@ -93,11 +115,8 @@
         .cam-btn:hover { background: #005500; }
         .active-cam { background: var(--primary-color); color: #000; box-shadow: 0 0 10px var(--primary-color); }
 
-        .rec-dot { 
-            position: absolute; top: 30px; left: 30px; width: 20px; height: 20px; background: red; border-radius: 50%;
-            animation: blink 1s infinite;
-        }
-        .cam-label { position: absolute; top: 30px; right: 30px; font-size: 30px; color: #fff; }
+        .rec-dot { position: absolute; top: 30px; left: 30px; width: 20px; height: 20px; background: red; border-radius: 50%; animation: blink 1s infinite; z-index: 160;}
+        .cam-label { position: absolute; top: 30px; right: 30px; font-size: 30px; color: #fff; z-index: 160; }
 
         /* UI Stats */
         .ui-stats { position: absolute; top: 20px; right: 20px; text-align: right; z-index: 85; font-size: 28px; }
@@ -105,14 +124,12 @@
 
         /* Jumpscare */
         #jumpscare { 
-            position: absolute; top:0; left:0; width:100%; height:100%; background: #000; display:none; z-index:999; 
-            justify-content:center; align-items:center;
+            position: absolute; top:0; left:0; width:100%; height:100%; background: #000; display:none; z-index:999; justify-content:center; align-items:center;
         }
         #scare-face { width: 80%; height: 80%; background: radial-gradient(#fff, #900); border-radius: 50%; animation: shake 0.1s infinite; display: flex; justify-content: center; align-items: center; font-size: 150px; color: #000; }
 
         @keyframes blink { 50% { opacity: 0; } }
-        @keyframes turnOn { from { opacity: 0; transform: scaleY(0); } to { opacity: 1; transform: scaleY(1); } }
-        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
     </style>
 </head>
 <body>
@@ -136,9 +153,15 @@
 
     <div id="camera-tablet">
         <div id="cam-feed">
+            <div id="static-overlay"></div>
+
             <div class="rec-dot"></div>
             <div class="cam-label" id="cam-name">CAM 1A</div>
-            <h1 id="cam-content" style="color: #fff; text-shadow: 0 0 10px #fff;">PALCO PRINCIPAL</h1>
+            
+            <div id="cam-content-wrapper">
+                <h1 id="cam-content" style="color: #fff; text-shadow: 0 0 10px #fff; font-size: 60px;">PALCO PRINCIPAL</h1>
+                <h3 id="cam-sub-content" style="color: #888;">(Buscando sinal...)</h3>
+            </div>
             
             <div id="map-overlay">
                 <button class="cam-btn active-cam" onclick="game.switchCam('1A')">CAM 1A</button>
@@ -160,11 +183,7 @@
 
     <div id="monitor-trigger" onclick="game.toggleMonitor()">ABRIR/FECHAR MONITOR</div>
 
-    <div id="jumpscare">
-        <div id="scare-face">
-            X_X
-        </div>
-    </div>
+    <div id="jumpscare"><div id="scare-face">X_X</div></div>
 </div>
 
 <script>
@@ -172,15 +191,15 @@ class FNAFGame {
     constructor() {
         this.night = 1;
         this.power = 100.0;
-        this.hour = 0; // 0 = 12AM
+        this.hour = 0;
         this.isGameOver = false;
         this.monitorOpen = false;
         this.currentCam = '1A';
+        this.isCamSwitching = false; // Previne spam de cliques nas cameras
         
         this.doors = { left: false, right: false };
         this.lights = { left: false, right: false };
         
-        // Inimigos e suas posições iniciais
         this.enemies = {
             'Bonnie': { pos: '1A', path: ['1A', '1B', '2A', 'DoorL', 'Office'], name: 'Bonnie (Rabbit)' },
             'Chica': { pos: '1A', path: ['1A', '1B', '4B', 'DoorR', 'Office'], name: 'Chica (Duck)' },
@@ -193,7 +212,7 @@ class FNAFGame {
     init() {
         this.timers = {
             power: setInterval(() => this.updatePower(), 1000),
-            clock: setInterval(() => this.updateClock(), 45000), // 45s por hora (rápido para teste)
+            clock: setInterval(() => this.updateClock(), 45000),
             ai: setInterval(() => this.updateAI(), 4000)
         };
         this.render();
@@ -201,25 +220,19 @@ class FNAFGame {
 
     updatePower() {
         if (this.isGameOver) return;
-
-        let usage = 1; // Base usage
+        let usage = 1;
         if (this.doors.left) usage += 2;
         if (this.doors.right) usage += 2;
         if (this.lights.left) usage += 1;
         if (this.lights.right) usage += 1;
         if (this.monitorOpen) usage += 2;
 
-        this.power -= (usage * 0.15); // Drena power
-
-        // Atualiza UI de barras de uso
+        this.power -= (usage * 0.15);
         let bars = "|".repeat(usage);
         let color = usage > 3 ? "red" : (usage > 1 ? "yellow" : "green");
         document.getElementById('usage-bar').innerHTML = `<span style="color:${color}">${bars}</span>`;
 
-        if (this.power <= 0) {
-            this.power = 0;
-            this.blackout();
-        }
+        if (this.power <= 0) { this.power = 0; this.blackout(); }
         document.getElementById('power-usage').innerText = Math.floor(this.power);
     }
 
@@ -234,108 +247,113 @@ class FNAFGame {
     toggleDoor(side) {
         if (this.power <= 0) return;
         this.doors[side] = !this.doors[side];
-        
-        // Atualiza visual do botão
         const btn = document.getElementById(`btn-${side}-door`);
         if (this.doors[side]) {
-            btn.classList.add('closed');
-            btn.innerText = "CLOSE";
-            // Som de porta (opcional)
+            btn.classList.add('closed'); btn.innerText = "CLOSE";
         } else {
-            btn.classList.remove('closed');
-            btn.innerText = "OPEN";
+            btn.classList.remove('closed'); btn.innerText = "OPEN";
         }
     }
 
     setLight(side, state) {
         if (this.power <= 0) return;
         this.lights[side] = state;
-        
         const btn = document.getElementById(`btn-${side}-light`);
         const officeBg = document.getElementById('office');
         const roomContent = document.getElementById('room-bg');
 
         if (state) {
             btn.classList.add('on');
-            // Checar se tem monstro
             let enemy = this.checkDoorForEnemy(side);
             if (enemy) {
                 officeBg.style.background = `radial-gradient(circle at ${side === 'left' ? '10%' : '90%'} 50%, #fff 0%, #000 60%)`;
-                roomContent.innerText = enemy.toUpperCase() + " ESTÁ AQUI!";
-                roomContent.style.color = "red";
+                roomContent.innerText = enemy.toUpperCase() + " ESTÁ AQUI!"; roomContent.style.color = "red";
             } else {
                 officeBg.style.background = `radial-gradient(circle at ${side === 'left' ? '10%' : '90%'} 50%, #aa9 0%, #000 60%)`;
-                roomContent.innerText = "CORREDOR VAZIO";
-                roomContent.style.color = "#333";
+                roomContent.innerText = "CORREDOR VAZIO"; roomContent.style.color = "#333";
             }
         } else {
             btn.classList.remove('on');
             officeBg.style.background = "radial-gradient(circle at 50% 50%, #222 10%, #000 80%)";
-            roomContent.innerText = "OFFICE";
-            roomContent.style.color = "#111";
+            roomContent.innerText = "OFFICE"; roomContent.style.color = "#111";
         }
     }
 
+    // ============ ATUALIZADO: Toggle Monitor com Estática ============
     toggleMonitor() {
         if (this.power <= 0 || this.isGameOver) return;
         this.monitorOpen = !this.monitorOpen;
-        document.getElementById('camera-tablet').style.display = this.monitorOpen ? 'block' : 'none';
-        if(this.monitorOpen) this.updateCamDisplay();
+        const tablet = document.getElementById('camera-tablet');
+        tablet.style.display = this.monitorOpen ? 'block' : 'none';
+        
+        if(this.monitorOpen) {
+            // Força uma troca de câmera para a câmera atual para ativar o efeito de estática ao abrir
+            this.switchCam(this.currentCam, true);
+        }
     }
 
-    switchCam(camId) {
+    // ============ ATUALIZADO: Troca de Câmera com Efeito ============
+    switchCam(camId, force = false) {
+        // Se já estiver trocando, ou se clicou na mesma câmera (e não for forçado), ignora
+        if (this.isCamSwitching || (this.currentCam === camId && !force)) return;
+
+        this.isCamSwitching = true;
         this.currentCam = camId;
+
+        // 1. Atualiza botões visualmente imediatamente
         document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active-cam'));
-        document.querySelector(`button[onclick="game.switchCam('${camId}')"]`).classList.add('active-cam');
-        this.updateCamDisplay();
+        document.querySelector(`button[onclick="game.switchCam('${camId}')"]`)?.classList.add('active-cam');
+        document.getElementById('cam-name').innerText = "CAM " + this.currentCam;
+
+        // 2. Ativa a estática e esconde o conteúdo
+        const staticLayer = document.getElementById('static-overlay');
+        const contentWrapper = document.getElementById('cam-content-wrapper');
+        
+        staticLayer.classList.add('static-active');
+        contentWrapper.style.opacity = '0.2'; // Fica quase invisível
+
+        // 3. Espera um pouco (simulando delay do sinal)
+        setTimeout(() => {
+            // Atualiza o conteúdo real da nova câmera
+            this.updateCamDisplayContent();
+            
+            // Remove a estática e mostra o conteúdo novo
+            staticLayer.classList.remove('static-active');
+            contentWrapper.style.opacity = '1';
+            
+            this.isCamSwitching = false; // Libera para trocar de novo
+        }, 400); // 400ms de estática
     }
 
     updateAI() {
         if (this.isGameOver || this.power <= 0) return;
-
-        // Tenta mover cada inimigo
         for (let name in this.enemies) {
-            let enemy = this.enemies[name];
-            // Chance de mover baseada na noite (dificuldade)
             if (Math.random() * 20 < (3 + this.night)) {
                 this.moveEnemy(name);
             }
         }
-        if (this.monitorOpen) this.updateCamDisplay();
+        // Se o monitor estiver aberto, atualiza o display silenciosamente (sem estática) se algo mudou
+        if (this.monitorOpen && !this.isCamSwitching) this.updateCamDisplayContent();
     }
 
     moveEnemy(name) {
         let enemy = this.enemies[name];
         let currentIdx = enemy.path.indexOf(enemy.pos);
-        
-        // Se ainda não chegou no escritório
         if (currentIdx < enemy.path.length - 1) {
             let nextPos = enemy.path[currentIdx + 1];
-
-            // Lógica de Bloqueio da Porta
             if (nextPos === 'Office') {
-                let side = (name === 'Chica') ? 'right' : 'left'; // Chica vem da direita, outros da esquerda (simplificado)
-                
+                let side = (name === 'Chica') ? 'right' : 'left';
                 if (this.doors[side]) {
-                    // Porta fechada! Inimigo recua.
-                    console.log(name + " blocked!");
-                    enemy.pos = '1A'; // Volta para o início (reset)
-                    // Tocar som de batida aqui
-                    return;
+                    console.log(name + " blocked!"); enemy.pos = '1A'; return;
                 } else {
-                    // Porta aberta! Morreu.
-                    this.triggerJumpscare();
-                    return;
+                    this.triggerJumpscare(); return;
                 }
             }
-
-            // Move normal
             enemy.pos = nextPos;
         }
     }
 
     checkDoorForEnemy(side) {
-        // Verifica se alguém está na posição "DoorL" ou "DoorR"
         for(let name in this.enemies) {
             let pos = this.enemies[name].pos;
             if (side === 'left' && pos === 'DoorL') return name;
@@ -344,26 +362,30 @@ class FNAFGame {
         return null;
     }
 
-    updateCamDisplay() {
-        if (!this.monitorOpen) return;
-        
-        let content = "SEM SINAL...";
+    // Nova função apenas para atualizar o texto/conteúdo
+    updateCamDisplayContent() {
+        let content = "PALCO (VAZIO)";
+        let subContent = "(Nada detectado)";
         let found = false;
         
-        // Verifica quem está na câmera atual
         for (let name in this.enemies) {
             if (this.enemies[name].pos === this.currentCam) {
-                content = this.enemies[name].name;
+                content = "MOVIMENTO DETECTADO!";
+                subContent = this.enemies[name].name;
                 found = true;
             }
         }
         
-        if (!found && this.currentCam === '1A') content = "PALCO (VAZIO)";
+        if (!found && this.currentCam !== '1A') {
+             content = "ÁREA VAZIA";
+        }
         
-        const display = document.getElementById('cam-content');
-        display.innerText = found ? content + " DETECTADO" : "SINAL LIMPO";
-        display.style.color = found ? "red" : "white";
-        document.getElementById('cam-name').innerText = "CAM " + this.currentCam;
+        const mainDisplay = document.getElementById('cam-content');
+        const subDisplay = document.getElementById('cam-sub-content');
+        
+        mainDisplay.innerText = content;
+        mainDisplay.style.color = found ? "red" : "white";
+        subDisplay.innerText = found ? subContent : "(Sinal limpo)";
     }
 
     blackout() {
@@ -371,18 +393,13 @@ class FNAFGame {
         document.getElementById('office').style.display = 'none';
         document.getElementById('camera-tablet').style.display = 'none';
         document.getElementById('ui-layer').style.display = 'none';
-        
-        // Espera no escuro... Freddy toca música...
         setTimeout(() => this.triggerJumpscare(), 4000);
     }
 
     triggerJumpscare() {
         this.isGameOver = true;
-        // Fecha monitor se estiver aberto
         document.getElementById('camera-tablet').style.display = 'none';
         document.getElementById('jumpscare').style.display = 'flex';
-        
-        // Recarrega página após o susto
         setTimeout(() => location.reload(), 2500);
     }
 
@@ -392,13 +409,10 @@ class FNAFGame {
     }
 
     render() {
-        // Movimento do mouse parallax
         window.addEventListener('mousemove', (e) => {
             if (!this.monitorOpen && !this.isGameOver) {
-                let width = window.innerWidth;
-                let mouseX = e.clientX;
-                // Move o escritório levemente baseado no mouse
-                let move = (mouseX / width - 0.5) * -50; // -50px a 50px
+                let width = window.innerWidth; let mouseX = e.clientX;
+                let move = (mouseX / width - 0.5) * -50;
                 document.getElementById('office').style.transform = `translateX(${move}px)`;
             }
         });
