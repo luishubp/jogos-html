@@ -3,224 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FNAF Remastered Mobile</title>
+    <title>FNAF Fixed Mobile</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
         :root { --p: #88ff88; --freddy: #4d2600; --bonnie: #4b0082; --chica: #ffd700; --foxy: #b22222; }
-        body { margin: 0; background: #000; color: #fff; font-family: 'VT323', monospace; overflow: hidden; touch-action: none; }
         
-        #game-container { position: relative; width: 100vw; height: 100vh; background: #000; display: flex; flex-direction: column; }
+        /* Previne scroll e esticamento */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: 'VT323', monospace; }
 
-        /* --- ESCRITÓRIO (OFFICE) --- */
-        #office { position: relative; width: 100%; height: 60%; background: linear-gradient(to bottom, #1a1a1a, #0a0a0a); border-bottom: 5px solid #222; overflow: hidden; }
+        /* AREA DO JOGO - Mantém proporção 16:9 sempre */
+        #game-container { 
+            position: relative; 
+            width: 100vw; 
+            height: 56.25vw; /* Altura baseada na largura para ser 16:9 */
+            max-width: 1280px; 
+            max-height: 720px;
+            background: #050505;
+            border: 2px solid #222;
+            overflow: hidden;
+        }
+
+        /* --- OFFICE --- */
+        #office { width: 100%; height: 100%; position: relative; background: #111; }
         
-        /* Paredes e Portas Visuais */
-        .wall { position: absolute; width: 20%; height: 100%; background: #111; z-index: 5; border: 2px solid #222; }
-        .wall-left { left: 0; } .wall-right { right: 0; }
-        
-        .visual-door { position: absolute; top: -100%; width: 18%; height: 100%; background: #333; z-index: 10; transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 3px solid #000; box-shadow: inset 0 0 20px #000; }
-        .door-L { left: 1%; } .door-R { right: 1%; }
+        /* Portas Reais */
+        .door-visual { position: absolute; top: -100%; width: 15%; height: 100%; background: #252525; border: 4px solid #000; z-index: 20; transition: top 0.3s; }
+        .door-L { left: 0; } .door-R { right: 0; }
         .door-closed { top: 0 !important; }
 
-        /* Luzes */
-        .light-hit { position: absolute; width: 20%; height: 100%; opacity: 0; z-index: 8; pointer-events: none; }
-        #light-hit-L { left: 0; background: rgba(255, 255, 200, 0.4); }
-        #light-hit-R { right: 0; background: rgba(255, 255, 200, 0.4); }
+        /* Luzes que iluminam a parede lateral */
+        .light-wall { position: absolute; top: 0; width: 25%; height: 100%; opacity: 0; z-index: 15; pointer-events: none; }
+        #light-L { left: 0; background: linear-gradient(to right, rgba(255,255,200,0.3), transparent); }
+        #light-R { right: 0; background: linear-gradient(to left, rgba(255,255,200,0.3), transparent); }
 
-        /* Painéis de Controle (Afastados para não bugar) */
-        .ctrl-group { position: absolute; top: 20%; display: flex; flex-direction: column; gap: 15px; z-index: 100; }
-        .group-L { left: 22%; } .group-R { right: 22%; }
-        .btn { width: 50px; height: 50px; border-radius: 5px; border: 3px solid #000; font-family: 'VT323'; cursor: pointer; color: #fff; font-size: 12px; }
-        .btn-d { background: #500; } .btn-l { background: #550; }
-        .btn-active-d { background: #f00 !important; box-shadow: 0 0 10px #f00; }
-        .btn-active-l { background: #ff0 !important; color: #000 !important; }
-
-        /* --- MONITOR E MAPA --- */
-        #monitor { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #050505; display: none; z-index: 500; }
-        #cam-screen { width: 100%; height: 60%; position: relative; border-bottom: 2px solid var(--p); overflow: hidden; }
-        .static { position: absolute; width: 100%; height: 100%; background: url('https://media.giphy.com/media/oEI9uWUicKgR6/giphy.gif'); opacity: 0.1; }
+        /* Botões Reposicionados e Maiores */
+        .control-panel { position: absolute; top: 30%; display: flex; flex-direction: column; gap: 20px; z-index: 100; }
+        .panel-L { left: 18%; } .panel-R { right: 18%; }
         
-        #map-area { width: 100%; height: 40%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 10px; box-sizing: border-box; background: #000; }
-        .cam-btn { background: #020; border: 1px solid var(--p); color: var(--p); font-family: 'VT323'; font-size: 14px; }
+        .btn { width: 65px; height: 65px; border-radius: 10px; border: 4px solid #000; color: white; cursor: pointer; font-family: 'VT323'; font-size: 16px; }
+        .btn-door { background: #800; } .btn-light { background: #880; }
+        .active-d { background: #f00 !important; box-shadow: 0 0 15px #f00; }
+        .active-l { background: #ff0 !important; color: #000 !important; box-shadow: 0 0 15px #ff0; }
+
+        /* --- MONITOR --- */
+        #tablet { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: none; z-index: 500; padding: 10px; }
+        #cam-render { width: 100%; height: 65%; background: #080808; position: relative; border: 2px solid #333; }
+        .noise { position: absolute; width: 100%; height: 100%; background: url('https://media.giphy.com/media/oEI9uWUicKgR6/giphy.gif'); opacity: 0.1; }
+        
+        #map-grid { height: 35%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; padding-top: 10px; }
+        .cam-btn { background: #010; border: 1px solid var(--p); color: var(--p); font-family: 'VT323'; cursor: pointer; font-size: 14px; }
         .cam-btn.active { background: var(--p); color: #000; }
 
-        /* --- JUMPSCARE --- */
-        #jumpscare-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; justify-content: center; align-items: center; flex-direction: column; }
-        #scare-box { width: 250px; height: 250px; border-radius: 50%; animation: shake 0.1s infinite; }
-        @keyframes shake { 0% { transform: translate(5px, 5px); } 50% { transform: translate(-5px, -5px); } 100% { transform: translate(5px, -5px); } }
+        /* --- UI --- */
+        .ui-text { position: absolute; color: var(--p); font-size: 20px; z-index: 1000; text-shadow: 2px 2px #000; }
+        #monitor-trigger { position: absolute; bottom: 0; left: 25%; width: 50%; height: 40px; background: rgba(255,255,255,0.1); border: 1px solid #fff; color: #fff; z-index: 1000; cursor: pointer; font-family: 'VT323'; }
 
-        /* Interface */
-        #monitor-toggle { width: 100%; height: 50px; background: #111; border: 2px solid #fff; color: #fff; font-family: 'VT323'; font-size: 20px; cursor: pointer; }
-        .stats { padding: 10px; display: flex; justify-content: space-between; font-size: 20px; color: var(--p); }
+        /* --- JUMPSCARE --- */
+        #scare-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        #scare-img { width: 300px; height: 300px; border-radius: 50%; animation: vibra 0.05s infinite; }
+        @keyframes vibra { 0% { transform: scale(1.1) translate(5px); } 50% { transform: scale(1) translate(-5px); } }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <div class="stats">
-        <div>ENERGIA: <span id="pwr">100</span>%</div>
-        <div><span id="time">12</span> AM</div>
-    </div>
+    <div class="ui-text" style="top:5px; left:10px;">POWER: <span id="pwr-val">100</span>%</div>
+    <div class="ui-text" style="top:5px; right:10px;"><span id="hr-val">12</span> AM</div>
 
     <div id="office">
-        <div id="light-hit-L" class="light-hit"></div>
-        <div id="light-hit-R" class="light-hit"></div>
-        
-        <div id="v-door-L" class="visual-door door-L"></div>
-        <div id="v-door-R" class="visual-door door-R"></div>
-        
-        <div class="wall wall-left"></div>
-        <div class="wall wall-right"></div>
+        <div id="light-L" class="light-wall"></div>
+        <div id="light-R" class="light-wall"></div>
+        <div id="v-door-L" class="door-visual door-L"></div>
+        <div id="v-door-R" class="door-visual door-R"></div>
 
-        <div class="ctrl-group group-L">
-            <button class="btn btn-d" onclick="game.toggleDoor('L')">DOOR</button>
-            <button class="btn btn-l" onmousedown="game.setLight('L',true)" onmouseup="game.setLight('L',false)" ontouchstart="game.setLight('L',true)" ontouchend="game.setLight('L',false)">LIGHT</button>
+        <div class="control-panel panel-L">
+            <button class="btn btn-door" onclick="game.door('L')">DOOR</button>
+            <button class="btn btn-light" ontouchstart="game.light('L',true)" ontouchend="game.light('L',false)">LIGHT</button>
         </div>
 
-        <div class="ctrl-group group-R">
-            <button class="btn btn-d" onclick="game.toggleDoor('R')">DOOR</button>
-            <button class="btn btn-l" onmousedown="game.setLight('R',true)" onmouseup="game.setLight('R',false)" ontouchstart="game.setLight('R',true)" ontouchend="game.setLight('R',false)">LIGHT</button>
+        <div class="control-panel panel-R">
+            <button class="btn btn-door" onclick="game.door('R')">DOOR</button>
+            <button class="btn btn-light" ontouchstart="game.light('R',true)" ontouchend="game.light('R',false)">LIGHT</button>
         </div>
-
-        <div id="monster-at-door" style="position:absolute; bottom:10%; width:100px; height:150px; z-index:7; display:none; filter:blur(5px);"></div>
+        
+        <div id="door-monster" style="position:absolute; bottom:20%; width:80px; height:150px; display:none; filter:blur(10px);"></div>
     </div>
 
-    <button id="monitor-toggle" onclick="game.toggleMonitor()">ABRIR MONITOR</button>
+    <button id="monitor-trigger" onclick="game.toggleTab()">MONITOR</button>
 
-    <div id="monitor">
-        <div id="cam-screen">
-            <div class="static"></div>
-            <div id="cam-label" style="padding:10px; color:var(--p);">CAM 1A - PALCO</div>
-            <div id="monster-dot" style="position:absolute; width:60px; height:60px; border-radius:50%; filter:blur(10px); display:none;"></div>
+    <div id="tablet">
+        <div id="cam-render">
+            <div class="noise"></div>
+            <div id="cam-name" style="padding:10px; color:var(--p); font-size:22px;">CAM 1A - PALCO</div>
+            <div id="monster-marker" style="position:absolute; width:70px; height:70px; border-radius:50%; display:none; filter:blur(15px);"></div>
         </div>
-        <div id="map-area">
-            <button class="cam-btn" onclick="game.switchCam('1A', 'PALCO')">1A</button>
-            <button class="cam-btn" onclick="game.switchCam('1B', 'JANTAR')">1B</button>
-            <button class="cam-btn" onclick="game.switchCam('1C', 'COVA')">1C</button>
-            <button class="cam-btn" onclick="game.switchCam('2A', 'CORR. E')">2A</button>
-            <button class="cam-btn" onclick="game.switchCam('2B', 'CANTO E')">2B</button>
-            <button class="cam-btn" onclick="game.switchCam('3', 'COZINHA')">3</button>
-            <button class="cam-btn" onclick="game.switchCam('4A', 'CORR. D')">4A</button>
-            <button class="cam-btn" onclick="game.switchCam('4B', 'CANTO D')">4B</button>
-            <button class="cam-btn" onclick="game.switchCam('5', 'SERVIÇO')">5</button>
-            <button class="cam-btn" onclick="game.switchCam('YOU', 'VOCÊ')">YOU</button>
+        <div id="map-grid">
+            <button class="cam-btn" onclick="game.cam('1A','PALCO')">1A</button>
+            <button class="cam-btn" onclick="game.cam('1B','COZINHA')">1B</button>
+            <button class="cam-btn" onclick="game.cam('1C','COVA')">1C</button>
+            <button class="cam-btn" onclick="game.cam('2A','CORR. L')">2A</button>
+            <button class="cam-btn" onclick="game.cam('2B','CANTO L')">2B</button>
+            <button class="cam-btn" onclick="game.cam('4A','CORR. R')">4A</button>
+            <button class="cam-btn" onclick="game.cam('4B','CANTO R')">4B</button>
+            <button class="cam-btn" onclick="game.cam('YOU','VOCÊ')">YOU</button>
         </div>
     </div>
 </div>
 
-<div id="jumpscare-overlay">
-    <div id="scare-box"></div>
-    <h1 id="scare-name" style="color:red; font-size:40px;">FREDDY</h1>
+<div id="scare-screen">
+    <div id="scare-img"></div>
+    <h1 style="color:red; font-size:50px; margin-top:20px;">GAME OVER</h1>
 </div>
 
 <script>
-class FNAFGame {
+class Game {
     constructor() {
-        this.pwr = 100; this.hr = 0; this.isOpen = false; this.curCam = '1A';
+        this.pwr = 100; this.hr = 0; this.open = false; this.cur = '1A';
         this.doors = {L:false, R:false};
-        this.monsters = {
+        this.ai = {
             'Freddy': {pos:'1A', color:'#4d2600', path:['1A','1B','4A','4B','DoorR']},
-            'Bonnie': {pos:'1A', color:'#4b0082', path:['1A','5','2A','2B','DoorL']},
+            'Bonnie': {pos:'1A', color:'#4b0082', path:['1A','2A','2B','DoorL']},
             'Chica':  {pos:'1A', color:'#ffd700', path:['1A','1B','4A','4B','DoorR']},
             'Foxy':   {pos:'1C', color:'#b22222', path:['1C','2A','DoorL']}
         };
-        this.init();
+        this.start();
     }
 
-    init() {
-        setInterval(() => this.tick(), 1000);
+    start() {
+        setInterval(() => {
+            let drain = 0.15;
+            if(this.doors.L) drain+=0.5; if(this.doors.R) drain+=0.5; if(this.open) drain+=0.3;
+            this.pwr -= drain;
+            document.getElementById('pwr-val').innerText = Math.max(0, Math.floor(this.pwr));
+            if(this.pwr <= 0) location.reload();
+        }, 1000);
+
         setInterval(() => this.moveAI(), 5000);
-        setInterval(() => { 
-            this.hr++; 
-            document.getElementById('time').innerText = this.hr;
-            if(this.hr>=6) { alert("6 AM - VENCEU!"); location.reload(); }
-        }, 60000);
     }
 
-    tick() {
-        let u = 0.15;
-        if(this.doors.L) u+=0.5; if(this.doors.R) u+=0.5; if(this.isOpen) u+=0.3;
-        this.pwr -= u;
-        document.getElementById('pwr').innerText = Math.max(0, Math.floor(this.pwr));
-        if(this.pwr <= 0) location.reload();
-    }
-
-    toggleDoor(s) {
+    door(s) {
         this.doors[s] = !this.doors[s];
         document.getElementById('v-door-'+s).classList.toggle('door-closed', this.doors[s]);
-        event.target.classList.toggle('btn-active-d', this.doors[s]);
+        event.target.classList.toggle('active-d', this.doors[s]);
     }
 
-    setLight(s, on) {
-        document.getElementById('light-hit-'+s).style.opacity = on ? 1 : 0;
-        event.target.classList.toggle('btn-active-l', on);
-        this.checkLight(s, on);
-    }
-
-    checkLight(s, on) {
-        const mAtDoor = document.getElementById('monster-at-door');
-        mAtDoor.style.display = 'none';
+    light(s, on) {
+        document.getElementById('light-'+s).style.opacity = on ? 1 : 0;
+        event.target.classList.toggle('active-l', on);
+        const mAt = document.getElementById('door-monster');
+        mAt.style.display = 'none';
         if(on) {
-            for(let n in this.monsters) {
-                if(this.monsters[n].pos === 'Door'+s) {
-                    mAtDoor.style.display = 'block';
-                    mAtDoor.style.background = this.monsters[n].color;
-                    mAtDoor.style.left = s === 'L' ? '5%' : '80%';
+            for(let n in this.ai) {
+                if(this.ai[n].pos === 'Door'+s) {
+                    mAt.style.display = 'block';
+                    mAt.style.background = this.ai[n].color;
+                    mAt.style.left = s === 'L' ? '5%' : '85%';
                 }
             }
         }
     }
 
-    toggleMonitor() {
-        this.isOpen = !this.isOpen;
-        document.getElementById('monitor').style.display = this.isOpen ? 'block' : 'none';
-        if(this.isOpen) this.updateCam();
+    toggleTab() {
+        this.open = !this.open;
+        document.getElementById('tablet').style.display = this.open ? 'block' : 'none';
+        if(this.open) this.cam(this.cur, "ATUAL");
     }
 
-    switchCam(id, label) {
-        this.curCam = id;
-        document.getElementById('cam-label').innerText = "CAM " + id + " - " + label;
-        this.updateCam();
-    }
-
-    updateCam() {
-        const dot = document.getElementById('monster-dot');
-        dot.style.display = 'none';
-        for(let n in this.monsters) {
-            if(this.monsters[n].pos === this.curCam) {
-                dot.style.display = 'block';
-                dot.style.background = this.monsters[n].color;
+    cam(id, name) {
+        this.cur = id;
+        document.getElementById('cam-name').innerText = "CAM " + id + " - " + name;
+        const marker = document.getElementById('monster-marker');
+        marker.style.display = 'none';
+        for(let n in this.ai) {
+            if(this.ai[n].pos === id) {
+                marker.style.display = 'block';
+                marker.style.background = this.ai[n].color;
+                marker.style.left = Math.random()*70+"%";
             }
         }
     }
 
     moveAI() {
-        for(let n in this.monsters) {
-            let m = this.monsters[n];
+        for(let n in this.ai) {
+            let m = this.ai[n];
             if(Math.random() > 0.6) {
                 let idx = m.path.indexOf(m.pos);
                 if(m.pos.startsWith('Door')) {
-                    let s = m.pos.endsWith('L') ? 'L' : 'R';
-                    if(!this.doors[s]) this.jumpscare(n, m.color);
+                    let side = m.pos.endsWith('L') ? 'L' : 'R';
+                    if(!this.doors[side]) this.jumpscare(m.color);
                     else m.pos = '1A';
                 } else if(idx < m.path.length-1) {
                     m.pos = m.path[idx+1];
                 }
             }
         }
-        if(this.isOpen) this.updateCam();
     }
 
-    jumpscare(name, color) {
-        const overlay = document.getElementById('jumpscare-overlay');
-        const box = document.getElementById('scare-box');
-        document.getElementById('scare-name').innerText = name.toUpperCase();
-        box.style.background = color;
-        overlay.style.display = 'flex';
-        setTimeout(() => location.reload(), 3000);
+    jumpscare(color) {
+        const screen = document.getElementById('scare-screen');
+        document.getElementById('scare-img').style.background = color;
+        screen.style.display = 'flex';
+        setTimeout(() => location.reload(), 2000);
     }
 }
-const game = new FNAFGame();
+const game = new Game();
 </script>
 </body>
 </html>
