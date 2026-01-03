@@ -2,219 +2,237 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>FNAF: Fixed Version</title>
+    <title>FNAF: Versão Final Corrigida</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
-        /* RESET E CORPO */
-        body { margin: 0; background: #000; color: #fff; font-family: 'VT323', monospace; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        /* --- ESTILOS GERAIS --- */
+        body { margin: 0; background: #000; color: #fff; font-family: 'VT323', monospace; height: 100vh; overflow: hidden; user-select: none; }
         
-        /* CONTAINER DO JOGO */
         #game-container { 
-            position: relative; width: 100vw; height: 56.25vw; 
-            max-width: 1280px; max-height: 720px; 
-            background: #111; border: 4px solid #444; overflow: hidden; 
+            position: relative; width: 100vw; height: 100vh; 
+            background: #111; overflow: hidden; 
         }
 
-        /* ESCRITÓRIO (FIXO AGORA PARA NÃO SUMIR AS PORTAS) */
-        #office-screen { 
-            position: absolute; inset: 0; background: #1a1a1a; 
+        /* --- ESCRITÓRIO --- */
+        #office { 
+            position: absolute; inset: 0; 
+            background: radial-gradient(circle, #2a2a2a 30%, #000 90%);
             z-index: 10;
-            box-shadow: inset 0 0 100px #000;
         }
 
-        /* PORTAS */
-        .door-panel {
-            position: absolute; top: 0; width: 15%; height: 100%; 
-            background: #222; border-right: 5px solid #000; border-left: 5px solid #000;
-            z-index: 20;
+        /* PORTAS (VISUAL) */
+        .door-frame {
+            position: absolute; top: 0; height: 100%; width: 15%; 
+            background: #222; border: 4px solid #111; z-index: 20;
         }
+        .left-frame { left: 0; border-right: 10px solid #333; }
+        .right-frame { right: 0; border-left: 10px solid #333; }
+
         .door-metal {
-            position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(45deg, #333, #333 10px, #222 10px, #222 20px);
-            transition: top 0.2s ease-in;
-            z-index: 25;
-            border-bottom: 5px solid #555;
+            position: absolute; top: -100%; width: 100%; height: 100%;
+            background: repeating-linear-gradient(45deg, #444, #444 20px, #333 20px, #333 40px);
+            transition: top 0.15s ease-out; box-shadow: 0 0 20px #000;
         }
         .door-closed { top: 0% !important; }
 
+        /* MONSTROS NA PORTA (O SEGREDO DO VISUAL) */
+        .monster-at-door {
+            position: absolute; top: 40%; width: 80%; height: 50%;
+            background-size: contain; background-repeat: no-repeat;
+            display: none; /* Escondido por padrão */
+            z-index: 15; /* Atrás da porta, na frente do fundo */
+            filter: drop-shadow(0 0 10px red);
+        }
+        /* Usando emojis gigantes como placeholder para garantir que apareça */
+        .monster-visual { font-size: 150px; text-align: center; line-height: 200px; }
+
         /* LUZES */
-        .light-effect {
-            position: absolute; top: 0; width: 40%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,200,0.3), transparent);
-            pointer-events: none; opacity: 0; z-index: 30; mix-blend-mode: overlay;
+        .light-beam {
+            position: absolute; top: 0; bottom: 0; width: 40%;
+            background: linear-gradient(to right, rgba(255,255,255,0.2), transparent);
+            display: none; pointer-events: none; z-index: 30;
         }
 
-        /* BOTÕES DAS PORTAS (Mesa) */
+        /* BOTÕES */
         .ctrl-panel {
-            position: absolute; top: 45%; z-index: 100;
-            background: #111; padding: 10px; border: 2px solid #555;
+            position: absolute; top: 40%; width: 60px; z-index: 100;
             display: flex; flex-direction: column; gap: 10px;
+            background: #333; padding: 10px; border: 2px solid #555; border-radius: 5px;
         }
-        .ctrl-btn {
-            width: 50px; height: 50px; cursor: pointer; border: none;
-            font-family: 'VT323'; font-size: 18px; color: white;
-            border-radius: 50%; border: 2px solid #fff;
+        .btn {
+            width: 100%; height: 40px; border: none; cursor: pointer;
+            font-family: 'VT323'; font-size: 16px; color: white;
+            border-radius: 4px; transition: 0.1s;
         }
-        .btn-door { background: #d00; }
-        .btn-light { background: #ww0; color: #000; background: #fff; }
-        .ctrl-btn:active { transform: scale(0.95); opacity: 0.8; }
+        .btn-door { background: #c00; }
+        .btn-light { background: #fff; color: black; }
+        .btn:active { transform: scale(0.9); }
 
-        /* MONITOR (TELA CHEIA) */
+        /* --- MONITOR --- */
         #monitor { 
             position: absolute; inset: 0; background: #000; 
-            display: none; z-index: 500; border: 15px solid #333; 
+            display: none; z-index: 500; border: 10px solid #444;
         }
         
-        /* MAPA DAS CÂMERAS */
-        #map-ui {
+        #static-overlay {
+            position: absolute; inset: 0; opacity: 0.1; pointer-events: none;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, #fff 4px);
+            animation: scrollStatic 5s linear infinite;
+        }
+
+        /* --- MAPA (LAYOUT CORRIGIDO BASEADO NA FOTO) --- */
+        #map-container {
             position: absolute; bottom: 20px; right: 20px;
-            width: 280px; height: 220px;
-            background: rgba(0,0,0,0.9); border: 2px solid #fff;
-            display: grid; 
-            grid-template-areas: 
-                ". c1A ."
-                "c5 c1B c7"
-                "c1C . c6"
-                "c3 c2A c4A"
-                "c2B . c4B";
-            gap: 5px; padding: 10px;
+            width: 300px; height: 250px;
+            background: rgba(0,0,0,0.8); border: 2px solid #777;
         }
-        
-        .cam-btn { 
-            background: #333; color: #fff; border: 1px solid #777; 
-            cursor: pointer; font-size: 12px; display: grid; place-items: center; 
-        }
-        .cam-btn.active { background: #fff; color: #000; animation: blink 1s infinite; }
 
-        /* UI GERAL */
-        #power-ui { position: absolute; bottom: 20px; left: 20px; font-size: 24px; z-index: 200; color: white;}
-        #log-ui { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); color: #aaa; font-size: 14px; z-index: 200; }
-        
-        #btn-monitor-toggle {
-            position: absolute; bottom: 0; left: 30%; width: 40%; height: 40px;
-            background: rgba(255,255,255,0.2); border-top: 2px solid white;
-            z-index: 600; cursor: pointer; display: grid; place-items: center;
-            font-size: 20px; transition: 0.2s;
+        /* Botões das Câmeras (Posicionamento Absoluto) */
+        .cam-btn {
+            position: absolute; width: 40px; height: 30px;
+            background: #222; border: 1px solid #fff; color: #fff;
+            font-size: 12px; display: grid; place-items: center; cursor: pointer;
         }
-        #btn-monitor-toggle:hover { background: rgba(255,255,255,0.4); }
+        .cam-btn:hover { background: #444; }
+        .cam-btn.active { background: #0f0; color: #000; animation: flash 1s infinite; }
 
-        /* JUMPSCARE */
-        #jumpscare-screen {
-            position: fixed; inset: 0; background: black; z-index: 9999;
+        /* --- JUMPSCARE --- */
+        #jumpscare {
+            position: fixed; inset: 0; z-index: 9999; background: black;
             display: none; align-items: center; justify-content: center;
         }
-        #jumpscare-img { width: 100%; height: 100%; object-fit: cover; }
+        #scare-face {
+            width: 80%; height: 80%; 
+            background: radial-gradient(circle, red, black);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 200px; color: black; text-shadow: 0 0 20px red;
+            animation: shake 0.1s infinite;
+        }
 
-        /* PONTOS DOS ANIMATRONICS */
-        .animatronic-dot { width: 15px; height: 15px; border-radius: 50%; position: absolute; border: 2px solid white; display: none; }
-        
-        @keyframes blink { 50% { opacity: 0.5; } }
+        /* ANIMAÇÕES */
+        @keyframes scrollStatic { from { background-position: 0 0; } to { background-position: 0 100%; } }
+        @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes shake { 0% { transform: translate(5px, 5px) scale(1.1); } 50% { transform: translate(-5px, -5px) scale(1.1); } }
+
+        /* UI POWER */
+        #power-box { position: absolute; bottom: 20px; left: 20px; font-size: 24px; z-index: 100; }
+        #monitor-toggle { 
+            position: absolute; bottom: 0; left: 35%; width: 30%; height: 40px; 
+            background: rgba(255,255,255,0.2); border-top: 2px solid #fff; cursor: pointer; 
+            display: grid; place-items: center; z-index: 600;
+        }
+        #animatronic-dot { position: absolute; font-size: 40px; display: none; text-shadow: 0 0 10px #fff; }
+
     </style>
 </head>
 <body>
 
 <div id="game-container">
     
-    <div id="office-screen">
-        
-        <div class="door-panel" style="left: 0;">
+    <div id="office">
+        <div class="door-frame left-frame">
             <div id="door-L" class="door-metal"></div>
         </div>
-        <div id="light-L" class="light-effect" style="left: 15%; background: linear-gradient(to right, rgba(255,255,255,0.4), transparent);"></div>
-        
+        <div id="vis-L" class="monster-at-door" style="left: 10%;">
+            <div class="monster-visual">🐰</div> </div>
+        <div id="beam-L" class="light-beam" style="left: 0;"></div>
+
         <div class="ctrl-panel" style="left: 16%;">
-            <button class="ctrl-btn btn-door" onclick="game.toggleDoor('left')">DR</button>
-            <button class="ctrl-btn btn-light" onclick="game.toggleLight('left')">LT</button>
+            <button class="btn btn-door" onclick="game.toggleDoor('left')">DOOR</button>
+            <button class="btn btn-light" onclick="game.toggleLight('left')">LIGHT</button>
         </div>
 
-        <div class="door-panel" style="right: 0;">
+        <div class="door-frame right-frame">
             <div id="door-R" class="door-metal"></div>
         </div>
-        <div id="light-R" class="light-effect" style="right: 15%; background: linear-gradient(to left, rgba(255,255,255,0.4), transparent);"></div>
+        <div id="vis-R" class="monster-at-door" style="right: 10%;">
+            <div class="monster-visual">🐥</div> </div>
+        <div id="beam-R" class="light-beam" style="right: 0; transform: scaleX(-1);"></div>
 
         <div class="ctrl-panel" style="right: 16%;">
-            <button class="ctrl-btn btn-door" onclick="game.toggleDoor('right')">DR</button>
-            <button class="ctrl-btn btn-light" onclick="game.toggleLight('right')">LT</button>
+            <button class="btn btn-door" onclick="game.toggleDoor('right')">DOOR</button>
+            <button class="btn btn-light" onclick="game.toggleLight('right')">LIGHT</button>
         </div>
-
     </div>
 
-    <div id="power-ui">POWER: <span id="pwr-val">100</span>%</div>
-    <div id="log-ui">Noite 1 - 12 AM</div>
-
-    <div id="btn-monitor-toggle" onclick="game.toggleMon()">ABRIR/FECHAR MONITOR</div>
+    <div id="power-box">POWER: <span id="pwr">100</span>% <br> <span id="usage-txt" style="font-size: 16px; color: #aaa;">Usage: 1</span></div>
+    <div id="monitor-toggle" onclick="game.toggleMonitor()">ABRIR CÂMERAS</div>
 
     <div id="monitor">
-        <h2 id="cam-title" style="margin: 20px;">CAM 1A</h2>
+        <div id="static-overlay"></div>
+        <h2 id="cam-name" style="margin: 30px;">CAM 1A - Palco</h2>
         
-        <div id="dot-Bonnie" class="animatronic-dot" style="background: purple;"></div>
-        <div id="dot-Chica" class="animatronic-dot" style="background: yellow;"></div>
-        <div id="dot-Freddy" class="animatronic-dot" style="background: brown;"></div>
+        <div id="animatronic-dot">⚠️</div>
 
-        <div id="map-ui">
-            <div class="cam-btn active" style="grid-area:c1A" onclick="game.setCam('1A')">1A</div>
-            <div class="cam-btn" style="grid-area:c1B" onclick="game.setCam('1B')">1B</div>
-            <div class="cam-btn" style="grid-area:c1C" onclick="game.setCam('1C')">1C</div>
-            <div class="cam-btn" style="grid-area:c5" onclick="game.setCam('5')">5</div>
-            <div class="cam-btn" style="grid-area:c7" onclick="game.setCam('7')">7</div>
-            <div class="cam-btn" style="grid-area:c6" onclick="game.setCam('6')">6</div>
-            <div class="cam-btn" style="grid-area:c3" onclick="game.setCam('3')">3</div>
-            <div class="cam-btn" style="grid-area:c2A" onclick="game.setCam('2A')">2A</div>
-            <div class="cam-btn" style="grid-area:c2B" onclick="game.setCam('2B')">2B</div>
-            <div class="cam-btn" style="grid-area:c4A" onclick="game.setCam('4A')">4A</div>
-            <div class="cam-btn" style="grid-area:c4B" onclick="game.setCam('4B')">4B</div>
+        <div id="map-container">
+            <div class="cam-btn active" style="top: 10px; left: 90px;" onclick="game.setCam('1A')">1A</div>
+            <div class="cam-btn" style="top: 50px; left: 80px; width: 60px; height: 40px;" onclick="game.setCam('1B')">1B</div>
+            
+            <div class="cam-btn" style="top: 90px; left: 20px;" onclick="game.setCam('1C')">1C</div>
+            <div class="cam-btn" style="top: 40px; left: 20px;" onclick="game.setCam('5')">5</div>
+            
+            <div class="cam-btn" style="top: 50px; right: 20px;" onclick="game.setCam('7')">7</div>
+            <div class="cam-btn" style="top: 100px; right: 20px;" onclick="game.setCam('6')">6</div>
+            
+            <div class="cam-btn" style="bottom: 60px; left: 60px;" onclick="game.setCam('2A')">2A</div>
+            <div class="cam-btn" style="bottom: 20px; left: 60px;" onclick="game.setCam('2B')">2B</div>
+            
+            <div class="cam-btn" style="bottom: 60px; right: 60px;" onclick="game.setCam('4A')">4A</div>
+            <div class="cam-btn" style="bottom: 20px; right: 60px;" onclick="game.setCam('4B')">4B</div>
+            
+            <div class="cam-btn" style="bottom: 60px; left: 10px;" onclick="game.setCam('3')">3</div>
+
+            <div style="position: absolute; bottom: 10px; left: 120px; color: #555;">VOCÊ</div>
         </div>
     </div>
 
-    <div id="jumpscare-screen">
-        <img id="jumpscare-img" src="https://placehold.co/800x600/red/black?text=SCREAM!!&font=roboto" alt="Jumpscare">
+    <div id="jumpscare">
+        <div id="scare-face">💀</div>
     </div>
-
 </div>
 
 <script>
-class Game {
+class FNAFGame {
     constructor() {
         this.power = 100;
-        this.usage = 1;
-        this.monitorOpen = false;
-        this.currentCam = '1A';
+        this.monitor = false;
+        this.cam = '1A';
         this.doors = { left: false, right: false };
         this.lights = { left: false, right: false };
         
-        this.animatronics = {
-            'Bonnie': { pos: '1A', path: ['1A', '1B', '5', '2A', '2B'] }, // Esquerda
-            'Chica': { pos: '1A', path: ['1A', '1B', '7', '4A', '4B'] }, // Direita
-            'Freddy': { pos: '1A', path: ['1A', '1B', '7', '4A', '4B'] }
+        // ROTAS REAIS DO FNAF 1
+        this.ai = {
+            'Bonnie': { name: 'Bonnie', pos: '1A', path: ['1A', '1B', '5', '2A', '2B'], symbol: '🐰', aggressive: 4 },
+            'Chica': { name: 'Chica', pos: '1A', path: ['1A', '1B', '7', '6', '4A', '4B'], symbol: '🐥', aggressive: 4 },
+            'Freddy': { name: 'Freddy', pos: '1A', path: ['1A', '1B', '7', '4A', '4B'], symbol: '🐻', aggressive: 2 }
         };
 
-        this.startLoop();
-        this.startAI();
+        this.startSystem();
     }
 
-    startLoop() {
+    startSystem() {
+        // Loop de Energia (1s)
         setInterval(() => {
-            // Calcula gasto de energia
-            let drain = 0.1; 
-            if(this.doors.left) drain += 0.2;
-            if(this.doors.right) drain += 0.2;
-            if(this.lights.left) drain += 0.1;
-            if(this.lights.right) drain += 0.1;
-            if(this.monitorOpen) drain += 0.1;
-
-            this.power -= drain;
-            document.getElementById('pwr-val').innerText = Math.floor(this.power);
-
-            if(this.power <= 0) {
-                this.jumpscare("Acabou a luz!");
-            }
+            let usage = 1;
+            if(this.doors.left) usage++; if(this.doors.right) usage++;
+            if(this.lights.left) usage++; if(this.lights.right) usage++;
+            if(this.monitor) usage++;
+            
+            document.getElementById('usage-txt').innerText = "Usage: " + usage;
+            this.power -= (usage * 0.15);
+            document.getElementById('pwr').innerText = Math.floor(this.power);
+            
+            if(this.power <= 0) this.gameOver("Acabou a energia!");
         }, 1000);
+
+        // Loop da IA (5s) - Movimento
+        setInterval(() => this.moveAI(), 5000);
     }
 
     toggleDoor(side) {
         if(this.power <= 0) return;
         this.doors[side] = !this.doors[side];
-        // Adiciona classe CSS
         const el = document.getElementById(side === 'left' ? 'door-L' : 'door-R');
         if(this.doors[side]) el.classList.add('door-closed');
         else el.classList.remove('door-closed');
@@ -224,117 +242,109 @@ class Game {
         if(this.power <= 0) return;
         this.lights[side] = !this.lights[side];
         
-        // Desliga a outra luz se tentar ligar duas
+        // Desliga a luz oposta
         const other = side === 'left' ? 'right' : 'left';
         this.lights[other] = false;
-        document.getElementById(other === 'left' ? 'light-L' : 'light-R').style.opacity = 0;
-
-        // Visual
-        const el = document.getElementById(side === 'left' ? 'light-L' : 'light-R');
-        el.style.opacity = this.lights[side] ? 1 : 0;
-        
-        this.checkDoor(side);
+        this.updateLightVisuals();
     }
 
-    toggleMon() {
+    updateLightVisuals() {
+        // Esconde tudo primeiro
+        document.getElementById('beam-L').style.display = 'none';
+        document.getElementById('vis-L').style.display = 'none';
+        document.getElementById('beam-R').style.display = 'none';
+        document.getElementById('vis-R').style.display = 'none';
+
+        if(this.lights.left) {
+            document.getElementById('beam-L').style.display = 'block';
+            // Se Bonnie estiver na 2B (Porta Esq), mostra ele!
+            if(this.ai.Bonnie.pos === '2B') document.getElementById('vis-L').style.display = 'block';
+        }
+        
+        if(this.lights.right) {
+            document.getElementById('beam-R').style.display = 'block';
+            // Se Chica ou Freddy estiver na 4B (Porta Dir), mostra!
+            if(this.ai.Chica.pos === '4B' || this.ai.Freddy.pos === '4B') document.getElementById('vis-R').style.display = 'block';
+        }
+    }
+
+    toggleMonitor() {
         if(this.power <= 0) return;
-        this.monitorOpen = !this.monitorOpen;
-        document.getElementById('monitor').style.display = this.monitorOpen ? 'block' : 'none';
-        if(this.monitorOpen) this.updateCamVisuals();
+        this.monitor = !this.monitor;
+        document.getElementById('monitor').style.display = this.monitor ? 'block' : 'none';
+        if(this.monitor) this.updateCam();
     }
 
-    setCam(cam) {
-        this.currentCam = cam;
-        document.getElementById('cam-title').innerText = "CAM " + cam;
-        
-        // Atualiza botões
-        document.querySelectorAll('.cam-btn').forEach(btn => btn.classList.remove('active'));
+    setCam(id) {
+        this.cam = id;
+        document.getElementById('cam-name').innerText = "CAM " + id;
+        document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active'));
         event.target.classList.add('active');
+        this.updateCam();
+    }
+
+    updateCam() {
+        const dot = document.getElementById('animatronic-dot');
+        dot.style.display = 'none';
         
-        this.updateCamVisuals();
-    }
-
-    checkDoor(side) {
-        // Se ligar a luz e o bicho estiver na porta
-        if(this.lights[side]) {
-            if(side === 'left' && this.animatronics.Bonnie.pos === '2B') {
-                document.getElementById('log-ui').innerText = "BONNIE ESTÁ NA PORTA!";
-            }
-            if(side === 'right' && this.animatronics.Chica.pos === '4B') {
-                document.getElementById('log-ui').innerText = "CHICA ESTÁ NA PORTA!";
-            }
-        }
-    }
-
-    updateCamVisuals() {
-        // Esconde todos os pontos primeiro
-        document.querySelectorAll('.animatronic-dot').forEach(d => d.style.display = 'none');
-
-        // Mostra quem está na câmera atual
-        for(let name in this.animatronics) {
-            if(this.animatronics[name].pos === this.currentCam) {
-                const dot = document.getElementById('dot-'+name);
+        // Verifica quem está na câmera atual
+        for(let key in this.ai) {
+            let char = this.ai[key];
+            if(char.pos === this.cam) {
                 dot.style.display = 'block';
-                // Posição aleatória na tela para parecer que moveu
-                dot.style.top = (20 + Math.random() * 50) + '%';
-                dot.style.left = (20 + Math.random() * 50) + '%';
+                dot.innerText = char.symbol;
+                // Posição aleatória na tela
+                dot.style.top = (20 + Math.random() * 60) + "%";
+                dot.style.left = (20 + Math.random() * 60) + "%";
             }
         }
     }
 
-    startAI() {
-        setInterval(() => {
-            if(this.power <= 0) return;
+    moveAI() {
+        if(this.power <= 0) return;
 
-            // Chance de mover a cada 4 segundos
-            for(let name in this.animatronics) {
-                if(Math.random() > 0.4) { // 60% de chance de mover
-                    this.moveCharacter(name);
+        for(let key in this.ai) {
+            let char = this.ai[key];
+            
+            // Sorteio de movimento (1 a 20)
+            let chance = Math.floor(Math.random() * 20);
+            
+            if(chance <= char.aggressive) {
+                let index = char.path.indexOf(char.pos);
+
+                // Se já estiver na PORTA (Último item do path)
+                if(index === char.path.length - 1) {
+                    let side = (char.name === 'Bonnie') ? 'left' : 'right';
+                    
+                    // Se a porta estiver FECHADA
+                    if(this.doors[side]) {
+                        console.log(char.name + " bateu na porta e foi embora.");
+                        char.pos = '1A'; // RECUA PARA O PALCO (Conserta o problema de ficarem na porta)
+                    } else {
+                        // Porta aberta = MORTE
+                        this.gameOver(char.name);
+                    }
+                } 
+                // Se não estiver na porta, avança
+                else {
+                    char.pos = char.path[index + 1];
                 }
             }
-            if(this.monitorOpen) this.updateCamVisuals();
-        }, 4000);
-    }
-
-    moveCharacter(name) {
-        const char = this.animatronics[name];
-        const currentIdx = char.path.indexOf(char.pos);
-
-        // Se ainda não chegou na porta
-        if(currentIdx < char.path.length - 1) {
-            char.pos = char.path[currentIdx + 1];
-            console.log(`${name} moveu para ${char.pos}`);
-        } 
-        else {
-            // Está na porta! (2B ou 4B)
-            const doorSide = name === 'Bonnie' ? 'left' : 'right';
-            
-            // Se a porta estiver ABERTA, game over
-            if(!this.doors[doorSide]) {
-                this.jumpscare(name);
-            } else {
-                // Se fechada, ele volta para o início
-                console.log(name + " bateu na porta e voltou.");
-                char.pos = '1A';
-            }
         }
+        if(this.monitor) this.updateCam();
+        // Se a luz estiver acesa, atualiza para ver se o bicho sumiu ou apareceu
+        this.updateLightVisuals(); 
     }
 
-    jumpscare(who) {
-        console.log("MORREU POR: " + who);
-        const screen = document.getElementById('jumpscare-screen');
-        const img = document.getElementById('jumpscare-img');
-        
-        screen.style.display = 'flex';
-        // Tenta usar um GIF assustador se disponível, senão usa o texto
-        img.src = "https://media1.tenor.com/m/x3x7yCgX2iAAAAAC/fnaf-golden-freddy.gif"; 
-        
-        setTimeout(() => location.reload(), 2500);
+    gameOver(reason) {
+        console.log("GAME OVER: " + reason);
+        document.getElementById('jumpscare').style.display = 'flex';
+        // Efeito de tremer e piscar
+        setTimeout(() => location.reload(), 3000);
     }
 }
 
-const game = new Game();
+const game = new FNAFGame();
 </script>
-
 </body>
-    </html>
+                </html>
