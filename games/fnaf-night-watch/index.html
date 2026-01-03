@@ -2,149 +2,162 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>FNAF: Security Edition</title>
+    <title>FNAF: Ultimate Custom Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; background: #000; color: #fff; font-family: 'VT323', monospace; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-        #screen { position: relative; width: 1000px; height: 600px; background: #050505; border: 10px solid #222; overflow: hidden; }
+        
+        #game-container { 
+            position: relative; width: 1000px; height: 600px; 
+            background: #0a0a0a; border: 10px solid #333; overflow: hidden;
+            box-shadow: inset 0 0 100px #000;
+        }
 
-        /* MENU */
-        #menu { position: absolute; inset: 0; background: #000; z-index: 2000; display: flex; flex-direction: column; padding: 50px; }
-        .menu-title { font-size: 80px; color: #f00; text-shadow: 5px 5px #500; margin-bottom: 0; }
-        .menu-btn { font-size: 30px; color: #fff; cursor: pointer; margin: 10px 0; background: none; border: none; text-align: left; font-family: 'VT323'; transition: 0.2s; }
-        .menu-btn:hover { color: #f00; padding-left: 20px; }
+        /* MENU PRINCIPAL */
+        #main-menu { position: absolute; inset: 0; background: #000; z-index: 2000; display: flex; flex-direction: column; justify-content: center; padding-left: 50px; border: 10px solid #333; }
+        .title { font-size: 70px; color: #f00; margin-bottom: 20px; text-shadow: 4px 4px #400; }
+        .menu-btn { background: none; border: none; color: #fff; font-family: 'VT323'; font-size: 35px; cursor: pointer; text-align: left; display: block; margin: 10px 0; transition: 0.3s; }
+        .menu-btn:hover { color: #f00; transform: translateX(20px); }
 
         /* CUSTOM NIGHT */
-        #custom-night { position: absolute; inset: 0; background: #000; z-index: 2100; display: none; padding: 40px; }
-        .cn-row { display: flex; gap: 20px; align-items: center; margin: 20px 0; }
-        .cn-card { background: #111; padding: 15px; border: 2px solid #333; text-align: center; width: 150px; }
-        .cn-card img { font-size: 50px; display: block; margin-bottom: 10px; }
-        .cn-val { font-size: 40px; color: #f00; }
+        #custom-night-screen { position: absolute; inset: 0; background: #000; z-index: 2100; display: none; padding: 30px; border: 10px solid #333; }
+        .cn-grid { display: flex; gap: 15px; justify-content: center; margin-top: 50px; }
+        .ai-box { background: #111; border: 2px solid #444; padding: 10px; width: 140px; text-align: center; }
+        .ai-box span { font-size: 50px; display: block; }
+        .ai-lvl { font-size: 40px; color: #f00; margin: 10px 0; }
+        .adj-btn { width: 40px; height: 30px; cursor: pointer; background: #333; color: #fff; border: 1px solid #fff; }
 
-        /* GAMEPLAY */
-        #office { position: absolute; inset: 0; background: #111; display: flex; justify-content: space-between; }
-        .door-v { position: absolute; top: 0; width: 130px; height: 100%; background: #222; z-index: 50; transition: 0.3s; border: 3px solid #000; }
+        /* ESCRITÓRIO (DESIGN ANTERIOR) */
+        #office { position: absolute; inset: 0; background: #1a1a1a; display: flex; justify-content: space-between; align-items: center; }
+        .door { position: absolute; top: 0; width: 120px; height: 100%; background: #222; z-index: 50; transition: 0.2s; border: 4px solid #111; }
         #door-L { left: 0; transform: translateY(-100%); }
         #door-R { right: 0; transform: translateY(-100%); }
         .closed { transform: translateY(0) !important; }
-        
-        .light-v { position: absolute; top: 0; width: 300px; height: 100%; opacity: 0; z-index: 40; }
-        #light-L { left: 0; background: linear-gradient(to right, rgba(255,255,255,0.1), transparent); }
-        #light-R { right: 0; background: linear-gradient(to left, rgba(255,255,255,0.1), transparent); }
 
-        /* BOTÕES LATERAIS */
-        .side-ctrl { position: absolute; top: 35%; z-index: 100; display: flex; flex-direction: column; gap: 20px; }
-        .btn-game { width: 80px; height: 60px; background: #222; border: 3px solid #fff; color: #fff; font-family: 'VT323'; font-size: 20px; cursor: pointer; }
+        .light-eff { position: absolute; top: 0; width: 300px; height: 100%; opacity: 0; pointer-events: none; z-index: 40; }
+        #light-L { left: 0; background: linear-gradient(to right, rgba(255,255,200,0.2), transparent); }
+        #light-R { right: 0; background: linear-gradient(to left, rgba(255,255,200,0.2), transparent); }
+
+        /* BOTÕES LATERAIS (DESIGN ANTERIOR) */
+        .side-panel { position: absolute; top: 35%; display: flex; flex-direction: column; gap: 15px; z-index: 100; padding: 10px; background: #222; border: 2px solid #444; }
+        .btn-action { width: 70px; height: 50px; cursor: pointer; background: #000; color: #fff; border: 2px solid #fff; font-family: 'VT323'; font-size: 18px; }
 
         /* MONITOR */
-        #monitor { position: absolute; inset: 0; background: #000; z-index: 500; display: none; }
-        #cam-render { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 200px; filter: blur(5px) brightness(0.3); }
-        #map { position: absolute; bottom: 20px; right: 20px; width: 250px; height: 200px; background: rgba(0,0,0,0.8); border: 2px solid #fff; }
-        .cam-node { position: absolute; padding: 5px; background: #333; border: 1px solid #fff; cursor: pointer; font-size: 14px; }
-        .cam-node.active { background: #f00; }
+        #camera-monitor { position: absolute; inset: 0; background: #000; z-index: 500; display: none; }
+        #cam-view { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; }
+        #cam-render { font-size: 200px; filter: brightness(0.3); }
+        #static-img { position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuW9nNe/giphy.gif'); opacity: 0.1; pointer-events: none; }
+
+        /* MAPA */
+        #map { position: absolute; bottom: 20px; right: 20px; width: 250px; height: 200px; background: rgba(0,0,0,0.9); border: 2px solid #fff; z-index: 600; }
+        .cam-btn { position: absolute; width: 45px; height: 30px; background: #333; border: 1px solid #fff; color: #fff; cursor: pointer; }
+        .cam-btn.active { background: #0f0; color: #000; }
 
         /* JUMPSCARE */
-        #jumpscare { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; align-items: center; justify-content: center; font-size: 300px; animation: shake 0.05s infinite; }
+        #jumpscare-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; align-items: center; justify-content: center; font-size: 300px; animation: shake 0.05s infinite; }
         @keyframes shake { 0%{transform:translate(10px,10px)} 50%{transform:translate(-10px,-10px)} }
 
         /* UI */
-        .ui { position: absolute; z-index: 1000; text-shadow: 2px 2px #000; }
-        #ui-time { top: 20px; right: 20px; font-size: 40px; text-align: right; }
-        #ui-pwr { bottom: 20px; left: 20px; font-size: 30px; }
-        #mon-trigger { position: absolute; bottom: 0; left: 30%; width: 40%; height: 40px; background: rgba(255,255,255,0.1); border-top: 2px solid #fff; z-index: 1100; cursor: pointer; text-align: center; line-height: 40px; }
-        
-        .scary-char { position: absolute; bottom: 10%; font-size: 150px; display: none; z-index: 45; filter: brightness(0.2); }
+        #ui-pwr { position: absolute; bottom: 20px; left: 20px; z-index: 1000; font-size: 26px; }
+        #ui-time { position: absolute; top: 20px; right: 20px; z-index: 1000; font-size: 35px; text-align: right; }
+        #monitor-trigger { position: absolute; bottom: 0; left: 30%; width: 40%; height: 40px; background: rgba(255,255,255,0.1); border-top: 2px solid #fff; z-index: 1100; cursor: pointer; color: #fff; text-align: center; line-height: 40px; font-size: 22px; }
+
+        .enemy-office { position: absolute; bottom: 0; font-size: 180px; display: none; z-index: 45; filter: brightness(0.2); }
     </style>
 </head>
 <body>
 
-<div id="screen">
-    <div id="menu">
-        <h1 class="menu-title">FIVE NIGHTS<br>AT GEMINI'S</h1>
+<div id="game-container">
+    <div id="main-menu">
+        <h1 class="title">FIVE NIGHTS<br>AT GEMINI'S</h1>
         <button class="menu-btn" onclick="game.start(false)">NEW GAME</button>
-        <button class="menu-btn" onclick="document.getElementById('custom-night').style.display='block'">CUSTOM NIGHT</button>
+        <button class="menu-btn" onclick="game.openCN()">CUSTOM NIGHT</button>
     </div>
 
-    <div id="custom-night">
-        <h1>CUSTOM NIGHT</h1>
-        <div class="cn-row">
-            <div class="cn-card"><span>🐻</span><div class="cn-val" id="v-freddy">0</div><button onclick="game.adj('freddy', 1)">+</button><button onclick="game.adj('freddy', -1)">-</button></div>
-            <div class="cn-card"><span>🐰</span><div class="cn-val" id="v-bonnie">0</div><button onclick="game.adj('bonnie', 1)">+</button><button onclick="game.adj('bonnie', -1)">-</button></div>
-            <div class="cn-card"><span>🐥</span><div class="cn-val" id="v-chica">0</div><button onclick="game.adj('chica', 1)">+</button><button onclick="game.adj('chica', -1)">-</button></div>
-            <div class="cn-card"><span>🦊</span><div class="cn-val" id="v-foxy">0</div><button onclick="game.adj('foxy', 1)">+</button><button onclick="game.adj('foxy', -1)">-</button></div>
+    <div id="custom-night-screen">
+        <h1 style="color: #fff; text-align: center;">CUSTOM NIGHT</h1>
+        <div class="cn-grid">
+            <div class="ai-box"><span>🐻</span><div class="ai-lvl" id="l-freddy">0</div><button class="adj-btn" onclick="game.adj('freddy', 1)">+</button><button class="adj-btn" onclick="game.adj('freddy', -1)">-</button></div>
+            <div class="ai-box"><span>🐰</span><div class="ai-lvl" id="l-bonnie">0</div><button class="adj-btn" onclick="game.adj('bonnie', 1)">+</button><button class="adj-btn" onclick="game.adj('bonnie', -1)">-</button></div>
+            <div class="ai-box"><span>🐥</span><div class="ai-lvl" id="l-chica">0</div><button class="adj-btn" onclick="game.adj('chica', 1)">+</button><button class="adj-btn" onclick="game.adj('chica', -1)">-</button></div>
+            <div class="ai-box"><span>🦊</span><div class="ai-lvl" id="l-foxy">0</div><button class="adj-btn" onclick="game.adj('foxy', 1)">+</button><button class="adj-btn" onclick="game.adj('foxy', -1)">-</button></div>
         </div>
-        <button class="menu-btn" onclick="game.start(true)">READY</button>
+        <button class="menu-btn" style="margin-top: 50px; text-align: center; width: 100%;" onclick="game.start(true)">START NIGHT</button>
     </div>
 
     <div id="office">
-        <div id="char-L" class="scary-char" style="left:20px">🐰</div>
-        <div id="char-R" class="scary-char" style="right:20px">🐥</div>
+        <div id="off-L" class="enemy-office" style="left:20px">🐰</div>
+        <div id="off-R" class="enemy-office" style="right:20px">🐥</div>
 
-        <div id="door-L" class="door-v"></div>
-        <div id="light-L" class="light-v"></div>
-        <div class="side-ctrl" style="left:150px">
-            <button class="btn-game" onclick="game.toggleDoor('L')">DOOR</button>
-            <button class="btn-game" onclick="game.toggleLight('L')">LIGHT</button>
+        <div id="door-L" class="door"></div>
+        <div id="light-L" class="light-eff"></div>
+        <div class="side-panel" style="left: 130px;">
+            <button class="btn-action" onclick="game.toggleDoor('L')">DOOR</button>
+            <button class="btn-action" onclick="game.toggleLight('L')">LIGHT</button>
         </div>
 
-        <div id="door-R" class="door-v"></div>
-        <div id="light-R" class="light-v"></div>
-        <div class="side-ctrl" style="right:150px">
-            <button class="btn-game" onclick="game.toggleDoor('R')">DOOR</button>
-            <button class="btn-game" onclick="game.toggleLight('R')">LIGHT</button>
-        </div>
-    </div>
-
-    <div id="monitor">
-        <div id="cam-render"></div>
-        <div id="map">
-            <button class="cam-node" style="top:10px; left:40%" onclick="game.setCam('1A', this)">1A</button>
-            <button class="cam-node" style="top:50px; left:30%" onclick="game.setCam('1B', this)">1B</button>
-            <button class="cam-node" style="top:100px; left:5%" onclick="game.setCam('1C', this)">1C</button>
-            <button class="cam-node" style="top:50px; left:5%" onclick="game.setCam('5', this)">5</button>
-            <button class="cam-node" style="bottom:60px; left:20%" onclick="game.setCam('2A', this)">2A</button>
-            <button class="cam-node" style="bottom:20px; left:20%" onclick="game.setCam('2B', this)">2B</button>
+        <div id="door-R" class="door"></div>
+        <div id="light-R" class="light-eff"></div>
+        <div class="side-panel" style="right: 130px;">
+            <button class="btn-action" onclick="game.toggleDoor('R')">DOOR</button>
+            <button class="btn-action" onclick="game.toggleLight('R')">LIGHT</button>
         </div>
     </div>
 
-    <div class="ui" id="ui-time">12 AM</div>
-    <div class="ui" id="ui-pwr">Power: 100%</div>
-    <div id="mon-trigger" onclick="game.toggleMon()">MONITOR</div>
+    <div id="camera-monitor">
+        <div id="cam-view">
+            <div id="cam-render"></div>
+            <div id="static-img"></div>
+            <div id="map">
+                <button class="cam-btn active" style="top:10px; left:40%" onclick="game.setCam('1A', this)">1A</button>
+                <button class="cam-btn" style="top:45px; left:35%" onclick="game.setCam('1B', this)">1B</button>
+                <button class="cam-btn" style="top:95px; left:5%" onclick="game.setCam('1C', this)">1C</button>
+                <button class="cam-btn" style="top:45px; left:5%" onclick="game.setCam('5', this)">5</button>
+                <button class="cam-btn" style="bottom:65px; left:25%" onclick="game.setCam('2A', this)">2A</button>
+                <button class="cam-btn" style="bottom:25px; left:25%" onclick="game.setCam('2B', this)">2B</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="ui-time">12 AM<br><small style="font-size: 15px;">Night 1</small></div>
+    <div id="ui-pwr">Power: 100%<br>Usage: 1</div>
+    <div id="monitor-trigger" onclick="game.toggleMon()">ABRIR MONITOR</div>
 </div>
 
-<div id="jumpscare">💀</div>
+<div id="jumpscare-overlay">Você precisa melhorar ☠️</div>
 
 <script>
-class FNAF {
+class FNAFGame {
     constructor() {
-        this.pwr = 100; this.hour = 0; this.mon = false;
-        this.cam = '1A'; this.foxyStage = 0;
+        this.pwr = 100; this.hour = 0; this.mon = false; this.cam = '1A';
         this.doors = {L:false, R:false}; this.lights = {L:false, R:false};
-        this.lv = { freddy: 1, bonnie: 3, chica: 2, foxy: 1 };
-        this.pos = { bonnie: '1A', chica: '1A', freddy: '1A' };
+        this.aiLv = { freddy: 0, bonnie: 0, chica: 0, foxy: 0 };
+        this.pos = { bonnie:'1A', chica:'1A', freddy:'1A' };
+        this.foxyStage = 0;
     }
 
-    adj(c, v) { this.lv[c] = Math.max(0, Math.min(20, this.lv[c] + v)); document.getElementById('v-'+c).innerText = this.lv[c]; }
+    openCN() { document.getElementById('custom-night-screen').style.display = 'block'; }
+    adj(c, v) { this.aiLv[c] = Math.max(0, Math.min(20, this.aiLv[c] + v)); document.getElementById('l-'+c).innerText = this.aiLv[c]; }
 
-    start(custom) {
-        document.getElementById('menu').style.display = 'none';
-        document.getElementById('custom-night').style.display = 'none';
-        if(!custom) this.lv = { freddy: 1, bonnie: 3, chica: 2, foxy: 1 };
+    start(isCustom) {
+        document.getElementById('main-menu').style.display = 'none';
+        document.getElementById('custom-night-screen').style.display = 'none';
+        if(!isCustom) this.aiLv = { freddy: 1, bonnie: 3, chica: 2, foxy: 1 };
         
-        setInterval(() => this.tick(), 1000);
-        setInterval(() => this.moveAI(), 4500);
+        setInterval(() => this.gameTick(), 1000);
+        setInterval(() => this.moveAI(), 4000);
         setInterval(() => {
             this.hour++;
             if(this.hour >= 6) { alert("6 AM - VOCÊ VENCEU!"); location.reload(); }
-            document.getElementById('ui-time').innerText = this.hour + " AM";
+            document.getElementById('ui-time').innerHTML = this.hour + " AM<br><small style='font-size: 15px;'>Night 1</small>";
         }, 45000);
     }
 
-    tick() {
-        let usage = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
-        this.pwr -= (usage * 0.15);
-        document.getElementById('ui-pwr').innerText = "Power: " + Math.floor(this.pwr) + "%";
-        if(this.pwr <= 0) this.scare('🐻');
+    gameTick() {
+        let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
+        this.pwr -= (use * 0.15);
+        document.getElementById('ui-pwr').innerHTML = "Power: " + Math.floor(this.pwr) + "%<br>Usage: " + use;
+        if(this.pwr <= 0) this.jumpscare('🐻');
     }
 
     toggleDoor(s) { this.doors[s] = !this.doors[s]; document.getElementById('door-'+s).classList.toggle('closed'); }
@@ -154,49 +167,43 @@ class FNAF {
         this.updateOffice();
     }
 
-    updateOffice() {
-        document.getElementById('char-L').style.display = (this.lights.L && this.pos.bonnie === 'OFFICE') ? 'block' : 'none';
-        document.getElementById('char-R').style.display = (this.lights.R && (this.pos.chica === 'OFFICE' || this.pos.freddy === 'OFFICE')) ? 'block' : 'none';
-    }
-
-    toggleMon() { this.mon = !this.mon; document.getElementById('monitor').style.display = this.mon ? 'block' : 'none'; this.updateCam(); }
-
+    toggleMon() { this.mon = !this.mon; document.getElementById('camera-monitor').style.display = this.mon ? 'block' : 'none'; this.updateCam(); }
+    
     setCam(id, btn) {
         this.cam = id;
-        document.querySelectorAll('.cam-node').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         this.updateCam();
     }
 
     updateCam() {
-        const r = document.getElementById('cam-render');
-        r.innerText = "";
-        if(this.cam === '1C') { r.innerText = "🦊"; r.style.filter = `blur(${5 - this.foxyStage}px) brightness(0.3)`; }
-        for(let c in this.pos) { if(this.pos[c] === this.cam) r.innerText = (c === 'freddy' ? '🐻' : c === 'bonnie' ? '🐰' : '🐥'); }
+        const render = document.getElementById('cam-render');
+        render.innerText = "";
+        if(this.cam === '1C') { render.innerText = "🦊"; render.style.filter = `brightness(${0.1 * this.foxyStage})`; return; }
+        for(let c in this.pos) { if(this.pos[c] === this.cam) render.innerText = (c === 'freddy'?'🐻':c === 'bonnie'?'🐰':'🐥'); }
+    }
+
+    updateOffice() {
+        document.getElementById('off-L').style.display = (this.lights.L && this.pos.bonnie === 'OFFICE') ? 'block' : 'none';
+        document.getElementById('off-R').style.display = (this.lights.R && (this.pos.chica === 'OFFICE' || this.pos.freddy === 'OFFICE')) ? 'block' : 'none';
     }
 
     moveAI() {
         // FOXY
-        if(this.cam !== '1C' && Math.random() * 20 < this.lv.foxy) {
+        if(this.cam !== '1C' && Math.random() * 20 < this.aiLv.foxy) {
             this.foxyStage++;
-            if(this.foxyStage > 4) {
-                if(!this.doors.L) this.scare('🦊');
-                else { this.foxyStage = 0; this.pwr -= 5; }
-            }
+            if(this.foxyStage > 4) { if(!this.doors.L) this.jumpscare('🦊'); else { this.foxyStage = 0; this.pwr -= 5; } }
         }
-
         // FREDDY TRAVA
-        let freddyCanMove = !(this.mon && this.cam === this.pos.freddy);
-
+        let freddyLocked = (this.mon && this.cam === this.pos.freddy);
         for(let c in this.pos) {
-            if(c === 'freddy' && !freddyCanMove) continue;
-            if(Math.random() * 20 < this.lv[c]) {
+            if(c === 'freddy' && freddyLocked) continue;
+            if(Math.random() * 20 < this.aiLv[c]) {
                 if(this.pos[c] === '1A') this.pos[c] = '1B';
                 else if(this.pos[c] === '1B') this.pos[c] = (c === 'bonnie' ? '5' : '2A');
                 else if(this.pos[c] === '5' || this.pos[c] === '2A') this.pos[c] = 'OFFICE';
                 else if(this.pos[c] === 'OFFICE') {
-                    let side = (c === 'bonnie' ? 'L' : 'R');
-                    if(!this.doors[side]) this.scare(c === 'freddy' ? '🐻' : c === 'bonnie' ? '🐰' : '🐥');
+                    if(!this.doors[c === 'bonnie' ? 'L' : 'R']) this.jumpscare(c === 'freddy' ? '🐻' : c === 'bonnie' ? '🐰' : '🐥');
                     else this.pos[c] = '1A';
                 }
             }
@@ -205,13 +212,13 @@ class FNAF {
         this.updateOffice();
     }
 
-    scare(char) {
-        document.getElementById('jumpscare').innerText = char;
-        document.getElementById('jumpscare').style.display = 'flex';
+    jumpscare(char) {
+        document.getElementById('jumpscare-overlay').innerText = char;
+        document.getElementById('jumpscare-overlay').style.display = 'flex';
         setTimeout(() => location.reload(), 2000);
     }
 }
-const game = new FNAF();
+const game = new FNAFGame();
 </script>
 </body>
 </html>
