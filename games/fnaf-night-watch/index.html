@@ -5,94 +5,90 @@
     <title>FNAF: Ultimate Mobile Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; background: #000; color: #fff; font-family: 'VT323', monospace; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        /* Estilos do segundo código aplicados ao design do primeiro */
+        body { margin: 0; background: radial-gradient(circle at top, #1b1b1b, #000); color: #fff; font-family: 'VT323', monospace; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
         
         #screen-container { 
             position: relative; width: 1000px; height: 600px; 
-            background: #0a0a0a; border: 10px solid #333; overflow: hidden;
-            box-shadow: inset 0 0 100px #000;
+            background: #000; border: 10px solid #333; overflow: hidden;
+            box-shadow: 0 0 50px rgba(255,0,0,0.2);
         }
 
         /* ESCRITÓRIO */
-        #office { 
-            position: absolute; inset: 0; 
-            background: linear-gradient(to bottom, #1a1a1a, #050505);
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        #office { position: absolute; inset: 0; background: #0a0a0a; display: flex; justify-content: space-between; align-items: center; }
 
         /* PORTAS */
-        .door { position: absolute; top: 0; width: 120px; height: 100%; background: #222; z-index: 50; transition: 0.2s ease-in; border: 4px solid #111; }
+        .door { position: absolute; top: 0; width: 120px; height: 100%; background: linear-gradient(145deg, #2a2a2a, #0e0e0e); z-index: 50; transition: 0.2s ease-in; border: 4px solid #111; }
         #door-L { left: 0; transform: translateY(-100%); }
         #door-R { right: 0; transform: translateY(-100%); }
         .closed { transform: translateY(0) !important; }
 
         /* LUZES */
         .light-effect { position: absolute; top: 0; width: 300px; height: 100%; opacity: 0; pointer-events: none; z-index: 40; }
-        #light-L { left: 0; background: linear-gradient(to right, rgba(255,255,200,0.2), transparent); }
-        #light-R { right: 0; background: linear-gradient(to left, rgba(255,255,200,0.2), transparent); }
+        #light-L { left: 0; background: linear-gradient(to right, rgba(255,255,200,0.15), transparent); }
+        #light-R { right: 0; background: linear-gradient(to left, rgba(255,255,200,0.15), transparent); }
 
         /* BOTÕES */
-        .side-panel { position: absolute; top: 35%; display: flex; flex-direction: column; gap: 15px; z-index: 100; padding: 10px; background: #222; border: 2px solid #444; }
-        .btn { width: 60px; height: 40px; cursor: pointer; background: #000; color: #fff; border: 2px solid #fff; font-family: 'VT323'; }
-        .btn-door:active { background: #d00; }
+        .side-panel { position: absolute; top: 35%; display: flex; flex-direction: column; gap: 15px; z-index: 100; padding: 10px; background: #222; border: 2px solid #444; border-radius: 8px; }
+        .btn { width: 75px; height: 55px; cursor: pointer; background: #000; color: #fff; border: 2px solid #fff; font-family: 'VT323'; font-size: 18px; transition: 0.2s; }
+        .btn:hover { background: #400; }
 
         /* MONITOR */
         #camera-monitor { position: absolute; inset: 0; background: #000; z-index: 500; display: none; }
-        #cam-view { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        #cam-image { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4) sepia(0.2) hue-rotate(100deg); }
-        #static { position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuW9nNe/giphy.gif'); opacity: 0.15; pointer-events: none; }
+        #cam-view { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
+        #cam-image { height: 90%; object-fit: contain; filter: brightness(0.6) contrast(1.2); }
+        #static { position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuW9nNe/giphy.gif'); opacity: 0.1; pointer-events: none; }
         
-        #animatronic-visual { 
-            position: absolute; font-size: 150px; filter: drop-shadow(0 0 20px #0f0); 
-            text-shadow: 0 0 10px #000; display: none;
-        }
-
         /* MAPA */
         #map { position: absolute; bottom: 20px; right: 20px; width: 250px; height: 200px; background: rgba(0,0,0,0.9); border: 2px solid #fff; z-index: 600; }
-        .cam-btn { position: absolute; width: 40px; height: 25px; background: #333; border: 1px solid #fff; color: #fff; font-size: 12px; cursor: pointer; text-align: center; }
-        .cam-btn.active { background: #0f0; color: #000; }
+        .cam-btn { position: absolute; width: 45px; height: 30px; background: #333; border: 1px solid #fff; color: #fff; font-size: 14px; cursor: pointer; }
+        .cam-btn.active { background: #f00; color: #fff; box-shadow: 0 0 10px #f00; }
 
         /* JUMPSCARE */
         #jumpscare-overlay { 
             position: fixed; inset: 0; background: #000; z-index: 9999; 
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            animation: shake 0.1s infinite;
+            display: none; align-items: center; justify-content: center;
+            animation: shake 0.08s infinite;
         }
-        @keyframes shake { 0% { transform: translate(5px, 5px); } 50% { transform: translate(-5px, -5px); } 100% { transform: translate(5px, -5px); } }
+        #scare-img { height: 100%; filter: drop-shadow(0 0 20px red); }
+        @keyframes shake { 0% { transform: translate(15px, 15px); } 50% { transform: translate(-15px, -15px); } }
 
         /* UI */
-        #ui { position: absolute; bottom: 20px; left: 20px; z-index: 1000; font-size: 24px; }
-        #monitor-trigger { position: absolute; bottom: 0; left: 30%; width: 40%; height: 40px; background: rgba(255,255,255,0.1); border-top: 2px solid #fff; z-index: 1100; cursor: pointer; color: #fff; text-align: center; line-height: 40px; }
+        #ui-pwr { position: absolute; bottom: 20px; left: 20px; z-index: 1000; font-size: 26px; color: #0f0; }
+        #ui-time { position: absolute; top: 20px; right: 20px; z-index: 1000; font-size: 38px; text-align: right; letter-spacing: 2px; }
+        #monitor-trigger { position: absolute; bottom: 0; left: 30%; width: 40%; height: 45px; background: rgba(255,255,255,0.1); border-top: 3px solid #fff; z-index: 1100; cursor: pointer; color: #fff; text-align: center; line-height: 45px; font-size: 22px; }
+        
+        /* ANIMA NA PORTA */
+        .door-anim { position: absolute; height: 85%; bottom: 0; display: none; z-index: 45; filter: brightness(0.4); }
     </style>
 </head>
 <body>
 
 <div id="screen-container">
     <div id="office">
-        <div id="visual-L" style="position:absolute; left:20px; font-size:120px; z-index:45; display:none; filter:brightness(0.2)">🐰</div>
-        <div id="visual-R" style="position:absolute; right:20px; font-size:120px; z-index:45; display:none; filter:brightness(0.2)">🐥</div>
+        <img id="visual-L" class="door-anim" src="bonnie.png" style="left: -20px;">
+        <img id="visual-R" class="door-anim" src="chica.png" style="right: -20px;">
 
         <div id="door-L" class="door"></div>
         <div id="light-L" class="light-effect"></div>
         
-        <div class="side-panel" style="left: 130px;">
-            <button class="btn btn-door" onclick="game.toggleDoor('L')">DOOR</button>
+        <div class="side-panel" style="left: 140px;">
+            <button class="btn" onclick="game.toggleDoor('L')">DOOR</button>
             <button class="btn" onclick="game.toggleLight('L')">LIGHT</button>
         </div>
 
         <div id="door-R" class="door"></div>
         <div id="light-R" class="light-effect"></div>
 
-        <div class="side-panel" style="right: 130px;">
-            <button class="btn btn-door" onclick="game.toggleDoor('R')">DOOR</button>
+        <div class="side-panel" style="right: 140px;">
+            <button class="btn" onclick="game.toggleDoor('R')">DOOR</button>
             <button class="btn" onclick="game.toggleLight('R')">LIGHT</button>
         </div>
     </div>
 
     <div id="camera-monitor">
         <div id="cam-view">
-            <img id="cam-image" src="https://images.unsplash.com/photo-1533130061792-64b345e4a833?w=1000">
-            <div id="animatronic-visual"></div>
+            <img id="cam-image" src="">
             <div id="static"></div>
             <div id="map">
                 <button class="cam-btn active" style="top:10px; left:40%" onclick="game.setCam('1A', this)">1A</button>
@@ -108,17 +104,14 @@
         </div>
     </div>
 
-    <div id="ui">
-        POWER: <span id="pwr-val">100</span>%<br>
-        USAGE: <span id="usage-val">1</span>
-    </div>
+    <div id="ui-pwr">POWER: <span id="pwr-val">100</span>% <br> USAGE: <span id="usage-val">1</span></div>
+    <div id="ui-time"><span id="hour-val">12</span> AM <br> <small style="font-size: 14px;">NIGHT 1</small></div>
 
-    <div id="monitor-trigger" onclick="game.toggleMonitor()">MONITOR</div>
+    <div id="monitor-trigger" onclick="game.toggleMonitor()">ABRIR MONITOR</div>
 </div>
 
 <div id="jumpscare-overlay">
-    <div id="scare-char" style="font-size: 300px;">🐻</div>
-    <h1 style="color:red; font-size: 50px;">IT'S ME</h1>
+    <img id="scare-img" src="">
 </div>
 
 <script>
@@ -127,29 +120,41 @@ class FNAF {
         this.pwr = 100;
         this.mon = false;
         this.cam = '1A';
+        this.hour = 0; 
         this.doors = { L: false, R: false };
         this.lights = { L: false, R: false };
-        this.foxyProgress = 0;
         
+        this.foxyStage = 0; 
+        this.freddyLocked = false;
+
         this.entities = {
-            'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], icon: '🐰' },
-            'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐥' },
-            'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐻' }
+            'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','OFFICE'], img: 'bonnie.png' },
+            'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','OFFICE'], img: 'chica.png' },
+            'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','OFFICE'], img: 'freddy.png' }
         };
 
         this.start();
     }
 
     start() {
+        // Ciclo de Energia
         setInterval(() => {
             let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
-            this.pwr -= (use * 0.15);
+            this.pwr -= (use * 0.12);
             document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
             document.getElementById('usage-val').innerText = use;
-            if(this.pwr <= 0) this.jumpscare('Freddy');
+            if(this.pwr <= 0) this.jumpscare('freddy.png');
         }, 1000);
 
-        setInterval(() => this.aiTick(), 4000);
+        // Ciclo de Horas (45 segundos por hora)
+        setInterval(() => {
+            this.hour++;
+            if(this.hour >= 6) { alert("6 AM - SOBREVIVEU!"); location.reload(); }
+            document.getElementById('hour-val').innerText = this.hour;
+        }, 45000);
+
+        // Movimentação da IA
+        setInterval(() => this.aiTick(), 5000);
     }
 
     toggleDoor(s) { 
@@ -160,15 +165,12 @@ class FNAF {
     toggleLight(s) {
         this.lights[s] = !this.lights[s];
         document.getElementById(`light-${s}`).style.opacity = this.lights[s] ? 1 : 0;
-        document.getElementById(`visual-${s}`).style.display = (this.lights[s] && this.isAtDoor(s)) ? 'block' : 'none';
-        if(this.lights[s]) { // Efeito de brilho
-            document.getElementById(`visual-${s}`).style.filter = "brightness(1) drop-shadow(0 0 10px #fff)";
-        }
+        this.updateOfficeEnemies();
     }
 
-    isAtDoor(s) {
-        if(s === 'L') return this.entities.Bonnie.pos === 'DOOR';
-        if(s === 'R') return this.entities.Chica.pos === 'DOOR' || this.entities.Freddy.pos === 'DOOR';
+    updateOfficeEnemies() {
+        document.getElementById('visual-L').style.display = (this.lights.L && this.entities.Bonnie.pos === 'OFFICE') ? 'block' : 'none';
+        document.getElementById('visual-R').style.display = (this.lights.R && (this.entities.Chica.pos === 'OFFICE' || this.entities.Freddy.pos === 'OFFICE')) ? 'block' : 'none';
     }
 
     toggleMonitor() {
@@ -185,34 +187,38 @@ class FNAF {
     }
 
     updateCam() {
-        const display = document.getElementById('animatronic-visual');
-        display.style.display = 'none';
-        
-        // Foxy (CAM 1C Especial)
+        const camImg = document.getElementById('cam-image');
+        camImg.src = ""; 
+        this.freddyLocked = false;
+
         if(this.cam === '1C') {
-            display.style.display = 'block';
-            display.innerText = this.foxyProgress < 2 ? '🚩' : '🦊';
+            camImg.src = 'foxy.png';
+            camImg.style.display = this.foxyStage > 0 ? "block" : "none";
+            return;
         }
 
         for(let key in this.entities) {
             let e = this.entities[key];
             if(e.pos === this.cam) {
-                display.style.display = 'block';
-                display.innerText = e.icon;
-                display.style.left = (Math.random() * 50 + 20) + "%";
+                camImg.src = e.img;
+                camImg.style.display = "block";
+                if(key === 'Freddy') this.freddyLocked = true;
             }
         }
     }
 
     aiTick() {
-        // Lógica Foxy
-        if(Math.random() > 0.6) {
-            this.foxyProgress++;
-            if(this.foxyProgress > 4) {
-                if(!this.doors.L) this.jumpscare('Foxy');
-                else { this.foxyProgress = 0; this.pwr -= 5; }
+        // Habilidade Foxy
+        if(this.cam !== '1C') {
+            this.foxyStage++;
+            if(this.foxyStage > 4) {
+                if(!this.doors.L) this.jumpscare('foxy.png');
+                else { this.foxyStage = 0; this.pwr -= 5; }
             }
         }
+
+        // Habilidade Freddy (Não move se olhado)
+        if(this.mon && this.freddyLocked) return;
 
         for(let key in this.entities) {
             let e = this.entities[key];
@@ -221,23 +227,21 @@ class FNAF {
                 if(idx < e.path.length - 1) {
                     e.pos = e.path[idx+1];
                 } else {
-                    // Tenta atacar
                     let side = (key === 'Bonnie') ? 'L' : 'R';
-                    if(!this.doors[side]) this.jumpscare(key);
-                    else { e.pos = '1A'; } // Volta ao início
+                    if(!this.doors[side]) this.jumpscare(e.img);
+                    else { e.pos = '1A'; } 
                 }
             }
         }
         if(this.mon) this.updateCam();
+        this.updateOfficeEnemies();
     }
 
-    jumpscare(who) {
+    jumpscare(img) {
         const overlay = document.getElementById('jumpscare-overlay');
-        const char = document.getElementById('scare-char');
+        const imgEl = document.getElementById('scare-img');
         overlay.style.display = 'flex';
-        char.innerText = who === 'Bonnie' ? '🐰' : who === 'Chica' ? '🐥' : '🐻';
-        if(who === 'Foxy') char.innerText = '🦊';
-        
+        imgEl.src = img;
         setTimeout(() => location.reload(), 2000);
     }
 }
@@ -245,4 +249,4 @@ class FNAF {
 const game = new FNAF();
 </script>
 </body>
-</html>
+    </html>
