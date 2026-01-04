@@ -11,17 +11,9 @@
             position: relative; width: 1000px; height: 600px; 
             background: #0a0a0a; border: 10px solid #333; overflow: hidden;
             box-shadow: inset 0 0 100px #000;
-                        
         }
 
-        /* ESCRITÓRIO */
-        #office { 
-            position: absolute; inset: 0; 
-            background: url('imagens/office.jpg') center/cover no-repeat;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        // Relógio Realista: 45s por hora
+// Relógio Realista: 45s por hora
         setInterval(() => {
             this.hour++;
             if(this.hour >= 6) {
@@ -40,6 +32,13 @@
         }, 1000);
 
         setInterval(() => this.aiTick(), 4000);
+        
+        /* ESCRITÓRIO */
+        #office { 
+            position: absolute; inset: 0; 
+            background: url('imagens/office.jpg') center/cover no-repeat;
+            display: flex; justify-content: space-between; align-items: center;
+        }
 
         /* PORTAS */
         .door { position: absolute; top: 0; width: 120px; height: 100%; background: #222; z-index: 50; transition: 0.2s ease-in; border: 4px solid #111; }
@@ -150,40 +149,7 @@
 
 <script>
 class FNAF {
-    
-    }
-
-    start() {
-        // Relógio Realista: 45s por hora
-        setInterval(() => {
-            this.hour++;
-            if(this.hour >= 6) {
-                alert("6 AM - YOU WIN!");
-                location.reload();
-            }
-            document.getElementById('ui-time').innerText = this.hour + " AM";
-        }, 45000);
-
-        setInterval(() => {
-            let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
-            this.pwr -= (use * 0.15);
-            document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
-            document.getElementById('usage-val').innerText = use;
-            if(this.pwr <= 0) this.jumpscare('Freddy');
-        }, 1000);
-
-        setInterval(() => this.aiTick(), 4000);
-    }
-
-    toggleDoor(s) { 
-        this.doors[s] = !this.doors[s]; 
-        document.getElementById(`door-${s}`).classList.toggle('closed', this.doors[s]);
-    }
-
-    toggleLight(s) {
-        this.lights[s] = !this.lights[s];
-        document.getElementById(`light-${s}`).style.opacity = this.lights[s] ? 1 : 0;
-        document.getElementById(`visual-${s}`).stylconstructor() {
+    constructor() {
         this.pwr = 100;
         this.mon = false;
         this.cam = '1A';
@@ -268,7 +234,40 @@ class FNAF {
         }
 
         if(this.mon) this.updateCam();
-    }e.display = (this.lights[s] && this.isAtDoor(s)) ? 'block' : 'none';
+    }
+    }
+
+    start() {
+        // Relógio Realista: 45s por hora
+        setInterval(() => {
+            this.hour++;
+            if(this.hour >= 6) {
+                alert("6 AM - YOU WIN!");
+                location.reload();
+            }
+            document.getElementById('ui-time').innerText = this.hour + " AM";
+        }, 45000);
+
+        setInterval(() => {
+            let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
+            this.pwr -= (use * 0.15);
+            document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
+            document.getElementById('usage-val').innerText = use;
+            if(this.pwr <= 0) this.jumpscare('Freddy');
+        }, 1000);
+
+        setInterval(() => this.aiTick(), 4000);
+    }
+
+    toggleDoor(s) { 
+        this.doors[s] = !this.doors[s]; 
+        document.getElementById(`door-${s}`).classList.toggle('closed', this.doors[s]);
+    }
+
+    toggleLight(s) {
+        this.lights[s] = !this.lights[s];
+        document.getElementById(`light-${s}`).style.opacity = this.lights[s] ? 1 : 0;
+        document.getElementById(`visual-${s}`).style.display = (this.lights[s] && this.isAtDoor(s)) ? 'block' : 'none';
     }
 
     isAtDoor(s) {
