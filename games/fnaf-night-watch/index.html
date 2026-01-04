@@ -126,48 +126,34 @@
 
 <script>
 class FNAF {
-    
+    constructor() {
+        this.pwr = 100;
+        this.mon = false;
+        this.cam = '1A';
+        this.doors = { L: false, R: false };
+        this.lights = { L: false, R: false };
+        this.foxyProgress = 0;
+        
+        this.entities = {
+            'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], icon: '🐰' },
+            'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐥' },
+            'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐻' }
+        };
+
+        this.start();
     }
 
     start() {
-    // Relógio: muda de hora a cada 45 segundos
-    setInterval(() => {
-        this.hour++;
-        if(this.hour >= 6) {
-            alert("6 AM! Você sobreviveu!");
-            location.reload();
-        }
-    }, 45000);
+        setInterval(() => {
+            let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
+            this.pwr -= (use * 0.15);
+            document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
+            document.getElementById('usage-val').innerText = use;
+            if(this.pwr <= 0) this.jumpscare('Freddy');
+        }, 1000);
 
-    // Power drain mais lento
-    setInterval(() => {
-        let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
-        this.pwr -= (use * 0.08);  // era 0.15 → agora drena menos
-        document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
-        document.getElementById('usage-val').innerText = use;
-        if(this.pwr <= 0) this.jumpscare('Freddy');
-    }, 1000);
-
-    // AI mais lenta (7 segundos entre tentativas)
-    setInterval(() => this.aiTick(), 7000);  // era 4000
- constructor() {
- constructor() {
-    this.pwr = 100;
-    this.mon = false;
-    this.cam = '1A';
-    this.hour = 0;  // ← novo: pra contar as horas
-    this.doors = { L: false, R: false };
-    this.lights = { L: false, R: false };
-    this.foxyProgress = -1;  // ← começa "lendo", não atacando logo
-
-    this.entities = {
-        'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'] },
-        'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'] },
-        'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'] }
-    };
-
-    this.start();
-    } 
+        setInterval(() => this.aiTick(), 4000);
+    }
 
     toggleDoor(s) { 
         this.doors[s] = !this.doors[s]; 
@@ -175,16 +161,13 @@ class FNAF {
     }
 
     toggleLight(s) {
-    this.lights[s] = !this.lights[s];
-    document.getElementById(`light-${s}`).style.opacity = this.lights[s] ? 1 : 0;
-    this.updateVisuals();  // ← chama a função nova
+        this.lights[s] = !this.lights[s];
+        document.getElementById(`light-${s}`).style.opacity = this.lights[s] ? 1 : 0;
+        document.getElementById(`visual-${s}`).style.display = (this.lights[s] && this.isAtDoor(s)) ? 'block' : 'none';
+        if(this.lights[s]) { // Efeito de brilho
+            document.getElementById(`visual-${s}`).style.filter = "brightness(1) drop-shadow(0 0 10px #fff)";
+        }
     }
-     updateVisuals() {
-    document.getElementById('visual-L').style.display = 
-        (this.lights.L && this.entities.Bonnie.pos === 'DOOR') ? 'block' : 'none';
-    document.getElementById('visual-R').style.display = 
-        (this.lights.R && (this.entities.Chica.pos === 'DOOR' || this.entities.Freddy.pos === 'DOOR')) ? 'block' : 'none';
-     }
 
     isAtDoor(s) {
         if(s === 'L') return this.entities.Bonnie.pos === 'DOOR';
@@ -225,52 +208,30 @@ class FNAF {
     }
 
     aiTick() {
-    // FOXY - só move se NÃO estiver olhando CAM 1C
-    if(this.cam !== '1C') {
-        if(Math.random() < 0.08) {
+        // Lógica Foxy
+        if(Math.random() > 0.6) {
             this.foxyProgress++;
-            if(this.foxyProgress >= 5) {
-                if(!this.doors.L) {
-                    this.jumpscare('Foxy');
+            if(this.foxyProgress > 4) {
+                if(!this.doors.L) this.jumpscare('Foxy');
+                else { this.foxyProgress = 0; this.pwr -= 5; }
+            }
+        }
+
+        for(let key in this.entities) {
+            let e = this.entities[key];
+            if(Math.random() > 0.5) {
+                let idx = e.path.indexOf(e.pos);
+                if(idx < e.path.length - 1) {
+                    e.pos = e.path[idx+1];
                 } else {
-                    this.foxyProgress = -1;
-                    this.pwr -= 3;
+                    // Tenta atacar
+                    let side = (key === 'Bonnie') ? 'L' : 'R';
+                    if(!this.doors[side]) this.jumpscare(key);
+                    else { e.pos = '1A'; } // Volta ao início
                 }
             }
         }
-    }
-
-    // Bonnie, Chica, Freddy
-    for(let key in this.entities) {
-        let e = this.entities[key];
-
-        // Freddy trava se estiver sendo olhado na câmera
-        if(key === 'Freddy' && this.mon && this.cam === e.pos) {
-            continue;
-        }
-
-        let chance = 0.05; // chance baixa
-        if(key === 'Chica') chance = 0.04;
-        if(key === 'Freddy') chance = 0.03;
-
-        if(Math.random() < chance) {
-            let idx = e.path.indexOf(e.pos);
-            if(idx < e.path.length - 1) {
-                e.pos = e.path[idx + 1];
-            } else {
-                let side = (key === 'Bonnie') ? 'L' : 'R';
-                if(!this.doors[side]) {
-                    this.jumpscare(key);
-                } else {
-                    e.pos = '1A';
-                }
-            }
-        }
-    }
-
-    if(this.mon) this.updateCam();
-    this.updateVisuals();
-    }
+        if(this.mon) this.updateCam();
     }
 
     jumpscare(who) {
@@ -288,3 +249,4 @@ const game = new FNAF();
 </script>
 </body>
 </html>
+
