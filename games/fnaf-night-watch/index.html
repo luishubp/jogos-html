@@ -13,12 +13,46 @@
             box-shadow: inset 0 0 100px #000;
         }
 
+        /* NOVO MENU INICIAL */
+        #main-menu {
+            position: absolute; inset: 0; background: #000; z-index: 5000;
+            display: flex; flex-direction: column; justify-content: center; padding-left: 50px;
+            background: linear-gradient(to right, #000 30%, transparent), url('imagens/office.jpg') center/cover;
+        }
+        .menu-title { font-size: 80px; color: #fff; margin: 0; text-shadow: 4px 4px #f00; }
+        .menu-subtitle { font-size: 25px; color: #888; margin-bottom: 40px; }
+        .menu-btn { 
+            background: none; border: none; color: #fff; font-family: 'VT323'; 
+            font-size: 40px; cursor: pointer; text-align: left; transition: 0.3s; width: fit-content;
+        }
+        .menu-btn:hover { color: #f00; transform: translateX(10px); }
+
         /* ESCRITÓRIO */
         #office { 
             position: absolute; inset: 0; 
             background: url('imagens/office.jpg') center/cover no-repeat;
             display: flex; justify-content: space-between; align-items: center;
         }
+
+        // Relógio Realista: 45s por hora
+        setInterval(() => {
+            this.hour++;
+            if(this.hour >= 6) {
+                alert("6 AM - YOU WIN!");
+                location.reload();
+            }
+            document.getElementById('ui-time').innerText = this.hour + " AM";
+        }, 45000);
+
+        setInterval(() => {
+            let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
+            this.pwr -= (use * 0.15);
+            document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
+            document.getElementById('usage-val').innerText = use;
+            if(this.pwr <= 0) this.jumpscare('Freddy');
+        }, 1000);
+
+        setInterval(() => this.aiTick(), 4000);
 
         /* PORTAS */
         .door { position: absolute; top: 0; width: 120px; height: 100%; background: #222; z-index: 50; transition: 0.2s ease-in; border: 4px solid #111; }
@@ -129,22 +163,7 @@
 
 <script>
 class FNAF {
-    constructor() {
-        this.pwr = 100;
-        this.mon = false;
-        this.cam = '1A';
-        this.hour = 0;
-        this.doors = { L: false, R: false };
-        this.lights = { L: false, R: false };
-        this.foxyProgress = 0;
-        
-        this.entities = {
-            'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], icon: '🐰', speed: 0.08 },
-            'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐥', speed: 0.07 },
-            'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐻', speed: 0.04 }
-        };
-
-        this.start();
+    
     }
 
     start() {
@@ -177,7 +196,92 @@ class FNAF {
     toggleLight(s) {
         this.lights[s] = !this.lights[s];
         document.getElementById(`light-${s}`).style.opacity = this.lights[s] ? 1 : 0;
-        document.getElementById(`visual-${s}`).style.display = (this.lights[s] && this.isAtDoor(s)) ? 'block' : 'none';
+        document.getElementById(`visual-${s}`).stylconstructor() {
+        this.pwr = 100;
+        this.mon = false;
+        this.cam = '1A';
+        this.hour = 0;
+        this.night = 1; // Você pode alterar para testar as outras noites
+        this.doors = { L: false, R: false };
+        this.lights = { L: false, R: false };
+        this.foxyProgress = 0;
+        this.gameStarted = false;
+        
+        this.entities = {
+            'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], icon: '🐰', speed: 0.08 },
+            'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐥', speed: 0.07 },
+            'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐻', speed: 0.04 }
+        };
+    }
+
+    aiTick() {
+        if(!this.gameStarted) return;
+
+        // --- LÓGICA DO FOXY POR NOITE ---
+        let foxyChance = 0;
+        let canFoxyMove = false;
+
+        switch(this.night) {
+            case 1:
+                // Noite 1: Só ataca a partir das 4 AM
+                if(this.hour >= 4) { foxyChance = 0.08; canFoxyMove = true; }
+                break;
+            case 2:
+                // Noite 2: Ataca a qualquer momento
+                foxyChance = 0.10;
+                canFoxyMove = true;
+                break;
+            case 3:
+                // Noite 3: Velocidade próxima da Chica/Bonnie (frequente)
+                foxyChance = 0.15; 
+                canFoxyMove = true;
+                break;
+            case 4:
+                // Noite 4: Ataca a partir da 1 AM com frequência
+                if(this.hour >= 1) { foxyChance = 0.20; canFoxyMove = true; }
+                break;
+            case 5:
+            case 6:
+                // Noites 5 e 6: Muito rápido e frequente, mas possível de parar
+                foxyChance = 0.28;
+                canFoxyMove = true;
+                break;
+        }
+
+        // Execução do movimento do Foxy
+        if(canFoxyMove && this.cam !== '1C' && Math.random() < foxyChance) {
+            this.foxyProgress++;
+            if(this.foxyProgress > 4) {
+                if(!this.doors.L) {
+                    this.jumpscare('Foxy');
+                } else {
+                    // Bloqueado pela porta: reseta e drena energia
+                    this.foxyProgress = 0; 
+                    this.pwr -= 6; 
+                }
+            }
+        }
+
+        // --- LÓGICA DOS OUTROS (BONNIE, CHICA, FREDDY) ---
+        for(let key in this.entities) {
+            let e = this.entities[key];
+            // Ajuste leve de dificuldade para Bonnie e Chica nas noites avançadas
+            let speedBoost = this.night >= 3 ? 0.02 : 0;
+            
+            if(Math.random() < (e.speed + speedBoost)) {
+                let idx = e.path.indexOf(e.pos);
+                if(idx < e.path.length - 1) {
+                    e.pos = e.path[idx+1];
+                } else {
+                    let side = (key === 'Bonnie') ? 'L' : 'R';
+                    if(!this.doors[side]) this.jumpscare(key);
+                    else { e.pos = '1A'; }
+                }
+            }
+        }
+
+        if(this.mon) this.updateCam();
+    }e.display = (this.lights[s] && this.isAtDoor(s)) ? 'block' : 'none';
     }
 
     isAtDoor(s) {
