@@ -189,19 +189,28 @@ class FNAF {
         this.updateCam();
     }
 
-    updateCam() {
-        const display = document.getElementById('animatronic-visual');
-        display.style.display = 'none';
-        
-        // Foxy (CAM 1C Especial)
-        if(this.cam === '1C') {
-            display.style.display = 'block';
-            display.innerText = this.foxyProgress < 2 ? '🚩' : '🦊';
+    start() {
+    // Relógio (45 segundos por hora)
+    setInterval(() => {
+        this.hour++;
+        if(this.hour >= 6) {
+            alert("6 AM! Você sobreviveu a noite!");
+            location.reload();
         }
+    }, 45000);
 
-        for(let key in this.entities) {
-            let e = this.entities[key];
-            if(e.pos === this.cam) {
+    // Power mais lento
+    setInterval(() => {
+        let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
+        this.pwr -= (use * 0.08);  // ← menos drenagem
+        document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
+        document.getElementById('usage-val').innerText = use;
+        if(this.pwr <= 0) this.jumpscare('Freddy');
+    }, 1000);
+
+    // AI mais lenta (7 segundos entre tentativas)
+    setInterval(() => this.aiTick(), 7000);
+    }
                 display.style.display = 'block';
                 display.innerText = e.icon;
                 display.style.left = (Math.random() * 50 + 20) + "%";
