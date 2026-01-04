@@ -13,23 +13,19 @@
             box-shadow: inset 0 0 100px #000;
         }
 
-        /* MENU INICIAL */
+        /* NOVO MENU INICIAL */
         #main-menu {
             position: absolute; inset: 0; background: #000; z-index: 5000;
             display: flex; flex-direction: column; justify-content: center; padding-left: 50px;
+            background: linear-gradient(to right, #000 30%, transparent), url('imagens/office.jpg') center/cover;
         }
-        #menu-static {
-            position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuW9nNe/giphy.gif');
-            opacity: 0.1; pointer-events: none;
-        }
-        .menu-title { font-size: 80px; color: #fff; margin: 0; text-shadow: 2px 2px #f00; line-height: 0.9; }
-        .menu-subtitle { font-size: 30px; color: #666; margin-bottom: 40px; }
+        .menu-title { font-size: 80px; color: #fff; margin: 0; text-shadow: 4px 4px #f00; }
+        .menu-subtitle { font-size: 25px; color: #888; margin-bottom: 40px; }
         .menu-btn { 
             background: none; border: none; color: #fff; font-family: 'VT323'; 
-            font-size: 40px; text-align: left; cursor: pointer; transition: 0.2s; 
-            width: fit-content;
+            font-size: 40px; cursor: pointer; text-align: left; transition: 0.3s; width: fit-content;
         }
-        .menu-btn:hover { color: #f00; transform: scale(1.1); padding-left: 10px; }
+        .menu-btn:hover { color: #f00; transform: translateX(10px); }
 
         /* ESCRITÓRIO */
         #office { 
@@ -87,14 +83,12 @@
 <body>
 
 <div id="screen-container">
-    
     <div id="main-menu">
-        <div id="menu-static"></div>
-        <h1 class="menu-title">FIVE<br>NIGHTS<br>AT THE<br>OFFICE</h1>
-        <p class="menu-subtitle">Mobile Edition v1.0</p>
+        <h1 class="menu-title">FIVE NIGHTS</h1>
+        <p class="menu-subtitle">Mobile Edition</p>
         <button class="menu-btn" onclick="game.initGame()">New Game</button>
-        <button class="menu-btn" style="opacity:0.5; cursor:not-allowed;">Continue</button>
-        <button class="menu-btn" onclick="alert('IA Velocities:\nFoxy: 0.12\nFreddy: 0.04\nBonnie: 0.08\nChica: 0.07')">Settings</button>
+        <button class="menu-btn" style="opacity: 0.5; cursor: default;">Continue</button>
+        <button class="menu-btn" style="opacity: 0.5; cursor: default;">Settings</button>
     </div>
 
     <div id="office">
@@ -177,10 +171,10 @@ class FNAF {
     initGame() {
         document.getElementById('main-menu').style.display = 'none';
         this.gameStarted = true;
-        this.startLoop();
+        this.startCycles();
     }
 
-    startLoop() {
+    startCycles() {
         // Relógio Realista: 45s por hora
         setInterval(() => {
             this.hour++;
@@ -255,7 +249,7 @@ class FNAF {
 
     aiTick() {
         if(!this.gameStarted) return;
-        // Foxy (Speed 0.12)
+        // Lógica Foxy (Speed 0.12)
         if(Math.random() < 0.12) {
             this.foxyProgress++;
             if(this.foxyProgress > 4) {
@@ -264,6 +258,7 @@ class FNAF {
             }
         }
 
+        // Lógica Outros Personagens
         for(let key in this.entities) {
             let e = this.entities[key];
             if(Math.random() < e.speed) {
