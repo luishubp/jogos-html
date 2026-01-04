@@ -127,20 +127,21 @@
 <script>
 class FNAF {
     constructor() {
-        this.pwr = 100;
-        this.mon = false;
-        this.cam = '1A';
-        this.doors = { L: false, R: false };
-        this.lights = { L: false, R: false };
-        this.foxyProgress = 0;
-        
-        this.entities = {
-            'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], icon: '🐰' },
-            'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐥' },
-            'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐻' }
-        };
+    this.pwr = 100;
+    this.mon = false;
+    this.cam = '1A';
+    this.doors = { L: false, R: false };
+    this.lights = { L: false, R: false };
+    this.foxyProgress = 0;
+    
+    this.entities = {
+        'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], icon: '🐰' },
+        'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐥' },
+        'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐻' }
+    };
 
-        this.start();
+    this.start();
+    }
     }
 
     start() {
