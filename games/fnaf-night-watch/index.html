@@ -14,13 +14,12 @@
         }
 
         /* MENU E CUSTOM NIGHT */
-        #game-menu { position: absolute; inset: 0; background: #000; z-index: 2000; display: flex; flex-direction: column; justify-content: center; padding: 50px; border: 5px solid #333; }
-        #custom-night-panel { position: absolute; inset: 0; background: #000; z-index: 2100; display: none; padding: 30px; border: 5px solid #333; text-align: center; }
+        #game-menu { position: absolute; inset: 0; background: #000; z-index: 2000; display: flex; flex-direction: column; justify-content: center; padding: 50px; }
+        #custom-night-panel { position: absolute; inset: 0; background: #000; z-index: 2100; display: none; padding: 30px; text-align: center; }
         .menu-title { font-size: 60px; color: #f00; margin-bottom: 20px; }
-        .m-btn { background: none; border: 2px solid #fff; color: #fff; font-family: 'VT323'; font-size: 30px; cursor: pointer; margin: 10px; padding: 10px 20px; transition: 0.3s; }
-        .m-btn:hover { background: #fff; color: #000; }
+        .m-btn { background: none; border: 2px solid #fff; color: #fff; font-family: 'VT323'; font-size: 30px; cursor: pointer; margin: 10px; padding: 10px 20px; }
         .cn-setup { display: flex; justify-content: center; gap: 15px; margin: 30px 0; }
-        .ai-card { background: #111; border: 1px solid #fff; padding: 10px; width: 120px; }
+        .ai-card { background: #111; border: 1px solid #fff; padding: 10px; width: 100px; }
 
         /* ESCRITÓRIO */
         #office { position: absolute; inset: 0; background: linear-gradient(to bottom, #1a1a1a, #050505); display: flex; justify-content: space-between; align-items: center; }
@@ -36,13 +35,13 @@
         .side-panel { position: absolute; top: 35%; display: flex; flex-direction: column; gap: 15px; z-index: 100; padding: 10px; background: #222; border: 2px solid #444; }
         .btn { width: 60px; height: 40px; cursor: pointer; background: #000; color: #fff; border: 2px solid #fff; font-family: 'VT323'; }
 
-        /* MONITOR */
+        /* MONITOR E MAPA COMPLETO */
         #camera-monitor { position: absolute; inset: 0; background: #000; z-index: 500; display: none; }
         #cam-view { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
-        #animatronic-visual { position: absolute; font-size: 150px; z-index: 510; }
+        #animatronic-visual { position: absolute; font-size: 150px; z-index: 510; text-shadow: 0 0 20px #000; }
         #static { position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuW9nNe/giphy.gif'); opacity: 0.15; pointer-events: none; }
         
-        #map { position: absolute; bottom: 20px; right: 20px; width: 250px; height: 200px; background: rgba(0,0,0,0.9); border: 2px solid #fff; z-index: 600; }
+        #map { position: absolute; bottom: 20px; right: 20px; width: 250px; height: 210px; background: rgba(0,0,0,0.9); border: 2px solid #fff; z-index: 600; }
         .cam-btn { position: absolute; width: 40px; height: 25px; background: #333; border: 1px solid #fff; color: #fff; font-size: 12px; cursor: pointer; }
         .cam-btn.active { background: #0f0; color: #000; }
 
@@ -54,14 +53,14 @@
         #jumpscare-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; align-items: center; justify-content: center; font-size: 300px; animation: shake 0.1s infinite; }
         @keyframes shake { 0% { transform: translate(5px, 5px); } 50% { transform: translate(-5px, -5px); } }
         
-        #visual-L, #visual-R { position:absolute; bottom:20px; font-size:120px; z-index:45; display:none; filter:brightness(0.2); }
+        .office-char { position:absolute; bottom:20px; font-size:120px; z-index:45; display:none; filter:brightness(0.2); }
     </style>
 </head>
 <body>
 
 <div id="screen-container">
     <div id="game-menu">
-        <h1 class="menu-title">FIVE NIGHTS</h1>
+        <h1 class="menu-title">FNAF: MOBILE</h1>
         <button class="m-btn" onclick="game.startGame(false)">NEW GAME</button>
         <button class="m-btn" onclick="document.getElementById('custom-night-panel').style.display='block'">CUSTOM NIGHT</button>
     </div>
@@ -74,12 +73,12 @@
             <div class="ai-card">🐥<br><span id="val-chica">0</span><br><button onclick="game.adj('chica', 1)">+</button><button onclick="game.adj('chica', -1)">-</button></div>
             <div class="ai-card">🦊<br><span id="val-foxy">0</span><br><button onclick="game.adj('foxy', 1)">+</button><button onclick="game.adj('foxy', -1)">-</button></div>
         </div>
-        <button class="m-btn" onclick="game.startGame(true)">START</button>
+        <button class="m-btn" onclick="game.startGame(true)">START NIGHT</button>
     </div>
 
     <div id="office">
-        <div id="visual-L">🐰</div>
-        <div id="visual-R">🐥</div>
+        <div id="visual-L" class="office-char" style="left:20px">🐰</div>
+        <div id="visual-R" class="office-char" style="right:20px">🐥</div>
         <div id="door-L" class="door"></div>
         <div id="light-L" class="light-effect"></div>
         <div class="side-panel" style="left: 130px;"><button class="btn" onclick="game.toggleDoor('L')">DOOR</button><button class="btn" onclick="game.toggleLight('L')">LIGHT</button></div>
@@ -96,8 +95,12 @@
                 <button class="cam-btn active" style="top:10px; left:40%" onclick="game.setCam('1A', this)">1A</button>
                 <button class="cam-btn" style="top:40px; left:35%" onclick="game.setCam('1B', this)">1B</button>
                 <button class="cam-btn" style="top:90px; left:5%" onclick="game.setCam('1C', this)">1C</button>
-                <button class="cam-btn" style="bottom:60px; left:25%" onclick="game.setCam('2A', this)">2A</button>
-                <button class="cam-btn" style="bottom:20px; left:25%" onclick="game.setCam('2B', this)">2B</button>
+                <button class="cam-btn" style="top:40px; left:5%" onclick="game.setCam('5', this)">5</button>
+                <button class="cam-btn" style="top:50px; right:5%" onclick="game.setCam('7', this)">7</button>
+                <button class="cam-btn" style="bottom:70px; left:25%" onclick="game.setCam('2A', this)">2A</button>
+                <button class="cam-btn" style="bottom:30px; left:25%" onclick="game.setCam('2B', this)">2B</button>
+                <button class="cam-btn" style="bottom:70px; right:25%" onclick="game.setCam('4A', this)">4A</button>
+                <button class="cam-btn" style="bottom:30px; right:25%" onclick="game.setCam('4B', this)">4B</button>
             </div>
         </div>
     </div>
@@ -110,7 +113,7 @@
 <div id="jumpscare-overlay">🐻</div>
 
 <script>
-class FNAF {
+class FNAFGame {
     constructor() {
         this.pwr = 100; this.mon = false; this.cam = '1A'; this.hour = 0;
         this.doors = {L:false, R:false}; this.lights = {L:false, R:false};
@@ -129,7 +132,7 @@ class FNAF {
         // Relógio Realista (45s por hora)
         setInterval(() => {
             this.hour++;
-            if(this.hour >= 6) { alert("6 AM!"); location.reload(); }
+            if(this.hour >= 6) { alert("6 AM - VOCÊ SOBREVIVEU!"); location.reload(); }
             document.getElementById('hour-val').innerText = this.hour;
         }, 45000);
 
@@ -154,32 +157,45 @@ class FNAF {
 
     updateCam() {
         const v = document.getElementById('animatronic-visual'); v.innerText = "";
-        if(this.cam === '1C') { v.innerText = this.foxyStage > 2 ? '🦊' : '🚩'; return; }
+        if(this.cam === '1C') {
+            if(this.foxyStage === 0) v.innerText = "🚩";
+            else if(this.foxyStage < 3) v.innerText = "🕵️";
+            else v.innerText = "🦊";
+            return;
+        }
         for(let c in this.pos) { if(this.pos[c] === this.cam) v.innerText = (c==='freddy'?'🐻':c==='bonnie'?'🐰':'🐥'); }
     }
 
     updateOffice() {
         document.getElementById('visual-L').style.display = (this.lights.L && this.pos.bonnie === 'DOOR') ? 'block' : 'none';
-        document.getElementById('visual-R').style.display = (this.lights.R && (this.pos.chica === 'DOOR' || this.pos.freddy === 'DOOR')) ? 'block' : 'none';
+        let rightAttack = (this.pos.chica === 'DOOR' || this.pos.freddy === 'DOOR');
+        document.getElementById('visual-R').style.display = (this.lights.R && rightAttack) ? 'block' : 'none';
+        if(this.lights.R && rightAttack) document.getElementById('visual-R').innerText = (this.pos.chica === 'DOOR' ? '🐥' : '🐻');
     }
 
     aiMove() {
-        // FOXY: Se não olhar CAM 1C, avança
-        if(this.cam !== '1C' && Math.random()*20 < this.ai.foxy) {
-            this.foxyStage++;
-            if(this.foxyStage > 4) { if(!this.doors.L) this.jumpscare('🦊'); else { this.foxyStage = 0; this.pwr -= 5; } }
+        // FOXY: Se não olhar a 1C, ele avança
+        if(this.cam !== '1C') {
+            if(Math.random()*20 < this.ai.foxy) {
+                this.foxyStage++;
+                if(this.foxyStage > 4) {
+                    if(!this.doors.L) this.jumpscare('🦊');
+                    else { this.foxyStage = 0; this.pwr -= 6; }
+                }
+            }
         }
 
-        // FREDDY: Trava se monitor na câmera dele
+        // FREDDY TRAVA: Se monitor aberto na câmera dele, ele não move
         let freddyLocked = (this.mon && this.cam === this.pos.freddy);
 
         for(let c in this.pos) {
             if(c === 'freddy' && freddyLocked) continue;
             if(Math.random()*20 < this.ai[c]) {
-                if(this.pos[c] === '1A') this.pos[c] = '1B';
-                else if(this.pos[c] === '1B') this.pos[c] = (c==='bonnie'?'2A':'2B');
-                else if(this.pos[c] === '2A' || this.pos[c] === '2B') this.pos[c] = 'DOOR';
-                else if(this.pos[c] === 'DOOR') {
+                let path = c === 'bonnie' ? ['1A','1B','5','2A','2B','DOOR'] : ['1A','1B','7','4A','4B','DOOR'];
+                let curIdx = path.indexOf(this.pos[c]);
+                if(curIdx < path.length - 1) {
+                    this.pos[c] = path[curIdx + 1];
+                } else {
                     if(!this.doors[c==='bonnie'?'L':'R']) this.jumpscare(c==='freddy'?'🐻':c==='bonnie'?'🐰':'🐥');
                     else this.pos[c] = '1A';
                 }
@@ -189,9 +205,13 @@ class FNAF {
         this.updateOffice();
     }
 
-    jumpscare(char) { document.getElementById('jumpscare-overlay').innerText = char; document.getElementById('jumpscare-overlay').style.display = 'flex'; setTimeout(()=>location.reload(), 2000); }
+    jumpscare(char) {
+        document.getElementById('jumpscare-overlay').innerText = char;
+        document.getElementById('jumpscare-overlay').style.display = 'flex';
+        setTimeout(()=>location.reload(), 2000);
+    }
 }
-const game = new FNAF();
+const game = new FNAFGame();
 </script>
 </body>
-    </html>
+        </html>
