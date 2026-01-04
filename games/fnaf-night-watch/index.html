@@ -167,50 +167,39 @@ class FNAF {
         if(this.lights[s]) { // Efeito de brilho
             document.getElementById(`visual-${s}`).style.filter = "brightness(1) drop-shadow(0 0 10px #fff)";
         }
- constructor() {
-    this.pwr = 100;
-    this.mon = false;
-    this.cam = '1A';
-    this.hour = 0;
-    this.doors = { L: false, R: false };
-    this.lights = { L: false, R: false };
-    this.foxyProgress = -1;  // ← Foxy começa "lendo" (não atacando logo)
-
-    // AI balanceada (valores baixos no começo)
-    this.entities = {
-        'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], chance: 0.05 },
-        'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], chance: 0.04 },
-        'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], chance: 0.03 }
-    };
-
-    this.start();
     }
+
+    isAtDoor(s) {
+        if(s === 'L') return this.entities.Bonnie.pos === 'DOOR';
+        if(s === 'R') return this.entities.Chica.pos === 'DOOR' || this.entities.Freddy.pos === 'DOOR';
+    }
+
+    toggleMonitor() {
+        this.mon = !this.mon;
+        document.getElementById('camera-monitor').style.display = this.mon ? 'block' : 'none';
+        if(this.mon) this.updateCam();
+    }
+
+    setCam(id, btn) {
+        this.cam = id;
+        document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         this.updateCam();
     }
 
-    start() {
-    // Relógio (45 segundos por hora)
-    setInterval(() => {
-        this.hour++;
-        if(this.hour >= 6) {
-            alert("6 AM! Você sobreviveu a noite!");
-            location.reload();
+    updateCam() {
+        const display = document.getElementById('animatronic-visual');
+        display.style.display = 'none';
+        
+        // Foxy (CAM 1C Especial)
+        if(this.cam === '1C') {
+            display.style.display = 'block';
+            display.innerText = this.foxyProgress < 2 ? '🚩' : '🦊';
         }
-    }, 45000);
 
-    // Power mais lento
-    setInterval(() => {
-        let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
-        this.pwr -= (use * 0.08);  // ← menos drenagem
-        document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
-        document.getElementById('usage-val').innerText = use;
-        if(this.pwr <= 0) this.jumpscare('Freddy');
-    }, 1000);
-
-    // AI mais lenta (7 segundos entre tentativas)
-    setInterval(() => this.aiTick(), 7000);
-    }
+        for(let key in this.entities) {
+            let e = this.entities[key];
+            if(e.pos === this.cam) {
                 display.style.display = 'block';
                 display.innerText = e.icon;
                 display.style.left = (Math.random() * 50 + 20) + "%";
