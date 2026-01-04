@@ -147,15 +147,26 @@ class FNAF {
     }
 
     start() {
-        setInterval(() => {
-            let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
-            this.pwr -= (use * 0.15);
-            document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
-            document.getElementById('usage-val').innerText = use;
-            if(this.pwr <= 0) this.jumpscare('Freddy');
-        }, 1000);
+    // Relógio: muda de hora a cada 45 segundos
+    setInterval(() => {
+        this.hour++;
+        if(this.hour >= 6) {
+            alert("6 AM! Você sobreviveu!");
+            location.reload();
+        }
+    }, 45000);
 
-        setInterval(() => this.aiTick(), 4000);
+    // Power drain mais lento
+    setInterval(() => {
+        let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
+        this.pwr -= (use * 0.08);  // era 0.15 → agora drena menos
+        document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
+        document.getElementById('usage-val').innerText = use;
+        if(this.pwr <= 0) this.jumpscare('Freddy');
+    }, 1000);
+
+    // AI mais lenta (7 segundos entre tentativas)
+    setInterval(() => this.aiTick(), 7000);  // era 4000
     }
 
     toggleDoor(s) { 
