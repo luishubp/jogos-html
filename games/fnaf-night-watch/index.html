@@ -151,13 +151,14 @@ class FNAF {
     // AI mais lenta (7 segundos entre tentativas)
     setInterval(() => this.aiTick(), 7000);  // era 4000
  constructor() {
+ constructor() {
     this.pwr = 100;
     this.mon = false;
     this.cam = '1A';
-    this.hour = 0;                  // ← novo: conta as horas
+    this.hour = 0;  // ← novo: pra contar as horas
     this.doors = { L: false, R: false };
     this.lights = { L: false, R: false };
-    this.foxyProgress = -1;         // ← Foxy começa "lendo", não atacando logo
+    this.foxyProgress = -1;  // ← começa "lendo", não atacando logo
 
     this.entities = {
         'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'] },
@@ -166,7 +167,7 @@ class FNAF {
     };
 
     this.start();
-    }   }
+    } 
 
     toggleDoor(s) { 
         this.doors[s] = !this.doors[s]; 
