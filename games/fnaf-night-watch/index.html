@@ -175,12 +175,10 @@ class FNAF {
     }
 
     toggleLight(s) {
-        this.lights[s] = !this.lights[s];
-        document.getElementById(`light-${s}`).style.opacity = this.lights[s] ? 1 : 0;
-        document.getElementById(`visual-${s}`).style.display = (this.lights[s] && this.isAtDoor(s)) ? 'block' : 'none';
-        if(this.lights[s]) { // Efeito de brilho
-            document.getElementById(`visual-${s}`).style.filter = "brightness(1) drop-shadow(0 0 10px #fff)";
-        }
+    this.lights[s] = !this.lights[s];
+    document.getElementById(`light-${s}`).style.opacity = this.lights[s] ? 1 : 0;
+    this.updateVisuals();  // ← chama a função nova
+    }
     }
 
     isAtDoor(s) {
