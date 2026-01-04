@@ -13,11 +13,29 @@
             box-shadow: inset 0 0 100px #000;
         }
 
+        /* MENU INICIAL */
+        #main-menu {
+            position: absolute; inset: 0; background: #000; z-index: 5000;
+            display: flex; flex-direction: column; justify-content: center; padding-left: 50px;
+        }
+        #menu-static {
+            position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuW9nNe/giphy.gif');
+            opacity: 0.1; pointer-events: none;
+        }
+        .menu-title { font-size: 80px; color: #fff; margin: 0; text-shadow: 2px 2px #f00; line-height: 0.9; }
+        .menu-subtitle { font-size: 30px; color: #666; margin-bottom: 40px; }
+        .menu-btn { 
+            background: none; border: none; color: #fff; font-family: 'VT323'; 
+            font-size: 40px; text-align: left; cursor: pointer; transition: 0.2s; 
+            width: fit-content;
+        }
+        .menu-btn:hover { color: #f00; transform: scale(1.1); padding-left: 10px; }
+
         /* ESCRITÓRIO */
         #office { 
-    position: absolute; inset: 0; 
-    background: url('imagens/office.jpg') center/cover no-repeat;
-    display: flex; justify-content: space-between; align-items: center;
+            position: absolute; inset: 0; 
+            background: url('imagens/office.jpg') center/cover no-repeat;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
         /* PORTAS */
@@ -62,19 +80,30 @@
 
         /* UI */
         #ui { position: absolute; bottom: 20px; left: 20px; z-index: 1000; font-size: 24px; }
+        #ui-time { position: absolute; top: 20px; right: 20px; z-index: 1000; font-size: 35px; text-align: right; }
         #monitor-trigger { position: absolute; bottom: 0; left: 30%; width: 40%; height: 40px; background: rgba(255,255,255,0.1); border-top: 2px solid #fff; z-index: 1100; cursor: pointer; color: #fff; text-align: center; line-height: 40px; }
     </style>
 </head>
 <body>
 
 <div id="screen-container">
+    
+    <div id="main-menu">
+        <div id="menu-static"></div>
+        <h1 class="menu-title">FIVE<br>NIGHTS<br>AT THE<br>OFFICE</h1>
+        <p class="menu-subtitle">Mobile Edition v1.0</p>
+        <button class="menu-btn" onclick="game.initGame()">New Game</button>
+        <button class="menu-btn" style="opacity:0.5; cursor:not-allowed;">Continue</button>
+        <button class="menu-btn" onclick="alert('IA Velocities:\nFoxy: 0.12\nFreddy: 0.04\nBonnie: 0.08\nChica: 0.07')">Settings</button>
+    </div>
+
     <div id="office">
         <div id="visual-L" style="position:absolute; left:-20px; bottom:0; width:200px; height:100%; z-index:45; display:none; overflow:hidden;">
-    <img src="imagem/bonnie.jpg" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.8);">
-</div>
-<div id="visual-R" style="position:absolute; right:-20px; bottom:0; width:200px; height:100%; z-index:45; display:none; overflow:hidden;">
-    <img src="imagem/chica.jpg" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.8);">
-</div>
+            <img src="imagem/bonnie.jpg" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.8);">
+        </div>
+        <div id="visual-R" style="position:absolute; right:-20px; bottom:0; width:200px; height:100%; z-index:45; display:none; overflow:hidden;">
+            <img src="imagem/chica.jpg" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.8);">
+        </div>
         <div id="door-L" class="door"></div>
         <div id="light-L" class="light-effect"></div>
         
@@ -116,6 +145,8 @@
         USAGE: <span id="usage-val">1</span>
     </div>
 
+    <div id="ui-time">12 AM</div>
+
     <div id="monitor-trigger" onclick="game.toggleMonitor()">MONITOR</div>
 </div>
 
@@ -130,20 +161,36 @@ class FNAF {
         this.pwr = 100;
         this.mon = false;
         this.cam = '1A';
+        this.hour = 0;
         this.doors = { L: false, R: false };
         this.lights = { L: false, R: false };
         this.foxyProgress = 0;
+        this.gameStarted = false;
         
         this.entities = {
-            'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], icon: '🐰' },
-            'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐥' },
-            'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐻' }
+            'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], icon: '🐰', speed: 0.08 },
+            'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐥', speed: 0.07 },
+            'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], icon: '🐻', speed: 0.04 }
         };
-
-        this.start();
     }
 
-    start() {
+    initGame() {
+        document.getElementById('main-menu').style.display = 'none';
+        this.gameStarted = true;
+        this.startLoop();
+    }
+
+    startLoop() {
+        // Relógio Realista: 45s por hora
+        setInterval(() => {
+            this.hour++;
+            if(this.hour >= 6) {
+                alert("6 AM - YOU WIN!");
+                location.reload();
+            }
+            document.getElementById('ui-time').innerText = this.hour + " AM";
+        }, 45000);
+
         setInterval(() => {
             let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
             this.pwr -= (use * 0.15);
@@ -156,17 +203,16 @@ class FNAF {
     }
 
     toggleDoor(s) { 
+        if(!this.gameStarted) return;
         this.doors[s] = !this.doors[s]; 
         document.getElementById(`door-${s}`).classList.toggle('closed', this.doors[s]);
     }
 
     toggleLight(s) {
+        if(!this.gameStarted) return;
         this.lights[s] = !this.lights[s];
         document.getElementById(`light-${s}`).style.opacity = this.lights[s] ? 1 : 0;
         document.getElementById(`visual-${s}`).style.display = (this.lights[s] && this.isAtDoor(s)) ? 'block' : 'none';
-        if(this.lights[s]) { // Efeito de brilho
-            document.getElementById(`visual-${s}`).style.filter = "brightness(1) drop-shadow(0 0 10px #fff)";
-        }
     }
 
     isAtDoor(s) {
@@ -175,6 +221,7 @@ class FNAF {
     }
 
     toggleMonitor() {
+        if(!this.gameStarted) return;
         this.mon = !this.mon;
         document.getElementById('camera-monitor').style.display = this.mon ? 'block' : 'none';
         if(this.mon) this.updateCam();
@@ -191,7 +238,6 @@ class FNAF {
         const display = document.getElementById('animatronic-visual');
         display.style.display = 'none';
         
-        // Foxy (CAM 1C Especial)
         if(this.cam === '1C') {
             display.style.display = 'block';
             display.innerText = this.foxyProgress < 2 ? '🚩' : '🦊';
@@ -208,8 +254,9 @@ class FNAF {
     }
 
     aiTick() {
-        // Lógica Foxy
-        if(Math.random() > 0.6) {
+        if(!this.gameStarted) return;
+        // Foxy (Speed 0.12)
+        if(Math.random() < 0.12) {
             this.foxyProgress++;
             if(this.foxyProgress > 4) {
                 if(!this.doors.L) this.jumpscare('Foxy');
@@ -219,15 +266,14 @@ class FNAF {
 
         for(let key in this.entities) {
             let e = this.entities[key];
-            if(Math.random() > 0.5) {
+            if(Math.random() < e.speed) {
                 let idx = e.path.indexOf(e.pos);
                 if(idx < e.path.length - 1) {
                     e.pos = e.path[idx+1];
                 } else {
-                    // Tenta atacar
                     let side = (key === 'Bonnie') ? 'L' : 'R';
                     if(!this.doors[side]) this.jumpscare(key);
-                    else { e.pos = '1A'; } // Volta ao início
+                    else { e.pos = '1A'; }
                 }
             }
         }
@@ -238,9 +284,7 @@ class FNAF {
         const overlay = document.getElementById('jumpscare-overlay');
         const char = document.getElementById('scare-char');
         overlay.style.display = 'flex';
-        char.innerText = who === 'Bonnie' ? '🐰' : who === 'Chica' ? '🐥' : '🐻';
-        if(who === 'Foxy') char.innerText = '🦊';
-        
+        char.innerText = who === 'Bonnie' ? '🐰' : who === 'Chica' ? '🐥' : (who === 'Foxy' ? '🦊' : '🐻');
         setTimeout(() => location.reload(), 2000);
     }
 }
@@ -249,4 +293,3 @@ const game = new FNAF();
 </script>
 </body>
 </html>
-
