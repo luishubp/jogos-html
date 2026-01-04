@@ -18,7 +18,6 @@
     position: absolute; inset: 0; 
     background: url('imagens/office.jpg') center/cover no-repeat;
     display: flex; justify-content: space-between; align-items: center;
-    
         }
 
         /* PORTAS */
@@ -70,12 +69,9 @@
 
 <div id="screen-container">
     <div id="office">
-        <div id="visual-L" style="position:absolute; left:-50px; bottom:20px; width:250px; height:80%; z-index:45; display:none;">
-    <img src="imagens/bonnie.jpg" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.6) drop-shadow(0 0 20px #444);">
-</div>
-<div id="visual-R" style="position:absolute; right:-50px; bottom:20px; width:250px; height:80%; z-index:45; display:none;">
-    <img src="imagens/chica.jpg" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.6) drop-shadow(0 0 20px #444);">
-</div>
+        <div id="visual-L" style="position:absolute; left:20px; font-size:120px; z-index:45; display:none; filter:brightness(0.2)">🐰</div>
+        <div id="visual-R" style="position:absolute; right:20px; font-size:120px; z-index:45; display:none; filter:brightness(0.2)">🐥</div>
+
         <div id="door-L" class="door"></div>
         <div id="light-L" class="light-effect"></div>
         
@@ -249,4 +245,4 @@ class FNAF {
 const game = new FNAF();
 </script>
 </body>
-    </html>
+</html>
