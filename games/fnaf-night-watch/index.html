@@ -157,7 +157,7 @@ winGame() {
     `;
     setTimeout(() => location.reload(), 4000);
 }
-    startta {
+    this.start() {
         // Power drain balanceado
         setInterval(() => {
             let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
@@ -184,7 +184,7 @@ this.clockInterval = setInterval(() => {
     }
 
     document.getElementById("time-val").innerText = timeText;
-}, 60000); // 45 segundos = 1 hora
+}, 45000); // 45 segundos = 1 hora
 
         
     }
