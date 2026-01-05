@@ -1,191 +1,202 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>FNAF: Ultimate Mobile Edition</title>
-<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>FNAF: Ultimate Mobile Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            background: #000;
+            color: #fff;
+            font-family: 'VT323', monospace;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
 
-<style>
-body {
-  margin: 0;
-  background: #000;
-  color: #fff;
-  font-family: 'VT323', monospace;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
+        #screen-container {
+            position: relative;
+            width: 1000px;
+            height: 600px;
+            background: #0a0a0a;
+            border: 10px solid #333;
+            overflow: hidden;
+            box-shadow: inset 0 0 100px #000;
+        }
 
-#screen-container {
-  position: relative;
-  width: 1000px;
-  height: 600px;
-  background: #0a0a0a;
-  border: 10px solid #333;
-  overflow: hidden;
-  box-shadow: inset 0 0 100px #000;
-}
+        /* RELÓGIO */
+        #clock-ui {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            text-align: right;
+            z-index: 2000;
+            font-size: 26px;
+        }
 
-/* ===== RELÓGIO ===== */
-#time-ui {
-  position: absolute;
-  top: 20px;
-  right: 25px;
-  z-index: 2000;
-  text-align: right;
-  font-size: 28px;
-  line-height: 1.1;
-}
-#night {
-  font-size: 22px;
-}
+        /* ESCRITÓRIO */
+        #office {
+            position: absolute;
+            inset: 0;
+            background: url('imagens/office.jpg') center/cover no-repeat;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-/* ===== ESCRITÓRIO ===== */
-#office {
-  position: absolute;
-  inset: 0;
-  background: #111;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+        /* PORTAS */
+        .door {
+            position: absolute;
+            top: 0;
+            width: 120px;
+            height: 100%;
+            background: #222;
+            z-index: 50;
+            transition: 0.2s ease-in;
+            border: 4px solid #111;
+        }
 
-/* PORTAS */
-.door {
-  position: absolute;
-  top: 0;
-  width: 120px;
-  height: 100%;
-  background: #222;
-  z-index: 50;
-  transition: 0.2s ease-in;
-  border: 4px solid #111;
-}
-#door-L { left: 0; transform: translateY(-100%); }
-#door-R { right: 0; transform: translateY(-100%); }
-.closed { transform: translateY(0) !important; }
+        #door-L { left: 0; transform: translateY(-100%); }
+        #door-R { right: 0; transform: translateY(-100%); }
+        .closed { transform: translateY(0) !important; }
 
-/* LUZES */
-.light-effect {
-  position: absolute;
-  top: 0;
-  width: 300px;
-  height: 100%;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 40;
-}
-#light-L { left: 0; background: linear-gradient(to right, rgba(255,255,200,0.2), transparent); }
-#light-R { right: 0; background: linear-gradient(to left, rgba(255,255,200,0.2), transparent); }
+        /* LUZES */
+        .light-effect {
+            position: absolute;
+            top: 0;
+            width: 300px;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 40;
+        }
 
-/* BOTÕES */
-.side-panel {
-  position: absolute;
-  top: 35%;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  z-index: 100;
-  padding: 10px;
-  background: #222;
-  border: 2px solid #444;
-}
-.btn {
-  width: 60px;
-  height: 40px;
-  cursor: pointer;
-  background: #000;
-  color: #fff;
-  border: 2px solid #fff;
-  font-family: 'VT323';
-}
+        #light-L { left: 0; background: linear-gradient(to right, rgba(255,255,200,0.2), transparent); }
+        #light-R { right: 0; background: linear-gradient(to left, rgba(255,255,200,0.2), transparent); }
 
-/* UI POWER */
-#ui {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  z-index: 1000;
-  font-size: 24px;
-}
+        /* BOTÕES */
+        .side-panel {
+            position: absolute;
+            top: 35%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+            padding: 10px;
+            background: #222;
+            border: 2px solid #444;
+        }
 
-#monitor-trigger {
-  position: absolute;
-  bottom: 0;
-  left: 30%;
-  width: 40%;
-  height: 40px;
-  background: rgba(255,255,255,0.1);
-  border-top: 2px solid #fff;
-  z-index: 1100;
-  cursor: pointer;
-  text-align: center;
-  line-height: 40px;
-}
-</style>
+        .btn {
+            width: 60px;
+            height: 40px;
+            cursor: pointer;
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            font-family: 'VT323';
+        }
+
+        /* UI */
+        #ui {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            font-size: 24px;
+        }
+
+        #monitor-trigger {
+            position: absolute;
+            bottom: 0;
+            left: 30%;
+            width: 40%;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-top: 2px solid #fff;
+            z-index: 1100;
+            cursor: pointer;
+            text-align: center;
+            line-height: 40px;
+        }
+    </style>
 </head>
-
 <body>
 
 <div id="screen-container">
 
-  <!-- RELÓGIO -->
-  <div id="time-ui">
-    <div id="clock">12:00 AM</div>
-    <div id="night">night 1</div>
-  </div>
-
-  <div id="office">
-    <div id="door-L" class="door"></div>
-    <div id="light-L" class="light-effect"></div>
-
-    <div class="side-panel" style="left:130px">
-      <button class="btn" onclick="game.toggleDoor('L')">DOOR</button>
-      <button class="btn" onclick="game.toggleLight('L')">LIGHT</button>
+    <!-- RELÓGIO -->
+    <div id="clock-ui">
+        <div id="time">12:00 AM</div>
+        <div id="night">night 1</div>
     </div>
 
-    <div id="door-R" class="door"></div>
-    <div id="light-R" class="light-effect"></div>
+    <div id="office">
+        <div id="door-L" class="door"></div>
+        <div id="light-L" class="light-effect"></div>
 
-    <div class="side-panel" style="right:130px">
-      <button class="btn" onclick="game.toggleDoor('R')">DOOR</button>
-      <button class="btn" onclick="game.toggleLight('R')">LIGHT</button>
+        <div class="side-panel" style="left: 130px;">
+            <button class="btn" onclick="game.toggleDoor('L')">DOOR</button>
+            <button class="btn" onclick="game.toggleLight('L')">LIGHT</button>
+        </div>
+
+        <div id="door-R" class="door"></div>
+        <div id="light-R" class="light-effect"></div>
+
+        <div class="side-panel" style="right: 130px;">
+            <button class="btn" onclick="game.toggleDoor('R')">DOOR</button>
+            <button class="btn" onclick="game.toggleLight('R')">LIGHT</button>
+        </div>
     </div>
-  </div>
 
-  <div id="ui">
-    POWER: <span id="pwr-val">100</span>%<br>
-    USAGE: <span id="usage-val">1</span>
-  </div>
+    <div id="ui">
+        POWER: <span id="pwr-val">100</span>%<br>
+        USAGE: <span id="usage-val">1</span>
+    </div>
 
-  <div id="monitor-trigger" onclick="game.toggleMonitor()">MONITOR</div>
+    <div id="monitor-trigger" onclick="game.toggleMonitor()">MONITOR</div>
 </div>
 
 <script>
 class FNAF {
-  constructor() {
-    this.pwr = 100;
-    this.hour = 0;
-    this.night = 1;
-    this.startClock();
-  }
+    constructor() {
+        this.pwr = 100;
+        this.hour = 12;
+        this.night = 1;
+        this.isAM = true;
 
-  startClock() {
-    setInterval(() => {
-      this.hour++;
-      if (this.hour <= 6) {
-        document.getElementById('clock').innerText =
-          this.hour === 0 ? "12:00 AM" :
-          this.hour < 6 ? this.hour + ":00 AM" : "6:00 AM";
-      }
-    }, 45000); // tempo padrão FNAF
-  }
+        this.startClock();
+        this.startPower();
+    }
 
-  toggleDoor() {}
-  toggleLight() {}
-  toggleMonitor() {}
+    startClock() {
+        setInterval(() => {
+            this.hour++;
+            if (this.hour > 12) this.hour = 1;
+
+            if (this.hour === 6) {
+                this.hour = 12;
+                this.night++;
+            }
+
+            document.getElementById('time').innerText = `${this.hour}:00 AM`;
+            document.getElementById('night').innerText = `night ${this.night}`;
+        }, 45000); // tempo clássico FNAF
+    }
+
+    startPower() {
+        setInterval(() => {
+            this.pwr -= 0.1;
+            document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
+        }, 1000);
+    }
+
+    toggleDoor() {}
+    toggleLight() {}
+    toggleMonitor() {}
 }
 
 const game = new FNAF();
