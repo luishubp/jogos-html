@@ -6,129 +6,130 @@
 <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
 <style>
-body {
-    margin: 0;
-    background: #000;
-    color: #fff;
-    font-family: 'VT323', monospace;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+body{
+    margin:0;
+    background:#000;
+    color:#fff;
+    font-family:'VT323', monospace;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
 }
 
-#screen-container {
-    position: relative;
-    width: 1000px;
-    height: 600px;
-    background: #0a0a0a;
-    border: 10px solid #333;
-    box-shadow: inset 0 0 100px #000;
-    overflow: hidden;
+#screen-container{
+    position:relative;
+    width:1000px;
+    height:600px;
+    border:10px solid #333;
+    background:#000;
+    overflow:hidden;
 }
 
-/* ===== TIME (TOPO) ===== */
-#time-ui {
-    position: absolute;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 40px;
-    z-index: 1200;
+/* ===== TIME (POSIÇÃO CORRETA) ===== */
+#time-ui{
+    position:absolute;
+    top:20px;
+    right:30px;
+    font-size:36px;
+    z-index:1200;
 }
 
-/* ===== OFFICE ===== */
-#office {
-    position: absolute;
-    inset: 0;
-    background: url('imagens/office.jpg') center/cover no-repeat;
+/* OFFICE */
+#office{
+    position:absolute;
+    inset:0;
+    background:url('imagens/office.jpg') center/cover no-repeat;
 }
 
 /* PORTAS */
-.door {
-    position: absolute;
-    top: 0;
-    width: 120px;
-    height: 100%;
-    background: #222;
-    border: 4px solid #111;
-    transform: translateY(-100%);
-    transition: 0.2s;
-    z-index: 50;
+.door{
+    position:absolute;
+    top:0;
+    width:120px;
+    height:100%;
+    background:#222;
+    transform:translateY(-100%);
+    transition:.2s;
+    z-index:50;
 }
-#door-L { left: 0; }
-#door-R { right: 0; }
-.closed { transform: translateY(0); }
+#door-L{left:0;}
+#door-R{right:0;}
+.closed{transform:translateY(0);}
 
 /* LUZES */
-.light-effect {
-    position: absolute;
-    top: 0;
-    width: 300px;
-    height: 100%;
-    opacity: 0;
-    z-index: 40;
+.light-effect{
+    position:absolute;
+    top:0;
+    width:300px;
+    height:100%;
+    opacity:0;
+    z-index:40;
 }
-#light-L { left: 0; background: linear-gradient(to right, rgba(255,255,200,.2), transparent); }
-#light-R { right: 0; background: linear-gradient(to left, rgba(255,255,200,.2), transparent); }
+#light-L{left:0;background:linear-gradient(to right,rgba(255,255,200,.2),transparent);}
+#light-R{right:0;background:linear-gradient(to left,rgba(255,255,200,.2),transparent);}
 
-/* BOTÕES */
-.side-panel {
-    position: absolute;
-    top: 35%;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    background: #222;
-    padding: 10px;
-    border: 2px solid #444;
-    z-index: 100;
+/* PAINÉIS */
+.side-panel{
+    position:absolute;
+    top:35%;
+    background:#222;
+    padding:10px;
+    border:2px solid #444;
+    z-index:100;
 }
-.btn {
-    width: 60px;
-    height: 40px;
-    cursor: pointer;
-    background: #000;
-    color: #fff;
-    border: 2px solid #fff;
-    font-family: 'VT323';
+.btn{
+    width:60px;
+    height:40px;
+    background:#000;
+    color:#fff;
+    border:2px solid #fff;
+    font-family:'VT323';
+    margin-bottom:10px;
 }
 
 /* UI INFERIOR */
-#ui {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    font-size: 24px;
-    z-index: 1000;
+#ui{
+    position:absolute;
+    bottom:20px;
+    left:20px;
+    font-size:24px;
+    z-index:1000;
 }
 
 /* MONITOR */
-#monitor-trigger {
-    position: absolute;
-    bottom: 0;
-    left: 30%;
-    width: 40%;
-    height: 40px;
-    background: rgba(255,255,255,.1);
-    border-top: 2px solid #fff;
-    text-align: center;
-    line-height: 40px;
-    cursor: pointer;
-    z-index: 1100;
+#camera-monitor{
+    position:absolute;
+    inset:0;
+    background:#000;
+    display:none;
+    z-index:500;
+}
+
+#monitor-trigger{
+    position:absolute;
+    bottom:0;
+    left:30%;
+    width:40%;
+    height:40px;
+    border-top:2px solid #fff;
+    background:rgba(255,255,255,.1);
+    text-align:center;
+    line-height:40px;
+    cursor:pointer;
+    z-index:1100;
 }
 
 /* JUMPSCARE */
-#jumpscare-overlay {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    display: none;
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+#jumpscare-overlay{
+    position:fixed;
+    inset:0;
+    background:#000;
+    display:none;
+    z-index:9999;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
 }
 </style>
 </head>
@@ -137,7 +138,6 @@ body {
 
 <div id="screen-container">
 
-    <!-- TIME -->
     <div id="time-ui">12 AM</div>
 
     <div id="office">
@@ -146,16 +146,18 @@ body {
         <div id="light-L" class="light-effect"></div>
         <div id="light-R" class="light-effect"></div>
 
-        <div class="side-panel" style="left:130px;">
+        <div class="side-panel" style="left:130px">
             <button class="btn" onclick="game.toggleDoor('L')">DOOR</button>
             <button class="btn" onclick="game.toggleLight('L')">LIGHT</button>
         </div>
 
-        <div class="side-panel" style="right:130px;">
+        <div class="side-panel" style="right:130px">
             <button class="btn" onclick="game.toggleDoor('R')">DOOR</button>
             <button class="btn" onclick="game.toggleLight('R')">LIGHT</button>
         </div>
     </div>
+
+    <div id="camera-monitor"></div>
 
     <div id="ui">
         POWER: <span id="pwr-val">100</span>%<br>
@@ -166,53 +168,55 @@ body {
 </div>
 
 <div id="jumpscare-overlay">
-    <div id="scare-char" style="font-size:300px;">🐻</div>
-    <h1 style="color:red;">IT'S ME</h1>
+    <div style="font-size:300px">🐻</div>
+    <h1 style="color:red">IT'S ME</h1>
 </div>
 
 <script>
-class FNAF {
-    constructor() {
-        this.pwr = 100;
-        this.mon = false;
-        this.doors = { L:false, R:false };
-        this.lights = { L:false, R:false };
-        this.hour = 0;
-        this.gameEnded = false;
+class FNAF{
+    constructor(){
+        this.pwr=100;
+        this.mon=false;
+        this.doors={L:false,R:false};
+        this.lights={L:false,R:false};
+        this.hour=0;
         this.start();
     }
 
-    start() {
-        setInterval(() => {
-            let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0);
-            this.pwr -= use * 0.1;
-            document.getElementById("pwr-val").innerText = Math.floor(this.pwr);
-            document.getElementById("usage-val").innerText = use;
-            if(this.pwr <= 0) this.jumpscare("Freddy");
+    start(){
+        setInterval(()=>{
+            let use=1+(this.doors.L?1:0)+(this.doors.R?1:0)+(this.mon?1:0);
+            this.pwr-=use*0.1;
+            document.getElementById("pwr-val").innerText=Math.floor(this.pwr);
+            document.getElementById("usage-val").innerText=use;
+            if(this.pwr<=0)this.jumpscare();
         },1000);
 
-        this.clockInterval = setInterval(() => {
+        this.clock=setInterval(()=>{
             this.hour++;
-            let t = this.hour < 6 ? this.hour + " AM" : "6 AM";
-            document.getElementById("time-ui").innerText = t;
-            if(this.hour >= 6) {
-                clearInterval(this.clockInterval);
+            let t=this.hour<6?this.hour+" AM":"6 AM";
+            document.getElementById("time-ui").innerText=t;
+            if(this.hour>=6){
+                clearInterval(this.clock);
                 this.winGame();
             }
         },45000);
     }
 
     toggleDoor(s){
-        this.doors[s] = !this.doors[s];
+        this.doors[s]=!this.doors[s];
         document.getElementById(`door-${s}`).classList.toggle("closed",this.doors[s]);
     }
 
     toggleLight(s){
-        this.lights[s] = !this.lights[s];
-        document.getElementById(`light-${s}`).style.opacity = this.lights[s]?1:0;
+        this.lights[s]=!this.lights[s];
+        document.getElementById(`light-${s}`).style.opacity=this.lights[s]?1:0;
     }
 
-    toggleMonitor(){ this.mon = !this.mon; }
+    toggleMonitor(){
+        this.mon=!this.mon;
+        document.getElementById("camera-monitor").style.display=this.mon?"block":"none";
+    }
 
     winGame(){
         const o=document.getElementById("jumpscare-overlay");
@@ -227,7 +231,7 @@ class FNAF {
     }
 }
 
-const game = new FNAF();
+const game=new FNAF();
 </script>
 
 </body>
