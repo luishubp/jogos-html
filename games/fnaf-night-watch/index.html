@@ -1,100 +1,63 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>FNAF: Ultimate Mobile Edition</title>
-<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-<style>
-body {
-    margin: 0;
-    background: #000;
-    color: #fff;
-    font-family: 'VT323', monospace;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
-#screen-container {
-    position: relative;
-    width: 1000px;
-    height: 600px;
-    background: #0a0a0a;
-    border: 10px solid #333;
-    box-shadow: inset 0 0 100px #000;
-}
-/* ESCRITÓRIO */
-#office {
-    position: absolute;
-    inset: 0;
-    background: url('imagens/office.jpg') center/cover no-repeat;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-/* PORTAS */
-.door {
-    position: absolute;
-    top: 0;
-    width: 120px;
-    height: 100%;
-    background: #222;
-    z-index: 50;
-    transition: 0.2s ease-in;
-    border: 4px solid #111;
-}
-#door-L { left:0; transform:translateY(-100%); }
-#door-R { right:0; transform:translateY(-100%); }
-.closed { transform: translateY(0) !important; }
-/* LUZES */
-.light-effect {
-    position: absolute;
-    top:0;
-    width:300px;
-    height:100%;
-    opacity:0;
-    pointer-events:none;
-    z-index:40;
-}
-#light-L { left:0; background: linear-gradient(to right, rgba(255,255,200,0.2), transparent); }
-#light-R { right:0; background: linear-gradient(to left, rgba(255,255,200,0.2), transparent); }
-/* BOTÕES */
-.side-panel { position:absolute; top:35%; display:flex; flex-direction:column; gap:15px; z-index:100; padding:10px; background:#222; border:2px solid #444; }
-.btn { width:60px; height:40px; cursor:pointer; background:#000; color:#fff; border:2px solid #fff; font-family:'VT323'; }
-/* MONITOR */
-#camera-monitor { position:absolute; inset:0; background:#000; z-index:500; display:none; }
-#cam-view { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; }
-#cam-image { width:100%; height:100%; object-fit:cover; filter:brightness(0.4) sepia(0.2) hue-rotate(100deg); }
-#static { position:absolute; inset:0; background:url('https://media.giphy.com/media/oEI9uWUuW9nNe/giphy.gif'); opacity:0.15; pointer-events:none; }
-#animatronic-visual { position:absolute; font-size:150px; filter: drop-shadow(0 0 20px #0f0); text-shadow:0 0 10px #000; display:none; }
-/* MAPA */
-#map { position:absolute; bottom:20px; right:20px; width:250px; height:200px; background:rgba(0,0,0,0.9); border:2px solid #fff; z-index:600; }
-.cam-btn { position:absolute; width:40px; height:25px; background:#333; border:1px solid #fff; color:#fff; font-size:12px; cursor:pointer; text-align:center; }
-.cam-btn.active { background:#0f0; color:#000; }
-/* JUMPSCARE */
-#jumpscare-overlay { position:fixed; inset:0; background:#000; z-index:9999; display:none; flex-direction:column; align-items:center; justify-content:center; animation:shake 0.1s infinite; }
-@keyframes shake { 0%{transform:translate(5px,5px);}50%{transform:translate(-5px,-5px);}100%{transform:translate(5px,-5px);} }
-/* UI */
-#ui { position:absolute; bottom:20px; left:20px; z-index:1000; font-size:24px; }
-#monitor-trigger { position:absolute; bottom:0; left:30%; width:40%; height:40px; background:rgba(255,255,255,0.1); border-top:2px solid #fff; z-index:1100; cursor:pointer; color:#fff; text-align:center; line-height:40px; }
-/* DEBUG */
-#debug-panel {
-    position:absolute; top:0; right:0; width:250px; height:auto;
-    background:rgba(0,0,0,0.7); color:#0f0;
-    font-size:14px; padding:10px; z-index:2000;
-    font-family:monospace; white-space:pre-line;
-}
-#menu-overlay {
-    position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:3000;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    color:#fff; font-size:30px;
-}
-.menu-btn { margin:10px; padding:10px 20px; font-size:20px; cursor:pointer; background:#111; color:#0f0; border:2px solid #0f0; font-family:'VT323'; }
-</style>
+    <meta charset="UTF-8">
+    <title>FNAF: Ultimate Mobile Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; background: #000; color: #fff; font-family: 'VT323', monospace; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        #screen-container { position: relative; width: 1000px; height: 600px; background: #0a0a0a; border: 10px solid #333; overflow: hidden; box-shadow: inset 0 0 100px #000; }
+
+        /* ESCRITÓRIO */
+        #office { position: absolute; inset: 0; background: url('imagens/office.jpg') center/cover no-repeat; display: flex; justify-content: space-between; align-items: center; }
+
+        /* PORTAS */
+        .door { position: absolute; top: 0; width: 120px; height: 100%; background: #222; z-index: 50; transition: 0.2s ease-in; border: 4px solid #111; }
+        #door-L { left: 0; transform: translateY(-100%); }
+        #door-R { right: 0; transform: translateY(-100%); }
+        .closed { transform: translateY(0) !important; }
+
+        /* LUZES */
+        .light-effect { position: absolute; top: 0; width: 300px; height: 100%; opacity: 0; pointer-events: none; z-index: 40; }
+        #light-L { left: 0; background: linear-gradient(to right, rgba(255,255,200,0.2), transparent); }
+        #light-R { right: 0; background: linear-gradient(to left, rgba(255,255,200,0.2), transparent); }
+
+        /* BOTÕES */
+        .side-panel { position: absolute; top: 35%; display: flex; flex-direction: column; gap: 15px; z-index: 100; padding: 10px; background: #222; border: 2px solid #444; }
+        .btn { width: 60px; height: 40px; cursor: pointer; background: #000; color: #fff; border: 2px solid #fff; font-family: 'VT323'; }
+
+        /* MONITOR */
+        #camera-monitor { position: absolute; inset: 0; background: #000; z-index: 500; display: none; }
+        #cam-view { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        #cam-image { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4) sepia(0.2) hue-rotate(100deg); }
+        #static { position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuW9nNe/giphy.gif'); opacity: 0.15; pointer-events: none; }
+
+        #animatronic-visual { position: absolute; font-size: 150px; filter: drop-shadow(0 0 20px #0f0); text-shadow: 0 0 10px #000; display: none; }
+
+        /* MAPA */
+        #map { position: absolute; bottom: 20px; right: 20px; width: 250px; height: 200px; background: rgba(0,0,0,0.9); border: 2px solid #fff; z-index: 600; }
+        .cam-btn { position: absolute; width: 40px; height: 25px; background: #333; border: 1px solid #fff; color: #fff; font-size: 12px; cursor: pointer; text-align: center; }
+        .cam-btn.active { background: #0f0; color: #000; }
+
+        /* JUMPSCARE */
+        #jumpscare-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; animation: shake 0.1s infinite; }
+        @keyframes shake { 0% { transform: translate(5px, 5px); } 50% { transform: translate(-5px, -5px); } 100% { transform: translate(5px, -5px); } }
+
+        /* UI */
+        #ui { position: absolute; bottom: 20px; left: 20px; z-index: 1000; font-size: 24px; }
+        #monitor-trigger { position: absolute; bottom: 0; left: 30%; width: 40%; height: 40px; background: rgba(255,255,255,0.1); border-top: 2px solid #fff; z-index: 1100; cursor: pointer; color: #fff; text-align: center; line-height: 40px; }
+
+        /* RELÓGIO E NIGHT */
+        #game-clock { position: absolute; top: 10px; right: 20px; text-align: right; z-index: 2000; font-size: 24px; }
+        #game-clock #time { display: block; }
+        #game-clock #night { display: block; font-size: 18px; text-transform: lowercase; }
+
+        /* MENU INICIAL */
+        #menu { position: absolute; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
+        #menu button { width: 150px; height: 50px; font-size: 18px; cursor: pointer; }
+    </style>
 </head>
 <body>
-
 <div id="screen-container">
     <div id="office">
         <div id="visual-L" style="position:absolute; left:-20px; bottom:0; width:200px; height:100%; z-index:45; display:none; overflow:hidden;">
@@ -105,13 +68,13 @@ body {
         </div>
         <div id="door-L" class="door"></div>
         <div id="light-L" class="light-effect"></div>
-        <div class="side-panel" style="left:130px;">
+        <div class="side-panel" style="left: 130px;">
             <button class="btn btn-door" onclick="game.toggleDoor('L')">DOOR</button>
             <button class="btn" onclick="game.toggleLight('L')">LIGHT</button>
         </div>
         <div id="door-R" class="door"></div>
         <div id="light-R" class="light-effect"></div>
-        <div class="side-panel" style="right:130px;">
+        <div class="side-panel" style="right: 130px;">
             <button class="btn btn-door" onclick="game.toggleDoor('R')">DOOR</button>
             <button class="btn" onclick="game.toggleLight('R')">LIGHT</button>
         </div>
@@ -138,19 +101,27 @@ body {
 
     <div id="ui">
         POWER: <span id="pwr-val">100</span>%<br>
-        USAGE: <span id="usage-val">1</span><br>
-        <span id="game-clock">12:00 AM</span> | <span id="night-display">Night 1</span>
+        USAGE: <span id="usage-val">1</span>
     </div>
     <div id="monitor-trigger" onclick="game.toggleMonitor()">MONITOR</div>
+
+    <!-- RELÓGIO E NIGHT -->
+    <div id="game-clock">
+        <span id="time">12:00 AM</span>
+        <span id="night">night 1</span>
+    </div>
+
+    <!-- MENU -->
+    <div id="menu">
+        <button id="new-game">New Game</button>
+        <button id="continue-game">Continue</button>
+    </div>
 </div>
 
 <div id="jumpscare-overlay">
-    <div id="scare-char" style="font-size:300px;">🐻</div>
-    <h1 style="color:red; font-size:50px;">IT'S ME</h1>
+    <div id="scare-char" style="font-size: 300px;">🐻</div>
+    <h1 style="color:red; font-size: 50px;">IT'S ME</h1>
 </div>
-
-<div id="debug-panel"></div>
-<div id="menu-overlay"></div>
 
 <script>
 class FNAF {
@@ -158,158 +129,180 @@ class FNAF {
         this.pwr = 100;
         this.mon = false;
         this.cam = '1A';
-        this.doors = { L:false, R:false };
-        this.lights = { L:false, R:false };
+        this.doors = { L: false, R: false };
+        this.lights = { L: false, R: false };
         this.foxyProgress = 0;
-        this.hour = 0; // 0 = 12:00AM
+        this.hour = 12; // começa 12 AM
         this.night = 1;
-
         this.entities = {
-            'Bonnie': { pos:'1A', path:['1A','1B','5','2A','2B','DOOR'], chance:0.06 },
-            'Chica': { pos:'1A', path:['1A','1B','7','4A','4B','DOOR'], chance:0.05 },
-            'Freddy': { pos:'1A', path:['1A','1B','7','4A','4B','DOOR'], chance:0.03 }
+            'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], chance: 0.06 },
+            'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], chance: 0.05 },
+            'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], chance: 0.03 }
         };
+        this.running = false;
 
-        this.loadNight();
-        this.showMenu();
+        this.loadProgress();
+        this.setupMenu();
     }
 
-    saveNight() {
-        localStorage.setItem('fnaf-night-unlocked', this.night);
+    setupMenu() {
+        document.getElementById('menu').style.display = 'flex';
+        document.getElementById('new-game').onclick = () => this.startNewGame();
+        document.getElementById('continue-game').onclick = () => this.startContinue();
     }
 
-    loadNight() {
-        let saved = localStorage.getItem('fnaf-night-unlocked');
-        if(saved) this.night = parseInt(saved);
-    }
-
-    showMenu() {
-        const menu = document.getElementById('menu-overlay');
-        menu.innerHTML = '<h1>Select Night</h1>';
-        for(let i=1;i<=6;i++){
-            let btn = document.createElement('button');
-            btn.innerText = 'Night '+i;
-            btn.className='menu-btn';
-            btn.disabled = i>this.night;
-            btn.onclick = ()=>{ menu.style.display='none'; this.startNight(i); };
-            menu.appendChild(btn);
-        }
-        menu.style.display='flex';
-    }
-
-    startNight(num){
-        this.night=num;
+    startNewGame() {
+        this.night = 1;
+        this.hour = 12;
+        this.pwr = 100;
+        this.running = true;
+        document.getElementById('menu').style.display = 'none';
         this.start();
     }
 
+    startContinue() {
+        if(localStorage.getItem('fnaf-night')) {
+            this.night = parseInt(localStorage.getItem('fnaf-night'));
+            this.hour = parseInt(localStorage.getItem('fnaf-hour'));
+            this.pwr = parseFloat(localStorage.getItem('fnaf-power'));
+            this.running = true;
+            document.getElementById('menu').style.display = 'none';
+            this.start();
+        } else {
+            this.startNewGame();
+        }
+    }
+
+    saveProgress() {
+        localStorage.setItem('fnaf-night', this.night);
+        localStorage.setItem('fnaf-hour', this.hour);
+        localStorage.setItem('fnaf-power', this.pwr);
+    }
+
     start() {
-        this.startClock();
-        this.updateDebug();
-        // power drain
-        setInterval(()=>{
-            let use=1+(this.doors.L?1:0)+(this.doors.R?1:0)+(this.mon?1:0)+((this.lights.L||this.lights.R)?1:0);
-            this.pwr-=(use*0.1);
-            document.getElementById('pwr-val').innerText=Math.floor(this.pwr);
-            document.getElementById('usage-val').innerText=use;
-            if(this.pwr<=0) this.jumpscare('Freddy');
-        },1000);
+        this.updateClock();
+        this.updateNight();
 
-        // AI tick
-        setInterval(()=>{ this.aiTick(); this.updateDebug(); },6000);
-    }
-
-    startClock(){
-        this.hour=0;
-        this.clockInterval = setInterval(()=>{
-            this.hour+=1;
-            if(this.hour>6){ // 6=6AM
-                clearInterval(this.clockInterval);
-                alert('You survived Night '+this.night+'!');
-                if(this.night<6) this.night++;
-                this.saveNight();
-                this.showMenu();
-            }
+        this.clockInterval = setInterval(() => {
+            if(!this.running) return;
+            this.hour++;
+            if(this.hour > 12) this.hour = 1;
             this.updateClock();
-        },60000); // 1 min real = 1 game hour
+            if(this.hour === 6) { // 6 AM termina noite
+                this.winNight();
+            }
+        }, 45000);
+
+        // Power drain balanceado
+        this.powerInterval = setInterval(() => {
+            if(!this.running) return;
+            let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
+            this.pwr -= (use * 0.1);
+            document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
+            document.getElementById('usage-val').innerText = use;
+            if(this.pwr <= 0) this.jumpscare('Freddy');
+        }, 1000);
+
+        // AI mais lenta
+        this.aiInterval = setInterval(() => this.aiTick(), 6000);
+
+        console.log(`Night ${this.night} started`);
+        this.debug();
     }
 
-    updateClock(){
-        let hr = 12+this.hour;
-        let period = 'AM';
-        if(hr>=12){ period='PM'; if(hr>12) hr-=12; }
-        document.getElementById('game-clock').innerText=hr+':00 '+period;
-        document.getElementById('night-display').innerText='Night '+this.night;
+    updateClock() {
+        const period = this.hour >= 12 ? 'PM' : 'AM';
+        const displayHour = this.hour <= 12 ? this.hour : this.hour-12;
+        document.getElementById('time').innerText = `${displayHour}:00 ${period}`;
     }
 
-    toggleDoor(s){
-        this.doors[s]=!this.doors[s];
+    updateNight() {
+        document.getElementById('night').innerText = `night ${this.night}`;
+    }
+
+    winNight() {
+        alert(`Night ${this.night} completed!`);
+        if(this.night < 6) this.night++;
+        this.saveProgress();
+        this.running = false;
+        document.getElementById('menu').style.display = 'flex';
+    }
+
+    toggleDoor(s) {
+        this.doors[s] = !this.doors[s];
         document.getElementById(`door-${s}`).classList.toggle('closed', this.doors[s]);
-        this.updateDebug();
+        this.debug();
     }
 
-    toggleLight(s){
-        this.lights[s]=!this.lights[s];
-        document.getElementById(`light-${s}`).style.opacity=this.lights[s]?1:0;
+    toggleLight(s) {
+        this.lights[s] = !this.lights[s];
+        document.getElementById(`light-${s}`).style.opacity = this.lights[s] ? 1 : 0;
         this.updateVisuals();
-        this.updateDebug();
+        this.debug();
     }
 
-    updateVisuals(){
-        document.getElementById('visual-L').style.display = (this.lights.L && this.entities.Bonnie.pos==='DOOR')?'block':'none';
-        document.getElementById('visual-R').style.display = (this.lights.R && (this.entities.Chica.pos==='DOOR'||this.entities.Freddy.pos==='DOOR'))?'block':'none';
+    updateVisuals() {
+        document.getElementById('visual-L').style.display =
+            (this.lights.L && this.entities.Bonnie.pos === 'DOOR') ? 'block' : 'none';
+        document.getElementById('visual-R').style.display =
+            (this.lights.R && (this.entities.Chica.pos === 'DOOR' || this.entities.Freddy.pos === 'DOOR')) ? 'block' : 'none';
     }
 
-    toggleMonitor(){
-        this.mon=!this.mon;
-        document.getElementById('camera-monitor').style.display=this.mon?'block':'none';
+    toggleMonitor() {
+        this.mon = !this.mon;
+        document.getElementById('camera-monitor').style.display = this.mon ? 'block' : 'none';
         if(this.mon) this.updateCam();
+        this.debug();
     }
 
-    setCam(id,btn){
-        this.cam=id;
-        document.querySelectorAll('.cam-btn').forEach(b=>b.classList.remove('active'));
+    setCam(id, btn) {
+        this.cam = id;
+        document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         this.updateCam();
-        this.updateDebug();
+        this.debug();
     }
 
-    updateCam(){
-        const display=document.getElementById('animatronic-visual');
-        display.style.display='none';
-        display.innerText='';
-        if(this.cam==='1C'){
-            display.style.display='block';
-            display.innerText = this.foxyProgress<=1?'🚩':'🦊';
+    updateCam() {
+        const display = document.getElementById('animatronic-visual');
+        display.style.display = 'none';
+        display.innerText = '';
+
+        if(this.cam === '1C') {
+            display.style.display = 'block';
+            display.innerText = this.foxyProgress <= 1 ? '🚩' : '🦊';
             return;
         }
-        for(let key in this.entities){
-            let e=this.entities[key];
-            if(e.pos===this.cam){
-                display.style.display='block';
-                display.innerText = key==='Bonnie'?'🐰':key==='Chica'?'🐥':'🐻';
+
+        for(let key in this.entities) {
+            let e = this.entities[key];
+            if(e.pos === this.cam) {
+                display.style.display = 'block';
+                display.innerText = key === 'Bonnie' ? '🐰' : key === 'Chica' ? '🐥' : '🐻';
             }
         }
     }
 
-    aiTick(){
-        if(this.cam!=='1C'){
-            if(Math.random()<0.07){
+    aiTick() {
+        if(this.cam !== '1C') {
+            if(Math.random() < 0.07) {
                 this.foxyProgress++;
-                if(this.foxyProgress>=5){
+                if(this.foxyProgress >= 5) {
                     if(!this.doors.L) this.jumpscare('Foxy');
                     else { this.foxyProgress=0; this.pwr-=4; }
                 }
             }
         }
 
-        for(let key in this.entities){
-            let e=this.entities[key];
+        for(let key in this.entities) {
+            let e = this.entities[key];
             if(key==='Freddy' && this.mon && this.cam===e.pos) continue;
-            if(Math.random()<e.chance){
-                let idx=e.path.indexOf(e.pos);
-                if(idx<e.path.length-1) e.pos=e.path[idx+1];
-                else{
-                    let side=(key==='Bonnie')?'L':'R';
+
+            if(Math.random() < e.chance) {
+                let idx = e.path.indexOf(e.pos);
+                if(idx < e.path.length-1) e.pos = e.path[idx+1];
+                else {
+                    let side = (key==='Bonnie')?'L':'R';
                     if(!this.doors[side]) this.jumpscare(key);
                     else e.pos='1A';
                 }
@@ -318,27 +311,16 @@ class FNAF {
 
         if(this.mon) this.updateCam();
         this.updateVisuals();
-        this.updateDebug();
+        this.debug();
     }
 
-    jumpscare(who){
-        const overlay=document.getElementById('jumpscare-overlay');
-        const char=document.getElementById('scare-char');
-        overlay.style.display='flex';
-        char.innerText=who==='Bonnie'?'🐰':who==='Chica'?'🐥':who==='Foxy'?'🦊':'🐻';
-        setTimeout(()=>location.reload(),2000);
+    jumpscare(who) {
+        const overlay = document.getElementById('jumpscare-overlay');
+        const char = document.getElementById('scare-char');
+        overlay.style.display = 'flex';
+        char.innerText = who==='Bonnie'?'🐰':who==='Chica'?'🐥':who==='Foxy'?'🦊':'🐻';
+        setTimeout(() => location.reload(), 2000);
     }
 
-    updateDebug(){
-        const panel=document.getElementById('debug-panel');
-        let txt = `CAMERA: ${this.cam}\nBonnie: ${this.entities.Bonnie.pos} (Chance: ${this.entities.Bonnie.chance})\nChica: ${this.entities.Chica.pos} (Chance: ${this.entities.Chica.chance})\nFreddy: ${this.entities.Freddy.pos} (Chance: ${this.entities.Freddy.chance})\nFoxy Progress: ${this.foxyProgress}\nDoors: L-${this.doors.L?'OPEN':'CLOSED'} R-${this.doors.R?'OPEN':'CLOSED'}\nEnergy: ${Math.floor(this.pwr)}\nHour: ${this.hour}`;
-        panel.innerText=txt;
-        console.log(txt);
-    }
-}
-
-const game = new FNAF();
-</script>
-
-</body>
-    </html>
+    loadProgress() {
+        if(localStorage.getItem('f
