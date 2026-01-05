@@ -124,69 +124,7 @@
     <h1 style="color:red; font-size: 50px;">IT'S ME</h1>
 </div>
 
-<script>
-class FNAF {
-    constructor() {
-        this.pwr = 100;
-        this.mon = false;
-        this.cam = '1A';
-        this.doors = { L: false, R: false };
-        this.lights = { L: false, R: false };
-        this.foxyProgress = 0;  // começa com cortina fechada (🚩)
-        this.hour = 0;
-        this.gameEnded = false;
-        this.entities = {
-            'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], chance: 0.06 },
-            'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], chance: 0.05 },
-            'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], chance: 0.03 }
-        };
 
-        this.start();
-    }
-
-winGame() {
-    if (this.gameEnded) return;
-    this.gameEnded = true;
-
-    const overlay = document.getElementById('jumpscare-overlay');
-    overlay.style.display = 'flex';
-    overlay.style.animation = 'none';
-    overlay.innerHTML = `
-        <h1 style="color:#0f0; font-size:60px;">6 AM</h1>
-        <p style="font-size:30px;">YOU SURVIVED</p>
-    `;
-    setTimeout(() => location.reload(), 4000);
-}
-    start() {
-        // Power drain balanceado
-        setInterval(() => {
-            let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
-            this.pwr -= (use * 0.1);
-            document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
-            document.getElementById('usage-val').innerText = use;
-            if(this.pwr <= 0) this.jumpscare('Freddy');
-        }, 1000);
-
-        // AI mais lenta
-        setInterval(() => this.aiTick(), 6000);
-
-// Relógio da noite (1 hora a cada 45s)
-this.clockInterval = setInterval(() => {
-    this.hour++;
-
-    let timeText;
-    if (this.hour === 0) timeText = "12 AM";
-    else if (this.hour < 6) timeText = this.hour + " AM";
-    else {
-        timeText = "6 AM";
-        clearInterval(this.clockInterval);
-        this.winGame();
-    }
-
-    document.getElementById("time-val").innerText = timeText;
-}, 45000); // 45 segundos = 1 hora
-
-        
     }
 
     toggleDoor(s) { 
@@ -196,7 +134,82 @@ this.clockInterval = setInterval(() => {
 
     toggleLight(s) {
         this.lights[s] = !this.lights[s];
-        document.getElementById(`light-${s}`).style.opacity = this.lights[s] ? 1 : 0;
+        document.get<script>
+class FNAF {
+    constructor() {
+        this.pwr = 100;
+        this.mon = false;
+        this.cam = '1A';
+        this.doors = { L: false, R: false };
+        this.lights = { L: false, R: false };
+        this.foxyProgress = 0;
+        this.hour = 0;
+        this.gameEnded = false;
+
+        this.entities = {
+            'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], chance: 0.06 },
+            'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], chance: 0.05 },
+            'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], chance: 0.03 }
+        };
+
+        this.start(); // chamada correta
+    }
+
+    winGame() {
+        if (this.gameEnded) return;
+        this.gameEnded = true;
+
+        const overlay = document.getElementById('jumpscare-overlay');
+        overlay.style.display = 'flex';
+        overlay.style.animation = 'none';
+        overlay.innerHTML = `
+            <h1 style="color:#0f0; font-size:60px;">6 AM</h1>
+            <p style="font-size:30px;">YOU SURVIVED</p>
+        `;
+        setTimeout(() => location.reload(), 4000);
+    }
+
+    start() {
+        // Power drain
+        setInterval(() => {
+            let use =
+                1 +
+                (this.doors.L ? 1 : 0) +
+                (this.doors.R ? 1 : 0) +
+                (this.mon ? 1 : 0) +
+                (this.lights.L || this.lights.R ? 1 : 0);
+
+            this.pwr -= use * 0.1;
+            document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
+            document.getElementById('usage-val').innerText = use;
+
+            if (this.pwr <= 0) this.jumpscare('Freddy');
+        }, 1000);
+
+        // IA
+        setInterval(() => this.aiTick(), 6000);
+
+        // Relógio (45s = 1h)
+        this.clockInterval = setInterval(() => {
+            this.hour++;
+
+            let timeText;
+            if (this.hour === 0) timeText = "12 AM";
+            else if (this.hour < 6) timeText = this.hour + " AM";
+            else {
+                timeText = "6 AM";
+                clearInterval(this.clockInterval);
+                this.winGame();
+            }
+
+            document.getElementById("time-val").innerText = timeText;
+        }, 45000);
+   }
+
+}
+    </script>(`l>
+
+ElementByIdght-${s}`).style.opacity = this.lights[s] ? 1 : 0;
         this.updateVisuals();
     }
 
