@@ -105,7 +105,32 @@
     </div>          
 </div>          
       
-<div id="ui">          
+<div id="ui">  
+<div id="debug-panel" style="
+    position:absolute;
+    top:10px;
+    right:10px;
+    background:rgba(0,0,0,0.8);
+    border:2px solid #0f0;
+    padding:10px;
+    font-size:16px;
+    z-index:2000;
+    display:none;
+">
+    <b>DEBUG MODE</b><br><br>
+    Hour: <span id="dbg-hour"></span><br>
+    Power: <span id="dbg-power"></span><br>
+    Camera: <span id="dbg-cam"></span><br><br>
+
+    Door L: <span id="dbg-door-l"></span><br>
+    Door R: <span id="dbg-door-r"></span><br>
+    Light L: <span id="dbg-light-l"></span><br>
+    Light R: <span id="dbg-light-r"></span><br><br>
+
+    Bonnie: <span id="dbg-bonnie"></span><br>
+    Chica: <span id="dbg-chica"></span><br>
+    Freddy: <span id="dbg-freddy"></span><br>
+    </div>
     POWER: <span id="pwr-val">100</span>%<br>          
     USAGE: <span id="usage-val">1</span>          
 </div>          
@@ -125,7 +150,7 @@ class FNAF {
         this.lights = { L: false, R: false };          
         this.foxyProgress = 0;  // começa com cortina fechada (🚩)          
         this.hour = 0;          
-          
+        this.debug = false;
         this.entities = {          
             'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], chance: 0.06 },          
             'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], chance: 0.05 },          
@@ -158,13 +183,33 @@ class FNAF {
         this.lights[s] = !this.lights[s];          
         document.getElementById(`light-${s}`).style.opacity = this.lights[s] ? 1 : 0;          
         this.updateVisuals();          
-    }          
-          
+    }
+    
+    updateDebug() {
+    if (!this.debug) return;
+
+    document.getElementById('dbg-hour').innerText = this.hour;
+    document.getElementById('dbg-power').innerText = Math.floor(this.pwr);
+    document.getElementById('dbg-cam').innerText = this.cam;
+
+    document.getElementById('dbg-door-l').innerText = this.doors.L ? 'CLOSED' : 'OPEN';
+    document.getElementById('dbg-door-r').innerText = this.doors.R ? 'CLOSED' : 'OPEN';
+
+    document.getElementById('dbg-light-l').innerText = this.lights.L ? 'ON' : 'OFF';
+    document.getElementById('dbg-light-r').innerText = this.lights.R ? 'ON' : 'OFF';
+
+    document.getElementById('dbg-bonnie').innerText = this.entities.Bonnie.pos;
+    document.getElementById('dbg-chica').innerText = this.entities.Chica.pos;
+    document.getElementById('dbg-freddy').innerText = this.entities.Freddy.pos;
+    }
+    }
+      
     updateVisuals() {          
         document.getElementById('visual-L').style.display =           
             (this.lights.L && this.entities.Bonnie.pos === 'DOOR') ? 'block' : 'none';          
         document.getElementById('visual-R').style.display =           
             (this.lights.R && (this.entities.Chica.pos === 'DOOR' || this.entities.Freddy.pos === 'DOOR')) ? 'block' : 'none';          
+    
     }          
           
     toggleMonitor() {          
