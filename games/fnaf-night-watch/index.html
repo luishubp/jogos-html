@@ -111,8 +111,9 @@
     </div>
 
     <div id="ui">
-        POWER: <span id="pwr-val">100</span>%<br>
-        USAGE: <span id="usage-val">1</span>
+    TIME: <span id="time-val">12 AM</span><br>
+    POWER: <span id="pwr-val">100</span>%<br>
+    USAGE: <span id="usage-val">1</span>
     </div>
 
     <div id="monitor-trigger" onclick="game.toggleMonitor()">MONITOR</div>
@@ -133,7 +134,7 @@ class FNAF {
         this.lights = { L: false, R: false };
         this.foxyProgress = 0;  // começa com cortina fechada (🚩)
         this.hour = 0;
-
+        this.gameEnded = false;
         this.entities = {
             'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], chance: 0.06 },
             'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], chance: 0.05 },
@@ -143,7 +144,20 @@ class FNAF {
         this.start();
     }
 
-    start() {
+winGame() {
+    if (this.gameEnded) return;
+    this.gameEnded = true;
+
+    const overlay = document.getElementById('jumpscare-overlay');
+    overlay.style.display = 'flex';
+    overlay.style.animation = 'none';
+    overlay.innerHTML = `
+        <h1 style="color:#0f0; font-size:60px;">6 AM</h1>
+        <p style="font-size:30px;">YOU SURVIVED</p>
+    `;
+    setTimeout(() => location.reload(), 4000);
+}
+    startta {
         // Power drain balanceado
         setInterval(() => {
             let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + (this.lights.L||this.lights.R?1:0);
@@ -155,6 +169,24 @@ class FNAF {
 
         // AI mais lenta
         setInterval(() => this.aiTick(), 6000);
+
+// Relógio da noite (1 hora a cada 45s)
+this.clockInterval = setInterval(() => {
+    this.hour++;
+
+    let timeText;
+    if (this.hour === 0) timeText = "12 AM";
+    else if (this.hour < 6) timeText = this.hour + " AM";
+    else {
+        timeText = "6 AM";
+        clearInterval(this.clockInterval);
+        this.winGame();
+    }
+
+    document.getElementById("time-val").innerText = timeText;
+}, 60000); // 45 segundos = 1 hora
+
+        
     }
 
     toggleDoor(s) { 
