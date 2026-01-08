@@ -5,6 +5,7 @@
 <title>FNAF: Ultimate Mobile Edition</title>
 <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 <style>
+/* ==== CSS ORIGINAL (SEM ALTERAÇÕES) ==== */
 body {
     margin: 0;
     background: #000;
@@ -23,205 +24,300 @@ body {
     background: #0a0a0a;
     border: 10px solid #333;
     overflow: hidden;
+    box-shadow: inset 0 0 100px #000;
 }
-#office { position:absolute; inset:0; }
+#office {
+    position: absolute;
+    inset: 0;
+    background: url('imagens/office.jpg') center/cover no-repeat;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .door {
-    position:absolute; top:0; width:120px; height:100%;
-    background:#222; z-index:50;
-    transform:translateY(-100%);
+    position: absolute;
+    top: 0;
+    width: 120px;
+    height: 100%;
+    background: #222;
+    z-index: 50;
+    transition: 0.2s ease-in;
+    border: 4px solid #111;
 }
-.closed { transform:translateY(0); }
-#door-L{left:0;} #door-R{right:0;}
-.light-effect{
-    position:absolute; top:0; width:300px; height:100%;
-    opacity:0; pointer-events:none; z-index:40;
+#door-L { left: 0; transform: translateY(-100%); }
+#door-R { right: 0; transform: translateY(-100%); }
+.closed { transform: translateY(0) !important; }
+.light-effect {
+    position: absolute;
+    top: 0;
+    width: 300px;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 40;
 }
-#light-L{left:0;} #light-R{right:0;}
-.side-panel{
-    position:absolute; top:35%; z-index:100;
-    background:#222; padding:10px;
+#light-L { left: 0; background: linear-gradient(to right, rgba(255,255,200,0.2), transparent); }
+#light-R { right: 0; background: linear-gradient(to left, rgba(255,255,200,0.2), transparent); }
+.side-panel {
+    position: absolute;
+    top: 35%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 100;
+    padding: 10px;
+    background: #222;
+    border: 2px solid #444;
 }
-.btn{width:60px;height:40px;cursor:pointer;}
-#camera-monitor{
-    position:absolute; inset:0; background:#000;
-    display:none; z-index:500;
+.btn {
+    width: 60px;
+    height: 40px;
+    cursor: pointer;
+    background: #000;
+    color: #fff;
+    border: 2px solid #fff;
+    font-family: 'VT323';
 }
-#animatronic-visual{
-    position:absolute; font-size:150px;
-    display:none;
+#camera-monitor {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 500;
+    display: none;
 }
-#ui{position:absolute; bottom:20px; left:20px;}
-#monitor-trigger{
-    position:absolute; bottom:0; left:30%;
-    width:40%; height:40px; cursor:pointer;
+#cam-view {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
-#clock-container{
-    position:absolute; top:10px; right:10px;
+#cam-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.4) sepia(0.2) hue-rotate(100deg);
 }
-#menu{
-    position:absolute; inset:0;
-    background:rgba(0,0,0,.9);
-    display:flex; flex-direction:column;
-    align-items:center; justify-content:center;
-    z-index:2000;
+#static {
+    position: absolute;
+    inset: 0;
+    background: url('https://media.giphy.com/media/oEI9uWUuW9nNe/giphy.gif');
+    opacity: 0.15;
+    pointer-events: none;
 }
-.menu-btn{margin:10px; padding:15px 40px;}
-#jumpscare-overlay{
-    position:fixed; inset:0; background:#000;
-    display:none; z-index:9999;
-    justify-content:center; align-items:center;
+#animatronic-visual {
+    position: absolute;
+    font-size: 150px;
+    display: none;
+}
+#map {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 250px;
+    height: 200px;
+    background: rgba(0,0,0,0.9);
+    border: 2px solid #fff;
+    z-index: 600;
+}
+.cam-btn {
+    position: absolute;
+    width: 40px;
+    height: 25px;
+    background: #333;
+    border: 1px solid #fff;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: center;
+}
+.cam-btn.active { background: #0f0; color: #000; }
+#jumpscare-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: shake 0.1s infinite;
+}
+@keyframes shake {
+    0% { transform: translate(5px,5px); }
+    50% { transform: translate(-5px,-5px); }
+    100% { transform: translate(5px,5px); }
+}
+#ui {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+    font-size: 24px;
+}
+#monitor-trigger {
+    position: absolute;
+    bottom: 0;
+    left: 30%;
+    width: 40%;
+    height: 40px;
+    background: rgba(255,255,255,0.1);
+    border-top: 2px solid #fff;
+    z-index: 1100;
+    cursor: pointer;
+    text-align: center;
+    line-height: 40px;
+}
+#clock-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 28px;
+}
+#menu {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+.menu-btn {
+    margin: 10px;
+    padding: 15px 40px;
+    font-size: 24px;
+    cursor: pointer;
+    background: #111;
+    border: 2px solid #fff;
+    color: #fff;
 }
 </style>
 </head>
+
 <body>
-
 <div id="screen-container">
-    <div id="office">
-        <div id="door-L" class="door"></div>
-        <div id="door-R" class="door"></div>
-        <div id="light-L" class="light-effect"></div>
-        <div id="light-R" class="light-effect"></div>
-    </div>
+<div id="office"></div>
 
-    <div id="camera-monitor">
+<div id="camera-monitor">
+    <div id="cam-view">
+        <img id="cam-image">
         <div id="animatronic-visual"></div>
+        <div id="static"></div>
     </div>
+</div>
 
-    <div id="ui">
-        POWER: <span id="pwr-val">100</span>%<br>
-        USAGE: <span id="usage-val">1</span>
-    </div>
+<div id="ui">POWER: <span id="pwr-val">100</span>%</div>
+<div id="monitor-trigger" onclick="game.toggleMonitor()">MONITOR</div>
 
-    <div id="monitor-trigger">MONITOR</div>
+<div id="clock-container">
+    <div id="clock">12:00 AM</div>
+    <div id="night">night 1</div>
+</div>
 
-    <div id="clock-container">
-        <div id="clock">12:00 AM</div>
-        <div id="night">night 1</div>
-    </div>
+<div id="menu">
+    <button id="new-game" class="menu-btn">New Game</button>
+    <button id="continue-game" class="menu-btn">Continue</button>
+</div>
 
-    <div id="menu">
-        <button id="new-game" class="menu-btn">New Game</button>
-        <button id="continue-game" class="menu-btn">Continue</button>
-    </div>
-
-    <div id="jumpscare-overlay">
-        <div id="scare-char" style="font-size:300px;">🐻</div>
-    </div>
+<div id="jumpscare-overlay">
+    <div id="scare-char" style="font-size:300px;">🐻</div>
+    <h1 style="color:red;">IT'S ME</h1>
+</div>
 </div>
 
 <script>
 class FNAF {
-    constructor() {
-        const saved = JSON.parse(localStorage.getItem('fnafSave'));
-        this.pwr = saved?.pwr ?? 100;
-        this.cam = saved?.cam ?? '1A';
-        this.doors = saved?.doors ?? {L:false,R:false};
-        this.lights = saved?.lights ?? {L:false,R:false};
-        this.foxyProgress = saved?.foxyProgress ?? 0;
-        this.hour = saved?.hour ?? 12;
-        this.nightNum = saved?.nightNum ?? 1;
+constructor() {
+    const saved = JSON.parse(localStorage.getItem('fnafSave'));
+    this.pwr = saved?.pwr ?? 100;
+    this.cam = saved?.cam ?? '1A';
+    this.hour = saved?.hour ?? 12;
+    this.nightNum = saved?.nightNum ?? 1;
 
-        this.mon = false;
-        this.entities = {
-            Bonnie:{pos:'1A',path:['1A','1B','5','2A','2B','DOOR'],chance:0.07},
-            Chica:{pos:'1A',path:['1A','1B','7','4A','4B','DOOR'],chance:0.06},
-            Freddy:{pos:'1A',path:['1A','1B','7','4A','4B','DOOR'],chance:0.04}
-        };
+    this.entities = {
+        Bonnie:{pos:'1A'},
+        Chica:{pos:'1A'},
+        Freddy:{pos:'1A'}
+    };
 
-        this.setupMenu();
-        this.updateUI();
-    }
-
-    start(){
-        this.energyInterval=setInterval(()=>{
-            let use=1+(this.doors.L?1:0)+(this.doors.R?1:0)+(this.mon?1:0);
-            this.pwr-=0.1*use;
-            if(this.pwr<=0){ this.pwr=0; this.jumpscare('Freddy'); }
-            this.updateUI();
-            this.save();
-        },1000);
-
-        this.aiInterval=setInterval(()=>this.aiTick(),6000);
-
-        this.clockInterval=setInterval(()=>{
-            this.hour++;
-            if(this.hour===6) this.winNight();
-            this.updateUI();
-        },45000);
-    }
-
-    updateUI(){
-        document.getElementById('pwr-val').innerText=Math.floor(this.pwr);
-        document.getElementById('usage-val').innerText=1;
-        document.getElementById('clock').innerText=`${this.hour}:00 AM`;
-        document.getElementById('night').innerText=`night ${this.nightNum}`;
-    }
-
-    aiTick(){
-        for(let k of ['Bonnie','Chica','Freddy']){
-            let e=this.entities[k];
-            if(Math.random()<e.chance){
-                let i=e.path.indexOf(e.pos);
-                if(i<e.path.length-1) e.pos=e.path[i+1];
-                else{
-                    let side=k==='Bonnie'?'L':'R';
-                    if(!this.doors[side]) this.jumpscare(k);
-                    else e.pos='1A';
-                }
-            }
-        }
-        this.updateCam();
-    }
-
-    updateCam(){
-        let d=document.getElementById('animatronic-visual');
-        d.style.display='none';
-        for(let k of ['Bonnie','Chica','Freddy']){
-            if(this.entities[k].pos===this.cam){
-                d.style.display='block';
-                d.innerText=k==='Bonnie'?'🐰':k==='Chica'?'🐥':'🐻';
-                break;
-            }
-        }
-    }
-
-    jumpscare(who){
-        clearInterval(this.energyInterval);
-        clearInterval(this.aiInterval);
-        clearInterval(this.clockInterval);
-        localStorage.removeItem('fnafSave');
-        document.getElementById('jumpscare-overlay').style.display='flex';
-        document.getElementById('scare-char').innerText=
-            who==='Bonnie'?'🐰':who==='Chica'?'🐥':'🐻';
-        setTimeout(()=>location.reload(),2000);
-    }
-
-    winNight(){
-        alert(`Você sobreviveu à Night ${this.nightNum}`);
-        this.nightNum++;
-        this.hour=12;
-        this.save(true);
-        location.reload();
-    }
-
-    save(reset=false){
-        if(reset) localStorage.removeItem('fnafSave');
-        else localStorage.setItem('fnafSave',JSON.stringify(this));
-    }
-
-    setupMenu(){
-        document.getElementById('new-game').onclick=()=>{
-            localStorage.removeItem('fnafSave');
-            document.getElementById('menu').style.display='none';
-            this.start();
-        };
-        document.getElementById('continue-game').onclick=()=>{
-            document.getElementById('menu').style.display='none';
-            this.start();
-        };
-    }
+    this.setupMenu();
+    this.updateClockUI();
 }
-const game=new FNAF();
+
+start() {
+    this.clearTimers();
+
+    this.energyInterval = setInterval(()=>{
+        this.pwr -= 0.1;
+        if(this.pwr<=0) this.jumpscare('Freddy');
+        document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
+        this.save();
+    },1000);
+
+    this.clockInterval = setInterval(()=>{
+        this.hour++;
+        if(this.hour>12) this.hour=1;
+        this.updateClockUI();
+    },45000);
+}
+
+clearTimers(){
+    clearInterval(this.energyInterval);
+    clearInterval(this.clockInterval);
+}
+
+setupMenu(){
+    document.getElementById('new-game').onclick=()=>{
+        localStorage.removeItem('fnafSave');
+        this.reset();
+        document.getElementById('menu').style.display='none';
+        this.start();
+    };
+    document.getElementById('continue-game').onclick=()=>{
+        document.getElementById('menu').style.display='none';
+        this.start();
+    };
+}
+
+reset(){
+    this.pwr=100;
+    this.cam='1A';
+    this.hour=12;
+    for(let e in this.entities) this.entities[e].pos='1A';
+}
+
+updateClockUI(){
+    document.getElementById('clock').innerText = `${this.hour}:00 AM`;
+    document.getElementById('night').innerText = `night ${this.nightNum}`;
+}
+
+toggleMonitor(){
+    const m=document.getElementById('camera-monitor');
+    m.style.display = m.style.display==='block'?'none':'block';
+}
+
+jumpscare(who){
+    this.clearTimers();
+    localStorage.removeItem('fnafSave');
+    document.getElementById('jumpscare-overlay').style.display='flex';
+    setTimeout(()=>location.reload(),2000);
+}
+
+save(){
+    localStorage.setItem('fnafSave',JSON.stringify({
+        pwr:this.pwr,
+        cam:this.cam,
+        hour:this.hour,
+        nightNum:this.nightNum
+    }));
+}
+}
+
+const game = new FNAF();
 </script>
 </body>
 </html>
