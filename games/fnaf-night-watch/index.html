@@ -471,19 +471,26 @@ class FNAF {
         localStorage.setItem('fnafCheckPoint', JSON.stringify(saveObj));
     }
 
-        setupMenu( ) {
-             document .getEletmentByI
-d( 'new-game' ) .onclick = ( ) =>
-thais .startNewGame( ) ;
-                 document . getEletmentById(
-'continue-game ' ) .onclick = ( ) => 
-thais . continueGame( );    
-         }
+            setupMenu() {
+        const newGameBtn = document.getElementById('new-game');
+        const continueBtn = document.getElementById('continue-game');
+
+        if (newGameBtn) {
+            newGameBtn.onclick = () => {
+                this.startNewGame();
+            };
+        }
+
+        if (continueBtn) {
+            continueBtn.onclick = () => {
+                this.continueGame();
+            };
+        }
+    }
 }
 
-// Inicializar a classe, mas o jogo espera o botão de menu 
+// Inicializar a classe: o jogo carregará o menu e aguardará o clique.
 const game = new FNAF();
-
 </script>
 </body>
 </html>
