@@ -5,333 +5,485 @@
 <title>FNAF: Ultimate Mobile Edition</title>
 <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 <style>
-/* ====== CSS ORIGINAL – SEM ALTERAÇÕES ====== */
-body {
-    margin: 0;
-    background: #000;
-    color: #fff;
-    font-family: 'VT323', monospace;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
-#screen-container {
-    position: relative;
-    width: 1000px;
-    height: 600px;
-    background: #0a0a0a;
-    border: 10px solid #333;
-    overflow: hidden;
-    box-shadow: inset 0 0 100px #000;
-}
-#office {
-    position: absolute;
-    inset: 0;
-    background: url('imagens/office.jpg') center/cover no-repeat;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.door {
-    position: absolute;
-    top: 0;
-    width: 120px;
-    height: 100%;
-    background: #222;
-    z-index: 50;
-    transition: 0.2s ease-in;
-    border: 4px solid #111;
-}
+/* --- O CSS PERMANECE O MESMO, APENAS PEQUENOS AJUSTES --- */
+body { margin: 0; background: #000; color: #fff; font-family: 'VT323', monospace; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+#screen-container { position: relative; width: 1000px; height: 600px; background: #0a0a0a; border: 10px solid #333; overflow: hidden; box-shadow: inset 0 0 100px #000; }
+#office { position: absolute; inset: 0; background: url('imagens/office.jpg') center/cover no-repeat; display: flex; justify-content: space-between; align-items: center; }
+.door { position: absolute; top: 0; width: 120px; height: 100%; background: #222; z-index: 50; transition: 0.2s ease-in; border: 4px solid #111; }
 #door-L { left: 0; transform: translateY(-100%); }
 #door-R { right: 0; transform: translateY(-100%); }
 .closed { transform: translateY(0) !important; }
-.light-effect {
-    position: absolute;
-    top: 0;
-    width: 300px;
-    height: 100%;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 40;
-}
+.light-effect { position: absolute; top: 0; width: 300px; height: 100%; opacity: 0; pointer-events: none; z-index: 40; }
 #light-L { left: 0; background: linear-gradient(to right, rgba(255,255,200,0.2), transparent); }
 #light-R { right: 0; background: linear-gradient(to left, rgba(255,255,200,0.2), transparent); }
-.side-panel {
-    position: absolute;
-    top: 35%;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    z-index: 100;
-    padding: 10px;
-    background: #222;
-    border: 2px solid #444;
+.side-panel { position: absolute; top: 35%; display: flex; flex-direction: column; gap: 15px; z-index: 100; padding: 10px; background: #222; border: 2px solid #444; }
+.btn { width: 60px; height: 40px; cursor: pointer; background: #000; color: #fff; border: 2px solid #fff; font-family: 'VT323'; }
+#camera-monitor { position: absolute; inset: 0; background: #000; z-index: 500; display: none; }
+#cam-view { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+#cam-image { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4) sepia(0.2) hue-rotate(100deg); }
+#static { position: absolute; inset: 0; background: url('https://media.giphy.com/media/oEI9uWUuW9nNe/giphy.gif'); opacity: 0.15; pointer-events: none; }
+
+/* Ajuste aqui para permitir múltiplos emojis lado a lado */
+#animatronic-visual { 
+    position: absolute; 
+    font-size: 100px; /* Diminuí um pouco para caberem juntos */
+    filter: drop-shadow(0 0 20px #0f0); 
+    text-shadow: 0 0 10px #000; 
+    display: none; 
+    white-space: nowrap; /* Não quebrar linha */
 }
-.btn {
-    width: 60px;
-    height: 40px;
-    cursor: pointer;
-    background: #000;
-    color: #fff;
-    border: 2px solid #fff;
-    font-family: 'VT323';
-}
-#camera-monitor {
-    position: absolute;
-    inset: 0;
-    background: #000;
-    z-index: 500;
-    display: none;
-}
-#cam-view {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-#cam-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(0.4) sepia(0.2) hue-rotate(100deg);
-}
-#static {
-    position: absolute;
-    inset: 0;
-    background: url('https://media.giphy.com/media/oEI9uWUuW9nNe/giphy.gif');
-    opacity: 0.15;
-    pointer-events: none;
-}
-#animatronic-visual {
-    position: absolute;
-    font-size: 150px;
-    filter: drop-shadow(0 0 20px #0f0);
-    text-shadow: 0 0 10px #000;
-    display: none;
-}
-#map {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    width: 250px;
-    height: 200px;
-    background: rgba(0,0,0,0.9);
-    border: 2px solid #fff;
-    z-index: 600;
-}
-.cam-btn {
-    position: absolute;
-    width: 40px;
-    height: 25px;
-    background: #333;
-    border: 1px solid #fff;
-    color: #fff;
-    font-size: 12px;
-    cursor: pointer;
-    text-align: center;
-}
+
+#map { position: absolute; bottom: 20px; right: 20px; width: 250px; height: 200px; background: rgba(0,0,0,0.9); border: 2px solid #fff; z-index: 600; }
+.cam-btn { position: absolute; width: 40px; height: 25px; background: #333; border: 1px solid #fff; color: #fff; font-size: 12px; cursor: pointer; text-align: center; }
 .cam-btn.active { background: #0f0; color: #000; }
-#jumpscare-overlay {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    z-index: 9999;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    animation: shake 0.1s infinite;
-}
-@keyframes shake {
-    0% { transform: translate(5px,5px); }
-    50% { transform: translate(-5px,-5px); }
-    100% { transform: translate(5px,5px); }
-}
-#ui {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    z-index: 1000;
-    font-size: 24px;
-}
-#monitor-trigger {
-    position: absolute;
-    bottom: 0;
-    left: 30%;
-    width: 40%;
-    height: 40px;
-    background: rgba(255,255,255,0.1);
-    border-top: 2px solid #fff;
-    z-index: 1100;
-    cursor: pointer;
-    color: #fff;
-    text-align: center;
-    line-height: 40px;
-}
-#clock-container {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    text-align: center;
-    font-size: 28px;
-    z-index: 1200;
-}
+#jumpscare-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; animation: shake 0.1s infinite; }
+@keyframes shake { 0% { transform: translate(5px,5px); } 50% { transform: translate(-5px,-5px); } 100% { transform: translate(5px,5px); } }
+#ui { position: absolute; bottom: 20px; left: 20px; z-index: 1000; font-size: 24px; }
+#monitor-trigger { position: absolute; bottom: 0; left: 30%; width: 40%; height: 40px; background: rgba(255,255,255,0.1); border-top: 2px solid #fff; z-index: 1100; cursor: pointer; color: #fff; text-align: center; line-height: 40px; }
+#clock-container { position: absolute; top: 10px; right: 10px; text-align: center; font-size: 28px; z-index: 1200; }
 #clock { font-size: 32px; }
 #night { font-size: 24px; text-transform: lowercase; }
-#menu {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.9);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-}
-.menu-btn {
-    margin: 10px;
-    padding: 15px 40px;
-    font-size: 24px;
-    cursor: pointer;
-    background: #111;
-    border: 2px solid #fff;
-    color: #fff;
-}
+#menu { position: absolute; inset: 0; background: rgba(0,0,0,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
+.menu-btn { margin: 10px; padding: 15px 40px; font-size: 24px; cursor: pointer; background: #111; border: 2px solid #fff; color: #fff; }
 </style>
+</head>
 <body>
 
-<!-- ====== HTML ORIGINAL – SEM ALTERAÇÕES ====== -->
 <div id="screen-container">
-    <!-- (HTML mantido exatamente igual ao seu) -->
+    <div id="office">
+        <div id="visual-L" style="position:absolute; left:-20px; bottom:0; width:200px; height:100%; z-index:45; display:none; overflow:hidden;">
+            <img src="" alt="Bonnie" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.8); background: purple;"> 
+        </div>
+        <div id="visual-R" style="position:absolute; right:-20px; bottom:0; width:200px; height:100%; z-index:45; display:none; overflow:hidden;">
+            <img src="" alt="Chica" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.8); background: yellow;">
+        </div>
+
+        <div id="door-L" class="door"></div>
+        <div id="light-L" class="light-effect"></div>
+        <div class="side-panel" style="left: 130px;">
+            <button class="btn btn-door" onclick="game.toggleDoor('L')">DOOR</button>
+            <button class="btn" onclick="game.toggleLight('L')">LIGHT</button>
+        </div>
+        <div id="door-R" class="door"></div>
+        <div id="light-R" class="light-effect"></div>
+        <div class="side-panel" style="right: 130px;">
+            <button class="btn btn-door" onclick="game.toggleDoor('R')">DOOR</button>
+            <button class="btn" onclick="game.toggleLight('R')">LIGHT</button>
+        </div>
+    </div>
+
+    <div id="camera-monitor">
+        <div id="cam-view">
+            <img id="cam-image" src="https://images.unsplash.com/photo-1533130061792-64b345e4a833?w=1000">
+            <div id="animatronic-visual"></div>
+            <div id="static"></div>
+            <div id="map">
+                <button class="cam-btn active" style="top:10px; left:40%" onclick="game.setCam('1A', this)">1A</button>
+                <button class="cam-btn" style="top:40px; left:35%" onclick="game.setCam('1B', this)">1B</button>
+                <button class="cam-btn" style="top:90px; left:5%" onclick="game.setCam('1C', this)">1C</button>
+                <button class="cam-btn" style="top:40px; left:5%" onclick="game.setCam('5', this)">5</button>
+                <button class="cam-btn" style="top:50px; right:5%" onclick="game.setCam('7', this)">7</button>
+                <button class="cam-btn" style="bottom:60px; left:25%" onclick="game.setCam('2A', this)">2A</button>
+                <button class="cam-btn" style="bottom:20px; left:25%" onclick="game.setCam('2B', this)">2B</button>
+                <button class="cam-btn" style="bottom:60px; right:25%" onclick="game.setCam('4A', this)">4A</button>
+                <button class="cam-btn" style="bottom:20px; right:25%" onclick="game.setCam('4B', this)">4B</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="ui">
+        POWER: <span id="pwr-val">100</span>%<br>
+        USAGE: <span id="usage-val">1</span>
+    </div>
+    <div id="monitor-trigger" onclick="game.toggleMonitor()">MONITOR</div>
+
+    <div id="clock-container">
+        <div id="clock">12:00 AM</div>
+        <div id="night">night 1</div>
+    </div>
+
+    <div id="menu">
+        <h1 style="color: red; font-size: 60px; text-shadow: 2px 2px 0 #fff;">FNAF JS</h1>
+        <button id="new-game" class="menu-btn">New Game</button>
+        <button id="continue-game" class="menu-btn">Continue</button>
+    </div>
+
+    <div id="jumpscare-overlay">
+        <div id="scare-char" style="font-size: 300px;">🐻</div>
+        <h1 style="color:red; font-size: 50px;">GAME OVER</h1>
+    </div>
 </div>
 
 <script>
 class FNAF {
     constructor() {
-        this.load();
-        this.setupMenu();
-    }
-
-    load() {
-        const saved = JSON.parse(localStorage.getItem('fnafSave'));
-        this.pwr = saved?.pwr ?? 100;
-        this.cam = saved?.cam ?? '1A';
-        this.doors = saved?.doors ?? { L:false, R:false };
-        this.lights = saved?.lights ?? { L:false, R:false };
-        this.foxyProgress = saved?.foxyProgress ?? 0;
-        this.hour = saved?.hour ?? 12;
-        this.nightNum = saved?.nightNum ?? 1;
-        this.mon = false;
-
-        this.entities = {
-            Bonnie: { pos:'1A', path:['1A','1B','5','2A','2B','DOOR'], chance:0.07 },
-            Chica:  { pos:'1A', path:['1A','1B','7','4A','4B','DOOR'], chance:0.06 },
-            Freddy: { pos:'1A', path:['1A','1B','7','4A','4B','DOOR'], chance:0.04 }
+        this.timers = []; // Armazena todos os intervalos para poder parar o jogo
+        this.isRunning = false;
+        
+        // Estado Inicial Padrão
+        this.defaultState = {
+            pwr: 100,
+            cam: '1A',
+            doors: { L: false, R: false },
+            lights: { L: false, R: false },
+            foxyProgress: 0,
+            hour: 12, // 12 representa meia-noite
+            nightNum: 1
         };
+
+        // Copia o estado padrão para o estado atual
+        this.state = JSON.parse(JSON.stringify(this.defaultState));
+        
+        this.mon = false;
+        
+        // Definição das IAs
+        this.entities = {
+            'Bonnie': { pos: '1A', path: ['1A','1B','5','2A','2B','DOOR'], chance: 0.07 },
+            'Chica': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], chance: 0.06 },
+            'Freddy': { pos: '1A', path: ['1A','1B','7','4A','4B','DOOR'], chance: 0.04 }
+        };
+
+        // NÃO INICIA O JOGO AQUI (Isso corrigiu o bug de rodar no menu)
+        this.setupMenu();
+        this.updateClockUI(); // Apenas mostra o relógio parado
     }
 
-    start() {
-        this.stop();
+    // --- CONTROLE DE FLUXO ---
+    
+    // Iniciar um Novo Jogo (Reseta tudo)
+    startNewGame() {
+        this.stopGame(); // Garante que nada antigo está rodando
+        this.state = JSON.parse(JSON.stringify(this.defaultState)); // Reseta variáveis
+        
+        // Reseta posição dos animatrônicos
+        this.entities.Bonnie.pos = '1A';
+        this.entities.Chica.pos = '1A';
+        this.entities.Freddy.pos = '1A';
+        
+        localStorage.removeItem('fnafCheckPoint'); // Remove save antigo
+        this.startGameLoop();
+    }
 
-        this.energyInterval = setInterval(()=>{
-            let use = 1 + (this.doors.L?1:0) + (this.doors.R?1:0) + (this.mon?1:0) + ((this.lights.L||this.lights.R)?1:0);
-            this.pwr = Math.max(0, this.pwr - 0.1 * use);
-            document.getElementById('pwr-val').innerText = Math.floor(this.pwr);
+    // Continuar (Tenta carregar save)
+    continueGame() {
+        const saved = JSON.parse(localStorage.getItem('fnafCheckPoint'));
+        if (saved) {
+            this.state = saved;
+            // Recupera posição salva dos animatrônicos se houver (ou reseta para 1A se não salvou isso)
+            if(saved.entitiesPos) {
+                this.entities.Bonnie.pos = saved.entitiesPos.Bonnie;
+                this.entities.Chica.pos = saved.entitiesPos.Chica;
+                this.entities.Freddy.pos = saved.entitiesPos.Freddy;
+            }
+            this.startGameLoop();
+        } else {
+            alert("Nenhum jogo salvo encontrado! Começando novo jogo...");
+            this.startNewGame();
+        }
+    }
+
+    // O Loop Principal
+    startGameLoop() {
+        document.getElementById('menu').style.display = 'none';
+        this.isRunning = true;
+        this.mon = false;
+        
+        // Reset visual
+        document.getElementById('camera-monitor').style.display = 'none';
+        this.updateDoorVisuals();
+        this.updateClockUI();
+
+        // 1. Loop de Energia (1s)
+        this.timers.push(setInterval(() => {
+            let use = 1; // Uso base
+            if(this.state.doors.L) use++;
+            if(this.state.doors.R) use++;
+            if(this.mon) use++;
+            if(this.state.lights.L) use++;
+            if(this.state.lights.R) use++;
+
+            this.state.pwr -= 0.15 * use; // Ajustei um pouco o consumo
+
+            // Atualiza UI
+            if(this.state.pwr < 0) this.state.pwr = 0;
+            document.getElementById('pwr-val').innerText = Math.floor(this.state.pwr);
             document.getElementById('usage-val').innerText = use;
-            if(this.pwr<=0) this.jumpscare('Freddy');
-            this.save();
-        },1000);
 
-        this.aiInterval = setInterval(()=>this.aiTick(),6000);
+            // Morte por bateria
+            if(this.state.pwr <= 0) {
+                this.stopGame(); // Para o consumo
+                this.blackout(); // Inicia sequência de escuro/jumpscare
+            } else {
+                // Só salva se estiver vivo
+                this.saveProgress();
+            }
+        }, 1000));
 
-        this.clockInterval = setInterval(()=>{
-            this.hour++;
-            if(this.hour>12) this.hour=1;
+        // 2. Loop de IA (5s - mais rápido que o original para testar)
+        this.timers.push(setInterval(() => this.aiTick(), 5000));
+
+        // 3. Relógio (45s por hora)
+        this.timers.push(setInterval(() => {
+            this.state.hour++;
+            if(this.state.hour > 12) this.state.hour = 1;
+            if(this.state.hour === 13) this.state.hour = 1; 
+            
             this.updateClockUI();
-            if(this.hour===6) this.winNight();
-        },45000);
+            
+            if(this.state.hour === 6) this.winNight();
+        }, 45000)); 
     }
 
-    stop() {
-        clearInterval(this.energyInterval);
-        clearInterval(this.aiInterval);
-        clearInterval(this.clockInterval);
+    stopGame() {
+        this.isRunning = false;
+        this.timers.forEach(t => clearInterval(t));
+        this.timers = [];
     }
 
-    updateClockUI() {
-        document.getElementById('clock').innerText = `${this.hour}:00 AM`;
-        document.getElementById('night').innerText = `night ${this.nightNum}`;
+    // --- AÇÕES DO JOGADOR ---
+
+    toggleDoor(side) {
+        if(!this.isRunning || this.state.pwr <= 0) return;
+        this.state.doors[side] = !this.state.doors[side];
+        this.updateDoorVisuals();
     }
 
-    updateCam() {
-        const d=document.getElementById('animatronic-visual');
-        d.style.display='none';
-        if(this.cam==='1C'){ d.style.display='block'; d.innerText=this.foxyProgress<2?'🚩':'🦊'; return; }
-        for(let k of ['Bonnie','Chica','Freddy']){
-            if(this.entities[k].pos===this.cam){
-                d.style.display='block';
-                d.innerText=k==='Bonnie'?'🐰':k==='Chica'?'🐥':'🐻';
-                break;
-            }
+    toggleLight(side) {
+        if(!this.isRunning || this.state.pwr <= 0) return;
+        this.state.lights[side] = !this.state.lights[side];
+        // Apaga a outra luz (não pode ter duas ligadas ao mesmo tempo normalmente)
+        if(this.state.lights[side]) {
+             const other = side === 'L' ? 'R' : 'L';
+             this.state.lights[other] = false;
+        }
+        this.updateVisuals();
+    }
+
+    toggleMonitor() {
+        if(!this.isRunning || this.state.pwr <= 0) return;
+        this.mon = !this.mon;
+        document.getElementById('camera-monitor').style.display = this.mon ? 'block' : 'none';
+        if(this.mon) {
+            this.state.lights.L = false;
+            this.state.lights.R = false; // Desliga luzes ao abrir camera
+            this.updateVisuals();
+            this.updateCam();
         }
     }
 
-    aiTick() {
-        for(let k in this.entities){
-            const e=this.entities[k];
-            if(Math.random()<e.chance){
-                let i=e.path.indexOf(e.pos);
-                if(i<e.path.length-1) e.pos=e.path[i+1];
-                else if(!this.doors[k==='Bonnie'?'L':'R']) this.jumpscare(k);
-                else e.pos='1A';
-            }
-        }
+    setCam(cam, btn) {
+        if(!this.mon) return;
+        this.state.cam = cam;
+        document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
         this.updateCam();
     }
 
-    jumpscare(who){
-        this.stop();
-        localStorage.removeItem('fnafSave');
-        document.getElementById('jumpscare-overlay').style.display='flex';
-        document.getElementById('scare-char').innerText=who==='Bonnie'?'🐰':who==='Chica'?'🐥':who==='Foxy'?'🦊':'🐻';
-        setTimeout(()=>location.reload(),2000);
+    // --- VISUALIZAÇÃO ---
+
+    updateDoorVisuals() {
+        document.getElementById(`door-L`).classList.toggle('closed', this.state.doors.L);
+        document.getElementById(`door-R`).classList.toggle('closed', this.state.doors.R);
     }
 
-    winNight(){
-        alert(`Você sobreviveu à Night ${this.nightNum}!`);
-        this.nightNum++;
-        localStorage.removeItem('fnafSave');
+    updateVisuals() {
+        // Luzes
+        document.getElementById('light-L').style.opacity = this.state.lights.L ? 1 : 0;
+        document.getElementById('light-R').style.opacity = this.state.lights.R ? 1 : 0;
+
+        // Animatrônicos na porta (Se a luz estiver ligada)
+        const bonnieAtDoor = this.entities.Bonnie.pos === 'DOOR';
+        const chicaAtDoor = this.entities.Chica.pos === 'DOOR';
+        const freddyAtDoor = this.entities.Freddy.pos === 'DOOR';
+
+        document.getElementById('visual-L').style.display = 
+            (this.state.lights.L && bonnieAtDoor) ? 'block' : 'none';
+            
+        document.getElementById('visual-R').style.display = 
+            (this.state.lights.R && (chicaAtDoor || freddyAtDoor)) ? 'block' : 'none';
+    }
+
+    updateCam() {
+        const display = document.getElementById('animatronic-visual');
+        display.style.display = 'none';
+        
+        let visualText = ""; // String vazia para acumular emojis
+
+        // Foxy na cortina (1C)
+        if(this.state.cam === '1C') {
+            display.style.display = 'block';
+            // Lógica simples visual do Foxy
+            visualText = this.state.foxyProgress <= 1 ? '🚩' : (this.state.foxyProgress < 4 ? '🦊👀' : '💨');
+            display.innerText = visualText;
+            return;
+        }
+
+        // Outros animatrônicos
+        // Correção: Loop que acumula emojis em vez de substituir
+        for(let key in this.entities) {
+            if(this.entities[key].pos === this.state.cam) {
+                let emoji = '';
+                if(key === 'Bonnie') emoji = '🐰';
+                else if(key === 'Chica') emoji = '🐥';
+                else if(key === 'Freddy') emoji = '🐻';
+                
+                visualText += emoji + " "; // Adiciona espaço
+            }
+        }
+
+        if(visualText !== "") {
+            display.style.display = 'block';
+            display.innerText = visualText;
+        } else {
+            display.innerText = "";
+        }
+    }
+    
+    updateClockUI() {
+        // Formatação simples de hora
+        let displayHour = this.state.hour;
+        if(displayHour === 0) displayHour = 12;
+        const ampm = (this.state.hour >= 12 && this.state.hour < 6) ? 'AM' : 'AM'; 
+        
+        document.getElementById('clock').innerText = `${displayHour}:00 AM`;
+        document.getElementById('night').innerText = `night ${this.state.nightNum}`;
+    }
+
+    // --- INTELIGÊNCIA ARTIFICIAL ---
+    aiTick() {
+        if(!this.isRunning) return;
+
+        // Foxy Logic
+        if(this.state.cam !== '1C') {
+            // Se não estiver olhando pro Foxy, ele tenta sair
+            if(Math.random() < 0.15) {
+                this.state.foxyProgress++;
+                if(this.state.foxyProgress >= 5) {
+                    if(!this.state.doors.L) this.jumpscare('Foxy');
+                    else { 
+                        this.state.foxyProgress = 0; 
+                        this.state.pwr -= 5; // Bate na porta e tira energia
+                        // Som de batida aqui seria ideal
+                    }
+                }
+            }
+        } else {
+            // Se olhar pra ele, ele "congela" ou reseta um pouco a agressividade
+        }
+
+        // Bonnie, Chica, Freddy
+        for(let key in this.entities) {
+            const e = this.entities[key];
+            
+            // Freddy não move se você estiver olhando pra ele na câmera
+            if(key === 'Freddy' && this.mon && this.state.cam === e.pos) continue;
+
+            if(Math.random() < e.chance) {
+                let idx = e.path.indexOf(e.pos);
+                
+                // Mover para frente
+                if(idx < e.path.length - 1) {
+                    e.pos = e.path[idx + 1];
+                } 
+                // Atacar
+                else {
+                    const side = (key === 'Bonnie') ? 'L' : 'R';
+                    if(!this.state.doors[side]) {
+                        this.jumpscare(key);
+                    } else {
+                        // Bloqueado pela porta, volta para o início ou recua
+                        e.pos = '1A'; // Ou '1B' para ser menos punitivo
+                    }
+                }
+            }
+        }
+
+        if(this.mon) this.updateCam();
+        this.updateVisuals();
+    }
+
+    // --- FIM DE JOGO ---
+
+    blackout() {
+        // Sequência quando acaba a energia
+        document.getElementById('office').style.filter = 'brightness(0.1)';
+        document.getElementById('ui').style.display = 'none';
+        this.mon = false;
+        document.getElementById('camera-monitor').style.display = 'none';
+        
+        // Espera um tempo aleatório e dá jumpscare do Freddy
+        setTimeout(() => {
+            this.jumpscare('Freddy');
+        }, Math.random() * 5000 + 2000);
+    }
+
+    jumpscare(who) {
+        this.stopGame();
+        // REMOVE O SAVE DO JOGO ATUAL PARA EVITAR LOOP
+        localStorage.removeItem('fnafCheckPoint');
+
+        const overlay = document.getElementById('jumpscare-overlay');
+        const char = document.getElementById('scare-char');
+        
+        overlay.style.display = 'flex';
+        char.innerText = who==='Bonnie'?'🐰':who==='Chica'?'🐥':who==='Foxy'?'🦊':'🐻';
+        
+        // Toca som se tivesse
+        
+        setTimeout(() => {
+            location.reload(); // Recarrega a página para voltar ao menu limpo
+        }, 2500);
+    }
+
+    winNight() {
+        this.stopGame();
+        alert(`Você sobreviveu à Night ${this.state.nightNum}!`);
+        
+        // Salva progresso da NOITE (não do checkpoint)
+        this.state.nightNum++;
+        const nextNightState = {
+            nightNum: this.state.nightNum,
+            unlocked: true
+        };
+        localStorage.setItem('fnafProfile', JSON.stringify(nextNightState));
+        
+        // Remove checkpoint de meio de jogo
+        localStorage.removeItem('fnafCheckPoint');
+        
         location.reload();
     }
 
-    save(){
-        localStorage.setItem('fnafSave',JSON.stringify({
-            pwr:this.pwr, cam:this.cam, doors:this.doors,
-            lights:this.lights, foxyProgress:this.foxyProgress,
-            hour:this.hour, nightNum:this.nightNum
-        }));
+    // --- SISTEMA DE SAVE ---
+    saveProgress() {
+        // Salva o estado atual para o "Continue"
+        // Incluindo posição dos animatrônicos
+        const entitiesPos = {
+            Bonnie: this.entities.Bonnie.pos,
+            Chica: this.entities.Chica.pos,
+            Freddy: this.entities.Freddy.pos
+        };
+        
+        const saveObj = {
+            ...this.state,
+            entitiesPos: entitiesPos
+        };
+        
+        localStorage.setItem('fnafCheckPoint', JSON.stringify(saveObj));
     }
 
-    setupMenu(){
-        document.getElementById('new-game').onclick=()=>{
-            localStorage.removeItem('fnafSave');
-            document.getElementById('menu').style.display='none';
-            this.load();
-            this.start();
-        };
-        document.getElementById('continue-game').onclick=()=>{
-            document.getElementById('menu').style.display='none';
-            this.start();
-        };
-    }
+        setupMenu( ) {
+             document .getEletmentByI
+d( 'new-game' ) .onclick = ( ) =>
+thais .startNewGame( ) ;
+                 document . getEletmentById(
+'continue-game ' ) .onclick = ( ) => 
+thais . continueGame( );    
+         }
 }
 
+// Inicializar a classe, mas o jogo espera o botão de menu 
 const game = new FNAF();
+
 </script>
 </body>
 </html>
