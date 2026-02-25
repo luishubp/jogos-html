@@ -5,20 +5,6 @@
   <title>🎮 Hub de Jogos HTML</title>
 
   <style>
-    /* Animação de Glitch */
-@keyframes glitch {
-  0% { text-shadow: 2px 0 #22d3ee, -2px 0 #ff00c1; transform: translate(0); }
-  20% { text-shadow: -2px 0 #22d3ee, 2px 0 #ff00c1; transform: translate(-1px, 1px); }
-  40% { text-shadow: 2px 0 #22d3ee, -2px 0 #ff00c1; transform: translate(-1px, -1px); }
-  60% { text-shadow: -2px 0 #22d3ee, 2px 0 #ff00c1; transform: translate(1px, 1px); }
-  80% { text-shadow: 2px 0 #22d3ee, -2px 0 #ff00c1; transform: translate(1px, -1px); }
-  100% { text-shadow: -2px 0 #22d3ee, 2px 0 #ff00c1; transform: translate(0); }
-}
-
-/* Aplicando no H1 quando passar o mouse (ou direto se preferir) */
-h1:hover {
-  animation: glitch 0.3s infinite;
-                                                                         }
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -33,17 +19,25 @@ h1:hover {
 
     .container {
       width: 100%;
-      max-width: 1000px; /* Aumentei um pouco para caber 3 cards melhor */
+      max-width: 1000px;
       padding: 40px 20px;
       text-align: center;
     }
 
+    /* TÍTULO COM EFEITO GLITCH AO PASSAR O MOUSE */
     h1 {
       font-size: 2.8rem;
       margin-bottom: 10px;
       background: linear-gradient(90deg, #22d3ee, #14b8a6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      display: inline-block;
+      transition: 0.3s;
+    }
+
+    h1:hover {
+      animation: glitch 0.3s infinite;
+      cursor: pointer;
     }
 
     p {
@@ -53,7 +47,6 @@ h1:hover {
 
     .grid {
       display: grid;
-      /* O repeat auto-fit garante que eles se alinhem sozinhos */
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 25px;
     }
@@ -71,14 +64,18 @@ h1:hover {
       justify-content: space-between;
     }
 
-    /* Efeito de brilho ao passar o mouse */
+    /* EFEITO DE BRILHO E PULSAÇÃO NO CARD */
     .card:hover {
       transform: translateY(-8px);
       border-color: #22d3ee;
       box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
     }
 
-    .icon { font-size: 3rem; margin-bottom: 10px; }
+    .card:hover .icon {
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    .icon { font-size: 3rem; margin-bottom: 10px; transition: 0.3s; }
     .title { font-size: 1.3rem; margin-bottom: 10px; font-weight: bold; }
     .desc { font-size: 0.95rem; color: #9ca3af; margin-bottom: 20px; flex-grow: 1; }
 
@@ -92,12 +89,9 @@ h1:hover {
       text-decoration: none;
       border: none;
       cursor: pointer;
-      transition: opacity 0.3s;
     }
 
-    .btn:hover { opacity: 0.9; }
-
-    /* Estilo para o card desativado */
+    /* ESTILO DO CARD "EM BREVE" */
     .card.futuro-jogo {
       opacity: 0.6;
       border-style: dashed;
@@ -113,6 +107,23 @@ h1:hover {
       margin-top: 40px;
       font-size: 0.8rem;
       color: #6b7280;
+    }
+
+    /* --- AS ANIMAÇÕES (OS ROTEIROS) --- */
+
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 #22d3ee, -2px 0 #ff00c1; transform: translate(0); }
+      20% { text-shadow: -2px 0 #22d3ee, 2px 0 #ff00c1; transform: translate(-1px, 1px); }
+      40% { text-shadow: 2px 0 #22d3ee, -2px 0 #ff00c1; transform: translate(-1px, -1px); }
+      60% { text-shadow: -2px 0 #22d3ee, 2px 0 #ff00c1; transform: translate(1px, 1px); }
+      80% { text-shadow: 2px 0 #22d3ee, -2px 0 #ff00c1; transform: translate(1px, -1px); }
+      100% { text-shadow: -2px 0 #22d3ee, 2px 0 #ff00c1; transform: translate(0); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); filter: drop-shadow(0 0 0px #22d3ee); }
+      50% { transform: scale(1.1); filter: drop-shadow(0 0 15px #22d3ee); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 0px #22d3ee); }
     }
   </style>
 </head>
@@ -151,3 +162,5 @@ h1:hover {
   </div>
 </body>
 </html>
+
+
