@@ -23,62 +23,107 @@
       padding: 40px 20px;
       text-align: center;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #0f1724, #020617);
-      color: #e5e7eb;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow-x: hidden;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1000px;
-      padding: 40px 20px;
-      text-align: center;
-    }
-
-        @keyframes glitch-agressivo {
-      0% { 
-        transform: translate(0); 
-        text-shadow: -3px -3px 0px #0ff, 3px 3px 0px #f0f; 
-      }
-      20% { 
-        transform: translate(-8px, 4px); /* Aumento no deslocamento */
-        text-shadow: -5px 0px 0px #0ff, 5px 0px 0px #f0f;
-        clip-path: inset(10% 0 30% 0); /* Faz o texto parecer cortado ao meio */
-      }
-      40% { 
-        transform: translate(8px, -4px); 
-        text-shadow: 5px 5px 0px #0ff, -5px -5px 0px #f0f;
-        clip-path: inset(40% 0 10% 0); 
-      }
-      60% { 
-        transform: translate(-5px, -2px); 
-        clip-path: inset(80% 0 5% 0); 
-      }
-      80% { 
-        transform: translate(5px, 2px); 
-        text-shadow: -2px 0px 0px #0ff, 2px 0px 0px #f0f;
-        clip-path: inset(0% 0 70% 0); 
-      }
-      100% { 
-        transform: translate(0); 
-        text-shadow: none; 
-      }
+    /* TÍTULO COM EFEITO GLITCH AO PASSAR O MOUSE */
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #22d3ee, #14b8a6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      transition: 0.3s;
     }
 
     h1:hover {
-      /* Diminuí um pouco a velocidade para o olho conseguir ver a distorção */
-      animation: glitch-agressivo 0.25s infinite; 
+      animation: glitch 0.3s infinite;
       cursor: pointer;
     }
 
+    p {
+      color: #9ca3af;
+      margin-bottom: 40px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, #0b1220, #020617);
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 25px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* EFEITO DE BRILHO E PULSAÇÃO NO CARD */
+    .card:hover {
+      transform: translateY(-8px);
+      border-color: #22d3ee;
+      box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
+    }
+
+    .card:hover .icon {
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    .icon { font-size: 3rem; margin-bottom: 10px; transition: 0.3s; }
+    .title { font-size: 1.3rem; margin-bottom: 10px; font-weight: bold; }
+    .desc { font-size: 0.95rem; color: #9ca3af; margin-bottom: 20px; flex-grow: 1; }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #14b8a6, #22d3ee);
+      color: #020617;
+      font-weight: bold;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* ESTILO DO CARD "EM BREVE" */
+    .card.futuro-jogo {
+      opacity: 0.6;
+      border-style: dashed;
+    }
+
+    .btn-disabled {
+      background: #334155;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    /* --- AS ANIMAÇÕES (OS ROTEIROS) --- */
+
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 #22d3ee, -2px 0 #ff00c1; transform: translate(0); }
+      20% { text-shadow: -2px 0 #22d3ee, 2px 0 #ff00c1; transform: translate(-1px, 1px); }
+      40% { text-shadow: 2px 0 #22d3ee, -2px 0 #ff00c1; transform: translate(-1px, -1px); }
+      60% { text-shadow: -2px 0 #22d3ee, 2px 0 #ff00c1; transform: translate(1px, 1px); }
+      80% { text-shadow: 2px 0 #22d3ee, -2px 0 #ff00c1; transform: translate(1px, -1px); }
+      100% { text-shadow: -2px 0 #22d3ee, 2px 0 #ff00c1; transform: translate(0); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); filter: drop-shadow(0 0 0px #22d3ee); }
+      50% { transform: scale(1.1); filter: drop-shadow(0 0 15px #22d3ee); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 0px #22d3ee); }
     }
   </style>
 </head>
@@ -117,5 +162,3 @@
   </div>
 </body>
 </html>
-
-
