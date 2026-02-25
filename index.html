@@ -19,7 +19,7 @@
 
     .container {
       width: 100%;
-      max-width: 900px;
+      max-width: 1000px; /* Aumentei um pouco para caber 3 cards melhor */
       padding: 40px 20px;
       text-align: center;
     }
@@ -39,7 +39,8 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      /* O repeat auto-fit garante que eles se alinhem sozinhos */
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 25px;
     }
 
@@ -48,21 +49,26 @@
       border: 1px solid #1e293b;
       border-radius: 16px;
       padding: 25px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
+    /* Efeito de brilho ao passar o mouse */
     .card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      transform: translateY(-8px);
+      border-color: #22d3ee;
+      box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
     }
 
     .icon { font-size: 3rem; margin-bottom: 10px; }
-    .title { font-size: 1.3rem; margin-bottom: 10px; }
-    .desc { font-size: 0.95rem; color: #9ca3af; margin-bottom: 20px; }
+    .title { font-size: 1.3rem; margin-bottom: 10px; font-weight: bold; }
+    .desc { font-size: 0.95rem; color: #9ca3af; margin-bottom: 20px; flex-grow: 1; }
 
-    a {
+    .btn {
       display: inline-block;
       padding: 12px 20px;
       border-radius: 10px;
@@ -70,6 +76,23 @@
       color: #020617;
       font-weight: bold;
       text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+
+    .btn:hover { opacity: 0.9; }
+
+    /* Estilo para o card desativado */
+    .card.futuro-jogo {
+      opacity: 0.6;
+      border-style: dashed;
+    }
+
+    .btn-disabled {
+      background: #334155;
+      color: #94a3b8;
+      cursor: not-allowed;
     }
 
     footer {
@@ -89,23 +112,23 @@
       <div class="card">
         <div class="icon">🚀</div>
         <div class="title">Alien Space Wars</div>
-        <div class="desc">Shooter espacial clássico com naves e explosões</div>
-        <a href="./games/alien-space-wars/">Jogar</a>
+        <div class="desc">Shooter espacial clássico com naves e explosões.</div>
+        <a href="./games/alien-space-wars/" class="btn">Jogar</a>
       </div>
 
       <div class="card">
         <div class="icon">👁️</div>
         <div class="title">Night Watch (FNAF)</div>
-        <div class="desc">Sobreviva à noite monitorando câmeras e portas</div>
-        <a href="./games/fnaf-night-watch/">Jogar</a>
+        <div class="desc">Sobreviva à noite monitorando câmeras e portas.</div>
+        <a href="./games/fnaf-night-watch/" class="btn">Jogar</a>
       </div>
-    </div>
 
-    <div class="card futuro-jogo">
-    <div class="icon">🎲</div>
-    <h3>Novo Experimento</h3>
-    <p>Testando novas lógicas de movimentação e IA.</p>
-    <button disabled>Em breve</button>
+      <div class="card futuro-jogo">
+        <div class="icon">🎲</div>
+        <div class="title">Novo Experimento</div>
+        <div class="desc">Testando novas lógicas de movimentação e IA para futuros projetos.</div>
+        <button class="btn btn-disabled" disabled>Em breve</button>
+      </div>
     </div>
     
     <footer>
