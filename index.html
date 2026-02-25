@@ -43,110 +43,42 @@
       text-align: center;
     }
 
-    /* --- TITULO COM GLITCH AGRESSIVO --- */
-    h1 {
-      font-size: 2.8rem;
-      margin-bottom: 10px;
-      background: linear-gradient(90deg, #22d3ee, #14b8a6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: inline-block;
-      position: relative;
+        @keyframes glitch-agressivo {
+      0% { 
+        transform: translate(0); 
+        text-shadow: -3px -3px 0px #0ff, 3px 3px 0px #f0f; 
+      }
+      20% { 
+        transform: translate(-8px, 4px); /* Aumento no deslocamento */
+        text-shadow: -5px 0px 0px #0ff, 5px 0px 0px #f0f;
+        clip-path: inset(10% 0 30% 0); /* Faz o texto parecer cortado ao meio */
+      }
+      40% { 
+        transform: translate(8px, -4px); 
+        text-shadow: 5px 5px 0px #0ff, -5px -5px 0px #f0f;
+        clip-path: inset(40% 0 10% 0); 
+      }
+      60% { 
+        transform: translate(-5px, -2px); 
+        clip-path: inset(80% 0 5% 0); 
+      }
+      80% { 
+        transform: translate(5px, 2px); 
+        text-shadow: -2px 0px 0px #0ff, 2px 0px 0px #f0f;
+        clip-path: inset(0% 0 70% 0); 
+      }
+      100% { 
+        transform: translate(0); 
+        text-shadow: none; 
+      }
     }
 
     h1:hover {
-      /* O steps(2) tira a suavidade e deixa o efeito "robótico" */
-      animation: glitch-agressivo 0.15s steps(2) infinite;
+      /* Diminuí um pouco a velocidade para o olho conseguir ver a distorção */
+      animation: glitch-agressivo 0.25s infinite; 
       cursor: pointer;
-      filter: brightness(1.3);
     }
 
-    @keyframes glitch-agressivo {
-      0% { transform: translate(0); text-shadow: -2px -2px #0ff, 2px 2px #f0f; }
-      25% { transform: translate(-4px, 2px); text-shadow: -4px 0 #0ff, 4px 0 #f0f; }
-      50% { transform: translate(4px, -2px); text-shadow: 2px 2px #0ff, -2px -2px #f0f; }
-      75% { transform: translate(-2px, -2px); text-shadow: -1px -1px #0ff, 1px 1px #f0f; }
-      100% { transform: translate(0); }
-    }
-
-    p { color: #9ca3af; margin-bottom: 40px; }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
-    }
-
-    /* --- CARD COM EFEITO DE MONITOR ANTIGO --- */
-    .card {
-      background: linear-gradient(180deg, #0b1220, #020617);
-      border: 1px solid #1e293b;
-      border-radius: 16px;
-      padding: 25px;
-      transition: all 0.2s ease;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    /* Linhas de interferência que aparecem no Hover */
-    .card::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
-                  linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-      background-size: 100% 3px, 3px 100%;
-      opacity: 0;
-      transition: 0.2s;
-      pointer-events: none;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      border-color: #22d3ee;
-      box-shadow: 0 0 30px rgba(34, 211, 238, 0.3);
-    }
-
-    .card:hover::before { opacity: 1; }
-
-    .icon { font-size: 3rem; margin-bottom: 10px; transition: 0.3s; }
-    
-    /* Faz o ícone tremer levemente no card */
-    .card:hover .icon {
-      animation: tremor 0.2s infinite;
-    }
-
-    @keyframes tremor {
-      0% { transform: rotate(0deg); }
-      25% { transform: rotate(2deg); }
-      75% { transform: rotate(-2deg); }
-      100% { transform: rotate(0deg); }
-    }
-
-    .title { font-size: 1.3rem; margin-bottom: 10px; font-weight: bold; }
-    .desc { font-size: 0.95rem; color: #9ca3af; margin-bottom: 20px; flex-grow: 1; }
-
-    .btn {
-      display: inline-block;
-      padding: 12px 20px;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #14b8a6, #22d3ee);
-      color: #020617;
-      font-weight: bold;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      z-index: 2; /* Garante que o botão fique acima das linhas de interferência */
-    }
-
-    .card.futuro-jogo { opacity: 0.5; border-style: dashed; }
-    .btn-disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
-
-    footer { margin-top: 40px; font-size: 0.8rem; color: #6b7280; }
-    
     }
   </style>
 </head>
