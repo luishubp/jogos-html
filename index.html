@@ -46,23 +46,18 @@
     }
 
     .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
-    }
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  align-items: stretch; /* força todos os cards a terem a mesma altura na linha */
+}
 
-    .card {
-      background: linear-gradient(180deg, #0b1220, #020617);
-      border: 1px solid #1e293b;
-      border-radius: 16px;
-      padding: 25px;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 300px; /* altura mínima igual para todos */
+}
 
     /* EFEITO DE BRILHO E PULSAÇÃO NO CARD */
     .card:hover {
