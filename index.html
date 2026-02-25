@@ -5,6 +5,20 @@
   <title>🎮 Hub de Jogos HTML</title>
 
   <style>
+    /* Animação de Glitch */
+@keyframes glitch {
+  0% { text-shadow: 2px 0 #22d3ee, -2px 0 #ff00c1; transform: translate(0); }
+  20% { text-shadow: -2px 0 #22d3ee, 2px 0 #ff00c1; transform: translate(-1px, 1px); }
+  40% { text-shadow: 2px 0 #22d3ee, -2px 0 #ff00c1; transform: translate(-1px, -1px); }
+  60% { text-shadow: -2px 0 #22d3ee, 2px 0 #ff00c1; transform: translate(1px, 1px); }
+  80% { text-shadow: 2px 0 #22d3ee, -2px 0 #ff00c1; transform: translate(1px, -1px); }
+  100% { text-shadow: -2px 0 #22d3ee, 2px 0 #ff00c1; transform: translate(0); }
+}
+
+/* Aplicando no H1 quando passar o mouse (ou direto se preferir) */
+h1:hover {
+  animation: glitch 0.3s infinite;
+                                                                         }
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
