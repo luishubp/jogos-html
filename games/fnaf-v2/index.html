@@ -502,7 +502,6 @@ function updateHUD() {
   pctEl.textContent     = Math.round(pct) + '%';
   pctEl.style.color     = color;
 }
-
 // ═══════════════════════════════════════
 // RENDER ESCRITÓRIO
 // ═══════════════════════════════════════
@@ -532,7 +531,6 @@ function renderOffice() {
   if (s.leftDoor)        { winL.classList.add('closed');    winL.innerHTML = '<span class="door-status">■ FECHADO</span>'; }
   else if (leftVisible)  { winL.classList.add('lit-anim');  winL.innerHTML = `<span class="anim-peek">${ANIM.Bonnie.emoji}</span><span class="anim-label">BONNIE!</span>`; }
   else                   { winL.innerHTML = '<span class="empty-label">vazio</span>'; }
-
   const btnLL = document.getElementById('btn-light-left');
   btnLL.className = 'ctrl-btn' + (s.leftLight ? ' light-on' : '');
   const btnDL = document.getElementById('btn-door-left');
