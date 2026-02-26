@@ -1,1 +1,642 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Five Nights at Freddy's</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+  body {
+    background: #090909;
+    font-family: 'Courier New', monospace;
+    color: #ccc;
+    overflow: hidden;
+    height: 100vh;
+  }
+  @keyframes blink   { 0%,100%{opacity:1}  50%{opacity:0}    }
+  @keyframes pulse   { 0%,100%{opacity:1}  50%{opacity:0.65} }
+  @keyframes spin    { to{transform:rotate(360deg)}           }
+  @keyframes flicker { 0%,100%{opacity:1}  30%{opacity:0.4}  60%{opacity:0.8} }
+  @keyframes shake   { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
 
+  .screen { display: none; position: fixed; inset: 0; }
+  .screen.active { display: flex; }
+
+  #screen-menu {
+    flex-direction: column; align-items: center; justify-content: center;
+    background: #090909; text-align: center;
+  }
+  #screen-menu .subtitle { color: #444; letter-spacing: 5px; font-size: 12px; margin-bottom: 12px; }
+  #screen-menu h1 {
+    color: #e8c000; font-size: clamp(28px, 7vw, 60px);
+    text-shadow: 0 0 28px #e8c00060; letter-spacing: 3px; line-height: 1.2;
+  }
+  #screen-menu .night-label { color: #383838; font-size: 13px; margin: 8px 0 38px; letter-spacing: 2px; }
+  #screen-menu .instructions { margin-top: 44px; max-width: 460px; font-size: 11px; line-height: 2; color: #2e2e2e; padding: 0 24px; }
+  #screen-menu .instructions b { color: #4e4e3e; }
+
+  #screen-dead {
+    flex-direction: column; align-items: center; justify-content: center;
+    background: #0c0000; text-align: center;
+  }
+  #screen-dead .killer-emoji { font-size: 80px; animation: shake 0.4s infinite; }
+  #screen-dead h2 { font-size: clamp(28px, 5vw, 46px); color: #cc2200; text-shadow: 0 0 20px #ff0000; letter-spacing: 4px; margin: 14px 0 8px; }
+  #screen-dead .killer-name { color: #663322; font-size: 14px; }
+
+  #screen-win {
+    flex-direction: column; align-items: center; justify-content: center;
+    background: #00100a; text-align: center;
+  }
+  #screen-win h2 { font-size: clamp(28px, 5vw, 46px); color: #00cc55; text-shadow: 0 0 20px #00ff66; letter-spacing: 4px; margin: 14px 0 8px; }
+  #screen-win p { color: #226633; font-size: 14px; }
+
+  .btn-main {
+    padding: 12px 48px; background: transparent; border: 2px solid #e8c000; color: #e8c000;
+    font-size: 14px; cursor: pointer; letter-spacing: 3px; border-radius: 2px;
+    box-shadow: 0 0 16px #e8c00028; font-family: 'Courier New', monospace;
+    transition: background 0.15s, color 0.15s;
+  }
+  .btn-main:hover { background: #e8c000; color: #000; }
+  .btn-red {
+    padding: 10px 40px; background: transparent; border: 2px solid #cc2200; color: #cc2200;
+    font-size: 12px; cursor: pointer; letter-spacing: 2px; border-radius: 2px;
+    font-family: 'Courier New', monospace; margin-top: 28px; transition: background 0.15s, color 0.15s;
+  }
+  .btn-red:hover { background: #cc2200; color: #000; }
+  .btn-green {
+    padding: 10px 40px; background: transparent; border: 2px solid #00cc55; color: #00cc55;
+    font-size: 12px; cursor: pointer; letter-spacing: 2px; border-radius: 2px;
+    font-family: 'Courier New', monospace; margin-top: 28px; transition: background 0.15s, color 0.15s;
+  }
+  .btn-green:hover { background: #00cc55; color: #000; }
+
+  #screen-game { flex-direction: column; background: #0a0908; position: relative; }
+
+  #hud {
+    position: absolute; top: 0; left: 0; right: 0; height: 46px;
+    background: #000000e0; border-bottom: 1px solid #1e1e14;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 14px; z-index: 30;
+  }
+  #hud .title   { font-size: 10px; color: #2a2820; letter-spacing: 2px; }
+  #hud .hour    { font-size: 12px; color: #997700; letter-spacing: 2px; }
+  #hud .power-wrap { display: flex; align-items: center; gap: 6px; }
+  #hud .power-icon { font-size: 10px; color: #2a2a2a; }
+  #hud .power-bar-bg { width: 80px; height: 10px; background: #111; border: 1px solid #1e1e1e; border-radius: 2px; overflow: hidden; }
+  #hud .power-bar-fill { height: 100%; background: #00cc44; transition: width 0.5s, background 0.5s; width: 100%; }
+  #hud .power-pct { font-size: 11px; color: #00cc44; min-width: 34px; text-align: right; }
+  #hud .hud-right { display: flex; align-items: center; gap: 18px; }
+
+  #btn-cameras {
+    position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); z-index: 30;
+    padding: 10px 34px; background: #0c0c0a; border: 2px solid #3a3a28; color: #777;
+    font-size: 11px; cursor: pointer; border-radius: 3px; letter-spacing: 2px;
+    font-family: 'Courier New', monospace; transition: border-color 0.15s, color 0.15s;
+  }
+  #btn-cameras:hover { border-color: #666; color: #aaa; }
+
+  #office { position: absolute; inset: 0; background: #131008; display: flex; align-items: stretch; }
+
+  .corridor {
+    width: 130px; flex-shrink: 0; background: #0c0a04;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: space-between; padding: 54px 9px 16px; transition: background 0.2s;
+  }
+  .corridor.lit { background: #201c0c; }
+  .corridor-left  { border-right: 3px solid #221a04; }
+  .corridor-right { border-left:  3px solid #221a04; }
+  .corridor-label    { text-align: center; font-size: 8px; letter-spacing: 2px; margin-bottom: 2px; }
+  .corridor-sublabel { font-size: 8px; }
+
+  .near-warning { display: none; background: #3a0800; border: 1px solid #882200; border-radius: 2px; padding: 4px 5px; text-align: center; flex-shrink: 0; }
+  .near-warning.visible { display: block; }
+  .near-warning .w-name { font-size: 9px; color: #ff4400; animation: blink 0.5s infinite; }
+  .near-warning .w-sub  { font-size: 8px;  color: #882200; }
+
+  .door-window {
+    flex: 1; width: 100%; margin: 9px 0; background: #080703;
+    border: 2px solid #1c1404; border-radius: 3px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 5px; min-height: 80px; transition: background 0.2s, border-color 0.2s; overflow: hidden;
+  }
+  .door-window.closed   { background: #281e04; border-color: #5a3a04; }
+  .door-window.lit-anim { background: #120a04; border-color: #aa4400; }
+  .door-status { font-size: 10px; color: #7a5a14; letter-spacing: 1px; }
+  .anim-peek   { font-size: 44px; animation: flicker 0.35s infinite; }
+  .anim-label  { font-size: 8px; color: #cc7700; letter-spacing: 1px; }
+  .empty-label { font-size: 9px; color: #161410; }
+
+  .corridor-btns { display: flex; flex-direction: column; gap: 5px; width: 100%; flex-shrink: 0; }
+  .ctrl-btn {
+    padding: 9px 0; background: #111; border: 2px solid #222; color: #444;
+    font-size: 11px; cursor: pointer; border-radius: 3px; letter-spacing: 1px;
+    width: 100%; font-family: 'Courier New', monospace; transition: background 0.1s, border-color 0.1s, color 0.1s;
+  }
+  .ctrl-btn.light-on { background: #ffcc0022; border-color: #ffcc00; color: #ffcc00; }
+  .ctrl-btn.door-on  { background: #ff880022; border-color: #ff8800; color: #ff8800; }
+
+  #office-center {
+    flex: 1; background: #111008; display: flex; flex-direction: column;
+    align-items: center; justify-content: space-between; padding: 54px 12px 60px; overflow: hidden;
+  }
+  .wall-decor { display: flex; justify-content: space-between; width: 90%; flex-shrink: 0; }
+  .poster { display: flex; align-items: center; justify-content: center; background: #1a1208; border: 2px solid #2a1e08; border-radius: 2px; opacity: 0.5; font-size: 22px; }
+  .desk { width: 85%; height: 46px; background: #201a0c; border: 2px solid #2e2410; border-radius: 4px; display: flex; align-items: center; justify-content: space-around; padding: 0 14px; flex-shrink: 0; }
+  .desk-item-rect  { background: #0e0e0e; border: 1px solid #2a2a2a; border-radius: 2px; }
+  .desk-item-line  { background: #141210; border-radius: 1px; }
+  .desk-item-round { background: #0e0e0e; border: 1px solid #2a2a2a; border-radius: 50%; }
+
+  #cam-panel {
+    display: none; position: absolute; inset: 0; background: #060a08;
+    flex-direction: column; font-family: 'Courier New', monospace; z-index: 10; padding: 8px;
+  }
+  #cam-panel.open { display: flex; }
+
+  #cam-feed {
+    flex: 1; border: 2px solid #2a3028; border-radius: 4px;
+    margin: 0 0 8px; position: relative; overflow: hidden; min-height: 180px;
+  }
+  #cam-feed .room-bg { position: absolute; inset: 0; }
+  #cam-feed::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image: repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.13) 3px,rgba(0,0,0,.13) 4px);
+    z-index: 4;
+  }
+  #cam-feed .vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 50%, #00000070 100%); z-index: 5; }
+  #cam-feed .cam-label { position: absolute; top: 10px; left: 10px; z-index: 6; font-size: 10px; color: #4d8; letter-spacing: 1px; }
+  #cam-feed .cam-door-hint { position: absolute; top: 10px; right: 10px; z-index: 6; font-size: 8px; background: #00000060; padding: 2px 5px; border-radius: 2px; letter-spacing: 1px; }
+  #cam-feed .rec-dot { position: absolute; bottom: 10px; right: 10px; z-index: 6; display: flex; align-items: center; gap: 4px; font-size: 9px; color: #4d8; }
+  #cam-feed .rec-dot span { width: 6px; height: 6px; border-radius: 50%; background: #f00; display: inline-block; animation: blink 1s infinite; }
+
+  .cam-room { width: 100%; height: 100%; position: relative; overflow: hidden; }
+  .stage-floor   { position:absolute; bottom:0; left:0; right:0; height:36%; background:#2a2010; border-top:3px solid #4a3a18; }
+  .stage-curtain { position:absolute; top:0; height:100%; width:12%; background:#4a1010; }
+  .stage-curtain.left  { left:0; }
+  .stage-curtain.right { right:0; }
+  .stage-spot { position:absolute; top:0; width:28px; height:28px; border-radius:50%; background:#ffffff12; transform:translateX(-50%); }
+  .dining-ceil  { position:absolute; top:0; left:0; right:0; height:14%; background:#1e1208; }
+  .dining-light { position:absolute; top:12%; left:50%; transform:translateX(-50%); width:14px; height:18px; background:#c8a00035; box-shadow:0 0 22px #c8a00050; border-radius:3px; }
+  .dining-table { position:absolute; background:#2a1e14; border:1px solid #3a2a18; border-radius:2px; }
+  .dining-leg   { position:absolute; width:8px; background:#241a10; }
+  .cove-sign    { position:absolute; top:10px; left:50%; transform:translateX(-50%); background:#2a1010; border:1px solid #4a2020; padding:3px 12px; border-radius:2px; z-index:3; font-size:9px; color:#8a4040; letter-spacing:2px; white-space:nowrap; }
+  .cove-interior{ position:absolute; top:18%; left:10%; right:10%; bottom:6%; background:#0c0505; border:2px solid #2a1010; border-radius:4px; }
+  .cove-curtain { position:absolute; top:18%; bottom:6%; background:#501010; z-index:2; transition:width 0.8s; }
+  .cove-curtain.left  { left:10%; border-right:3px solid #280808; }
+  .cove-curtain.right { right:10%; border-left:3px solid #280808; }
+  .cove-oos     { position:absolute; top:52%; left:50%; transform:translate(-50%,-50%); font-size:9px; color:#3a1a1a; z-index:3; }
+  .cove-stage-label { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); font-size:9px; letter-spacing:1px; white-space:nowrap; z-index:3; }
+  .hall-center { position:absolute; top:15%; left:30%; right:30%; bottom:5%; background:#07070d; }
+  .hall-depth  { position:absolute; top:25%; left:40%; right:40%; bottom:5%; background:#05050a; }
+  .hall-wall   { position:absolute; top:0; bottom:0; width:25%; }
+  .hall-wall.left  { left:0;  border-right:2px solid; }
+  .hall-wall.right { right:0; border-left:2px solid;  }
+  .hall-light  { position:absolute; top:4%; left:50%; transform:translateX(-50%); width:9px; height:9px; border-radius:50%; }
+  .hall-line   { position:absolute; height:1px; }
+  .gen-box { position:absolute; border-radius:2px; }
+  .anim-in-cam { position:absolute; z-index:2; transform:translateX(-50%); animation:pulse 2s infinite; font-size:40px; }
+
+  #cam-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; flex-shrink: 0; }
+  .cam-thumb { padding: 5px 8px; background: #0a0a0a; border: 1px solid #1e1e1e; cursor: pointer; border-radius: 2px; position: relative; transition: background 0.1s, border-color 0.1s; }
+  .cam-thumb.active   { background: #0d1a0d; border-color: #4d8; }
+  .cam-thumb.has-anim { border-color: #664400; }
+  .cam-thumb.active.has-anim { border-color: #4d8; }
+  .cam-thumb-id    { font-size: 9px;  color: #333; letter-spacing: 1px; }
+  .cam-thumb-label { font-size: 10px; color: #2a2a2a; margin-top: 1px; }
+  .cam-thumb.active .cam-thumb-id    { color: #4d8; }
+  .cam-thumb.active .cam-thumb-label { color: #8ca; }
+  .cam-dot { position:absolute; top:4px; right:5px; width:6px; height:6px; border-radius:50%; background:#f80; animation:blink 0.7s infinite; display:none; }
+  .cam-dot.visible { display: inline-block; }
+  #btn-close-cam { padding: 5px 8px; background: #0a0a0a; border: 1px solid #2a2a2a; cursor: pointer; border-radius: 2px; display: flex; align-items: center; justify-content: center; color: #555; font-size: 10px; letter-spacing: 1px; font-family: 'Courier New', monospace; transition: color 0.1s, border-color 0.1s; }
+  #btn-close-cam:hover { color: #aaa; border-color: #555; }
+</style>
+</head>
+<body>
+  <div id="screen-menu" class="screen active">
+  <p class="subtitle">FREDDY FAZBEAR'S PIZZA</p>
+  <h1>FIVE NIGHTS<br>AT FREDDY'S</h1>
+  <p class="night-label">— Noite 1 —</p>
+  <button class="btn-main" onclick="startGame()">INICIAR</button>
+  <div class="instructions">
+    Abra as <b>CÂMERAS</b> para ver onde estão os animatrônicos.<br>
+    Use a <b>LUZ</b> (segure o botão) para iluminar o corredor.<br>
+    Feche a <b>PORTA</b> se alguém estiver chegando.<br>
+    Sobreviva até as 6AM sem zerar a energia!
+  </div>
+</div>
+
+<div id="screen-dead" class="screen">
+  <div id="killer-emoji" class="killer-emoji">💀</div>
+  <h2>GAME OVER</h2>
+  <p id="killer-name" class="killer-name">??? te atacou!</p>
+  <button class="btn-red" onclick="startGame()">TENTAR NOVAMENTE</button>
+</div>
+
+<div id="screen-win" class="screen">
+  <div style="font-size:70px">🌅</div>
+  <h2>6:00 AM</h2>
+  <p>Você sobreviveu à noite!</p>
+  <button class="btn-green" onclick="startGame()">JOGAR NOVAMENTE</button>
+</div>
+  <div id="screen-game" class="screen">
+  <div id="hud">
+    <span class="title">FREDDY FAZBEAR'S</span>
+    <div class="hud-right">
+      <span id="hud-hour" class="hour">1:00 AM</span>
+      <div class="power-wrap">
+        <span class="power-icon">⚡</span>
+        <div class="power-bar-bg">
+          <div id="power-fill" class="power-bar-fill"></div>
+        </div>
+        <span id="power-pct" class="power-pct">100%</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="office">
+    <div id="corridor-left" class="corridor corridor-left">
+      <div>
+        <div class="corridor-label" style="color:#4060c080">CORREDOR ESQ.</div>
+        <div class="corridor-sublabel" style="color:#304080">🐰 Bonnie</div>
+      </div>
+      <div id="near-warn-left" class="near-warning">
+        <div class="w-name">⚠ BONNIE</div>
+        <div class="w-sub">no corredor!</div>
+      </div>
+      <div id="door-win-left" class="door-window">
+        <span class="empty-label">vazio</span>
+      </div>
+      <div class="corridor-btns">
+        <button id="btn-light-left" class="ctrl-btn"
+          onmousedown="setLight('left',true)" onmouseup="setLight('left',false)"
+          onmouseleave="setLight('left',false)"
+          ontouchstart="event.preventDefault();setLight('left',true)"
+          ontouchend="setLight('left',false)">💡 LUZ</button>
+        <button id="btn-door-left" class="ctrl-btn" onclick="toggleDoor('left')">🚪 FECHAR</button>
+      </div>
+    </div>
+    <div id="office-center">
+      <div class="wall-decor">
+        <div class="poster" style="width:55px;height:70px">🎪</div>
+        <div style="font-size:22px;animation:spin 3s linear infinite;color:#2a2418;align-self:center">🌀</div>
+        <div class="poster" style="width:48px;height:62px;opacity:0.45">🎠</div>
+      </div>
+      <div class="desk">
+        <div class="desk-item-rect"  style="width:32px;height:20px"></div>
+        <div class="desk-item-line"  style="width:68px;height:8px"></div>
+        <div class="desk-item-round" style="width:22px;height:22px"></div>
+      </div>
+    </div>
+
+    <div id="corridor-right" class="corridor corridor-right">
+      <div>
+        <div class="corridor-label" style="color:#a0408080">CORREDOR DIR.</div>
+        <div class="corridor-sublabel" style="color:#803040">🐥🎩 Chica / Freddy</div>
+      </div>
+      <div id="near-warn-right" class="near-warning">
+        <div id="near-warn-right-name" class="w-name">⚠ CHICA</div>
+        <div class="w-sub">no corredor!</div>
+      </div>
+      <div id="door-win-right" class="door-window">
+        <span class="empty-label">vazio</span>
+      </div>
+      <div class="corridor-btns">
+        <button id="btn-light-right" class="ctrl-btn"
+          onmousedown="setLight('right',true)" onmouseup="setLight('right',false)"
+          onmouseleave="setLight('right',false)"
+          ontouchstart="event.preventDefault();setLight('right',true)"
+          ontouchend="setLight('right',false)">💡 LUZ</button>
+        <button id="btn-door-right" class="ctrl-btn" onclick="toggleDoor('right')">🚪 FECHAR</button>
+      </div>
+    </div>
+  </div>
+    <div id="cam-panel">
+    <div id="cam-feed">
+      <div id="cam-room" class="room-bg"></div>
+      <div class="vignette"></div>
+      <div id="cam-label" class="cam-label">CAM 1A — Show Stage</div>
+      <div id="cam-door-hint" class="cam-door-hint" style="display:none"></div>
+      <div class="rec-dot"><span></span> REC</div>
+    </div>
+    <div id="cam-grid"></div>
+  </div>
+
+  <button id="btn-cameras" onclick="toggleCam()">▲ CÂMERAS</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// CONFIGURAÇÕES — edite aqui à vontade
+// ═══════════════════════════════════════
+const CONFIG = {
+  HOUR_DURATION        : 90,    // segundos por hora (maior = mais fácil)
+  TICK_MS              : 500,
+  BASE_MOVE            : 0.004, // chance base de movimento por tick
+  MOVE_PER_HOUR        : 0.0035,
+  FOXY_BASE_THRESH     : 70,    // segundos para Foxy chegar ao stage 3 (hora 1)
+  FOXY_REDUCE_PER_HOUR : 3,
+  FOXY_MIN_THRESH      : 55,
+  ATTACK_CHANCE_BONNIE : 0.20,
+  ATTACK_CHANCE_CHICA  : 0.20,
+  ATTACK_CHANCE_FREDDY : 0.10,
+  FOXY_DOOR_PENALTY    : 6,     // % de energia perdida quando Foxy bate na porta
+  DRAIN_BASE           : 0.008,
+  DRAIN_CAM            : 0.012,
+  DRAIN_DOOR           : 0.010,
+  DRAIN_LIGHT          : 0.006,
+};
+  const PATHS = {
+  Bonnie : ["stage","dining","backstage","corridor_w","left_door"],
+  Chica  : ["stage","dining","restrooms","corridor_e","right_door"],
+  Freddy : ["stage","dining","restrooms","corridor_e","right_door"],
+};
+
+const CAMERAS = {
+  "CAM 1A": { label:"Show Stage",      bg:"#1e1a08", accent:"#c8a000", doorHint:null },
+  "CAM 1B": { label:"Dining Area",     bg:"#180e08", accent:"#a05020", doorHint:null },
+  "CAM 1C": { label:"Pirate Cove",     bg:"#100808", accent:"#902020", doorHint:null },
+  "CAM 2A": { label:"West Hall",       bg:"#0a0c18", accent:"#4060c0", doorHint:null },
+  "CAM 2B": { label:"W. Hall Corner",  bg:"#080a14", accent:"#304090", doorHint:"← PORTA ESQ." },
+  "CAM 3" : { label:"Supply Closet",   bg:"#0e100a", accent:"#506030", doorHint:null },
+  "CAM 4A": { label:"East Hall",       bg:"#14080e", accent:"#a04080", doorHint:null },
+  "CAM 4B": { label:"E. Hall Corner",  bg:"#100608", accent:"#803060", doorHint:"PORTA DIR. →" },
+  "CAM 7" : { label:"Restrooms",       bg:"#080e10", accent:"#208060", doorHint:null },
+};
+
+const POS_TO_CAM = {
+  stage:"CAM 1A", dining:"CAM 1B", backstage:"CAM 3",
+  restrooms:"CAM 7", corridor_w:"CAM 2A", corridor_e:"CAM 4A",
+};
+
+const ANIM = {
+  Bonnie : { emoji:"🐰", color:"#a080e8" },
+  Chica  : { emoji:"🐥", color:"#f0c040" },
+  Freddy : { emoji:"🎩", color:"#d08040" },
+  Foxy   : { emoji:"🦊", color:"#e05040" },
+};
+const FOXY_STAGE_LABELS = ["Cortina fechada","Espreitando…","Saiu da cortina!","CORRENDO!"];
+
+// ═══════════════════════════════════════
+// ESTADO
+// ═══════════════════════════════════════
+let state = {};
+function initState() {
+  state = {
+    elapsed:0, hour:1, power:100,
+    bonniePos:0, chicaPos:0, freddyPos:0,
+    foxyStage:0, foxyIdle:0,
+    leftDoor:false, rightDoor:false,
+    leftLight:false, rightLight:false,
+    camOpen:false, activeCam:"CAM 1A",
+    dead:false, won:false,
+  };
+  }
+let loopId = null;
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+}
+
+function startGame() {
+  clearInterval(loopId);
+  initState();
+  buildCamGrid();
+  renderOffice();
+  updateHUD();
+  showScreen('game');
+  loopId = setInterval(gameTick, CONFIG.TICK_MS);
+}
+
+// ═══════════════════════════════════════
+// LOOP
+// ═══════════════════════════════════════
+function gameTick() {
+  if (state.dead || state.won) return;
+  const s = state;
+  s.elapsed += CONFIG.TICK_MS / 1000;
+
+  const newHour = Math.min(6, 1 + Math.floor(s.elapsed / CONFIG.HOUR_DURATION));
+  if (newHour !== s.hour) {
+    s.hour = newHour;
+    if (newHour >= 6) { win(); return; }
+  }
+
+  let drain = CONFIG.DRAIN_BASE;
+  if (s.camOpen)    drain += CONFIG.DRAIN_CAM;
+  if (s.leftDoor)   drain += CONFIG.DRAIN_DOOR;
+  if (s.rightDoor)  drain += CONFIG.DRAIN_DOOR;
+  if (s.leftLight)  drain += CONFIG.DRAIN_LIGHT;
+  if (s.rightLight) drain += CONFIG.DRAIN_LIGHT;
+  s.power -= drain;
+  if (s.power <= 0) { s.power = 0; die('Freddy'); return; }
+
+  const chance = CONFIG.BASE_MOVE + s.hour * CONFIG.MOVE_PER_HOUR;
+  if (s.bonniePos < PATHS.Bonnie.length-1 && Math.random() < chance) s.bonniePos++;
+  if (s.chicaPos  < PATHS.Chica.length-1  && Math.random() < chance) s.chicaPos++;
+
+  const fCam     = POS_TO_CAM[PATHS.Freddy[s.freddyPos]];
+  const fWatched = s.camOpen && s.activeCam === fCam;
+  if (s.freddyPos < PATHS.Freddy.length-1 && !fWatched && Math.random() < chance*0.4) s.freddyPos++;
+
+  if (s.camOpen && s.activeCam === "CAM 1C")
+    s.foxyIdle = Math.max(0, s.foxyIdle - (CONFIG.TICK_MS/1000)*0.8);
+  else
+    s.foxyIdle += CONFIG.TICK_MS / 1000;
+
+  const foxyThresh = Math.max(CONFIG.FOXY_MIN_THRESH, CONFIG.FOXY_BASE_THRESH - s.hour*CONFIG.FOXY_REDUCE_PER_HOUR);
+  s.foxyStage = Math.min(3, Math.floor(s.foxyIdle / (foxyThresh/4)));
+  if (s.foxyStage >= 3 && s.foxyIdle > foxyThresh*1.05) {
+    if (!s.leftDoor) { die('Foxy'); return; }
+    s.power = Math.max(0, s.power - CONFIG.FOXY_DOOR_PENALTY);
+    s.foxyIdle = 0; s.foxyStage = 0;
+  }
+  if (PATHS.Bonnie[s.bonniePos]==="left_door"  && !s.leftDoor  && Math.random()<CONFIG.ATTACK_CHANCE_BONNIE){ die('Bonnie'); return; }
+  if (PATHS.Chica[s.chicaPos]  ==="right_door" && !s.rightDoor && Math.random()<CONFIG.ATTACK_CHANCE_CHICA) { die('Chica');  return; }
+  if (PATHS.Freddy[s.freddyPos]==="right_door" && !s.rightDoor && Math.random()<CONFIG.ATTACK_CHANCE_FREDDY){ die('Freddy'); return; }
+
+  updateHUD();
+  renderOffice();
+  if (s.camOpen) renderCamFeed();
+  updateCamDots();
+}
+
+function die(who) {
+  state.dead = true;
+  clearInterval(loopId);
+  document.getElementById('killer-emoji').textContent = ANIM[who]?.emoji || '💀';
+  document.getElementById('killer-name').textContent  = who + ' te atacou!';
+  setTimeout(() => showScreen('dead'), 200);
+}
+function win() {
+  state.won = true;
+  clearInterval(loopId);
+  setTimeout(() => showScreen('win'), 400);
+}
+
+// ═══════════════════════════════════════
+// CONTROLES
+// ═══════════════════════════════════════
+function toggleDoor(side) {
+  if (side==='left') state.leftDoor  = !state.leftDoor;
+  else               state.rightDoor = !state.rightDoor;
+  renderOffice();
+}
+function setLight(side, on) {
+  if (side==='left') state.leftLight  = on;
+  else               state.rightLight = on;
+  renderOffice();
+}
+  }
+
+// ═══════════════════════════════════════
+// HUD
+// ═══════════════════════════════════════
+function updateHUD() {
+  document.getElementById('hud-hour').textContent = state.hour + ':00 AM';
+  const pct   = Math.max(0, state.power);
+  const color = pct>50 ? '#00cc44' : pct>20 ? '#ff8800' : '#ff2200';
+  const fill  = document.getElementById('power-fill');
+  const pctEl = document.getElementById('power-pct');
+  fill.style.width      = pct + '%';
+  fill.style.background = color;
+  pctEl.textContent     = Math.round(pct) + '%';
+  pctEl.style.color     = color;
+}
+
+// ═══════════════════════════════════════
+// RENDER ESCRITÓRIO
+// ═══════════════════════════════════════
+function renderOffice() {
+  const s    = state;
+  const bPos = PATHS.Bonnie[s.bonniePos];
+  const cPos = PATHS.Chica[s.chicaPos];
+  const fPos = PATHS.Freddy[s.freddyPos];
+
+  const bonnieNear  = bPos === "corridor_w";
+  const bonnieDoor  = bPos === "left_door";
+  const leftVisible = s.leftLight && (bonnieNear || bonnieDoor);
+
+  const chicaNear    = cPos === "corridor_e";
+  const chicaDoor    = cPos === "right_door";
+  const fredNear     = fPos === "corridor_e";
+  const fredDoor     = fPos === "right_door";
+  const rightVisible = s.rightLight && (chicaNear||chicaDoor||fredNear||fredDoor);
+  const rightIcon    = (fredNear||fredDoor) ? ANIM.Freddy.emoji : ANIM.Chica.emoji;
+  const rightName    = (fredNear||fredDoor) ? 'FREDDY!' : 'CHICA!';
+
+  document.getElementById('corridor-left').classList.toggle('lit', s.leftLight);
+  document.getElementById('near-warn-left').classList.toggle('visible', bonnieNear && !s.leftDoor);
+
+  const winL = document.getElementById('door-win-left');
+  winL.className = 'door-window';
+  if (s.leftDoor)        { winL.classList.add('closed');    winL.innerHTML = '<span class="door-status">■ FECHADO</span>'; }
+  else if (leftVisible)  { winL.classList.add('lit-anim');  winL.innerHTML = `<span class="anim-peek">${ANIM.Bonnie.emoji}</span><span class="anim-label">BONNIE!</span>`; }
+  else                   { winL.innerHTML = '<span class="empty-label">vazio</span>'; }
+
+  const btnLL = document.getElementById('btn-light-left');
+  btnLL.className = 'ctrl-btn' + (s.leftLight ? ' light-on' : '');
+  const btnDL = document.getElementById('btn-door-left');
+  btnDL.className   = 'ctrl-btn' + (s.leftDoor ? ' door-on' : '');
+  btnDL.textContent = s.leftDoor ? '🔒 ABRIR' : '🚪 FECHAR';
+
+  document.getElementById('corridor-right').classList.toggle('lit', s.rightLight);
+  const nearR = (chicaNear||fredNear) && !s.rightDoor;
+  document.getElementById('near-warn-right').classList.toggle('visible', nearR);
+  if (nearR) {
+    const who = (chicaNear&&fredNear) ? 'CHICA & FREDDY' : chicaNear ? 'CHICA' : 'FREDDY';
+    document.getElementById('near-warn-right-name').textContent = '⚠ ' + who;
+  }
+  // ═══════════════════════════════════════
+// RENDER CÂMERAS
+// ═══════════════════════════════════════
+function getAnimsOnCam(camId) {
+  const res=[], s=state;
+  const bPos=PATHS.Bonnie[s.bonniePos], cPos=PATHS.Chica[s.chicaPos], fPos=PATHS.Freddy[s.freddyPos];
+  if (POS_TO_CAM[bPos]===camId) res.push('Bonnie');
+  if (POS_TO_CAM[cPos]===camId) res.push('Chica');
+  if (POS_TO_CAM[fPos]===camId) res.push('Freddy');
+  return res;
+}
+
+function renderCamFeed() {
+  const s=state, id=s.activeCam, cam=CAMERAS[id];
+  if (!cam) return;
+  const anims = getAnimsOnCam(id);
+  document.getElementById('cam-label').textContent = id+' — '+cam.label;
+  const hintEl = document.getElementById('cam-door-hint');
+  if (cam.doorHint) { hintEl.style.display='block'; hintEl.textContent=cam.doorHint; hintEl.style.color=cam.doorHint.startsWith('←')?'#60a0ff':'#e060a0'; }
+  else              { hintEl.style.display='none'; }
+  const room = document.getElementById('cam-room');
+  if      (id==='CAM 1A') room.innerHTML = buildShowStage(anims);
+  else if (id==='CAM 1B') room.innerHTML = buildDining(anims);
+  else if (id==='CAM 1C') room.innerHTML = buildPirateCove(s.foxyStage);
+  else if (['CAM 2A','CAM 2B','CAM 4A','CAM 4B'].includes(id)) room.innerHTML = buildHall(id,anims);
+  else                    room.innerHTML = buildGeneric(id,anims);
+  room.style.background = cam.bg;
+}
+
+function animInCam(name,bottom,left) {
+  const a=ANIM[name];
+  return `<div class="anim-in-cam" style="bottom:${bottom};left:${left};color:${a.color};text-shadow:0 0 16px ${a.color}">${a.emoji}</div>`;
+}
+function buildShowStage(anims) {
+  let h=`<div class="stage-floor"></div><div class="stage-curtain left"></div><div class="stage-curtain right"></div><div class="stage-spot" style="left:25%"></div><div class="stage-spot" style="left:50%"></div><div class="stage-spot" style="left:74%"></div>`;
+  anims.forEach((n,i) => h+=animInCam(n,'36%',(28+i*22)+'%'));
+  return h;
+}
+function buildDining(anims) {
+  let h=`<div class="dining-ceil"></div><div class="dining-light"></div><div class="dining-table" style="left:12%;top:55%;width:52px;height:28px"></div><div class="dining-leg" style="left:13.5%;top:72%;height:18px"></div><div class="dining-leg" style="left:21%;top:72%;height:18px"></div><div class="dining-table" style="left:44%;top:60%;width:52px;height:28px"></div><div class="dining-leg" style="left:45.5%;top:77%;height:18px"></div><div class="dining-leg" style="left:53%;top:77%;height:18px"></div><div class="dining-table" style="left:68%;top:50%;width:52px;height:28px"></div><div class="dining-leg" style="left:69.5%;top:66%;height:18px"></div><div class="dining-leg" style="left:77%;top:66%;height:18px"></div>`;
+  anims.forEach((n,i) => h+=animInCam(n,'38%',(25+i*30)+'%'));
+  return h;
+}
+function buildPirateCove(foxyStage) {
+  const openPct=foxyStage*16, lw=Math.max(0,44-openPct), rw=Math.max(0,44-openPct);
+  const stageColors=["#2a1a1a","#775500","#aa4400","#dd2200"];
+  const sz=foxyStage===3?54:foxyStage===2?44:32;
+  const foxyHTML = foxyStage>0
+    ? `<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:${sz}px;color:${ANIM.Foxy.color};text-shadow:0 0 20px ${ANIM.Foxy.color};z-index:3">${ANIM.Foxy.emoji}</div>`
+    : `<div class="cove-oos">FORA DE SERVIÇO</div>`;
+  return `<div class="cove-sign">★ PIRATE COVE ★</div><div class="cove-interior"></div><div class="cove-curtain left" style="width:${lw}%"></div><div class="cove-curtain right" style="width:${rw}%"></div>${foxyHTML}<div class="cove-stage-label" style="color:${stageColors[foxyStage]}">${FOXY_STAGE_LABELS[foxyStage]}</div>`;
+}
+function buildHall(camId,anims) {
+  const accent=CAMERAS[camId].accent;
+  let h=`<div class="hall-center"></div><div class="hall-depth"></div><div class="hall-wall left" style="background:${accent}0a;border-color:${accent}22"></div><div class="hall-wall right" style="background:${accent}0a;border-color:${accent}22"></div><div class="hall-light" style="background:${accent}60;box-shadow:0 0 18px ${accent}"></div><div class="hall-line" style="top:47%;left:7%;right:7%;background:${accent}14"></div><div class="hall-line" style="top:59%;left:14%;right:14%;background:${accent}14"></div><div class="hall-line" style="top:71%;left:21%;right:21%;background:${accent}14"></div>`;
+  anims.forEach((n,i) => h+=animInCam(n,'40%',(38+i*14)+'%'));
+  return h;
+}
+  // ═══════════════════════════════════════
+// GRADE DE CÂMERAS
+// ═══════════════════════════════════════
+function buildCamGrid() {
+  const grid = document.getElementById('cam-grid');
+  grid.innerHTML = '';
+  Object.entries(CAMERAS).forEach(([id,cam]) => {
+    const div = document.createElement('div');
+    div.className   = 'cam-thumb'+(id===state.activeCam?' active':'');
+    div.dataset.cam = id;
+    div.onclick     = () => selectCam(id);
+    div.innerHTML   = `<div class="cam-thumb-id">${id}</div><div class="cam-thumb-label">${cam.label}</div><span class="cam-dot" id="dot-${id.replace(' ','-')}"></span>`;
+    grid.appendChild(div);
+  });
+  const closeBtn = document.createElement('div');
+  closeBtn.id          = 'btn-close-cam';
+  closeBtn.textContent = '▼ FECHAR';
+  closeBtn.onclick     = () => toggleCam();
+  grid.appendChild(closeBtn);
+}
+
+function updateCamDots() {
+  const s=state;
+  const bCam=POS_TO_CAM[PATHS.Bonnie[s.bonniePos]], cCam=POS_TO_CAM[PATHS.Chica[s.chicaPos]], fCam=POS_TO_CAM[PATHS.Freddy[s.freddyPos]];
+  const foxyCam = s.foxyStage>0 ? 'CAM 1C' : null;
+  Object.keys(CAMERAS).forEach(id => {
+    const dot   = document.getElementById('dot-'+id.replace(' ','-'));
+    const thumb = document.querySelector(`[data-cam="${id}"]`);
+    const has   = id===bCam||id===cCam||id===fCam||id===foxyCam;
+    if (dot)   dot.classList.toggle('visible', has);
+    if (thumb) thumb.classList.toggle('has-anim', has);
+  });
+}
+</script>
+</body>
+</html>
