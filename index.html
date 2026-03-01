@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>🎮 Hub de Jogos HTML - Atualizado</title>
+<title>🎮 Hub de Jogos HTML - Plataforma Gamer</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
@@ -24,21 +24,28 @@ header{
   z-index:1000;
 }
 body.light header{background:#fff;border-color:#ccc;color:#111;}
-header h1{
+.header-left{display:flex;align-items:center;gap:20px;}
+.header-left h1{
   font-size:1.8rem;
   background:linear-gradient(90deg,#22d3ee,#14b8a6);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
-.menu-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.menu-buttons button{
-  padding:6px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;
-  background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;transition:0.2s;
+.nav-menu{display:flex;gap:15px;}
+.nav-menu button{
+  background:none;border:none;color:inherit;font-weight:bold;cursor:pointer;font-size:1rem;transition:0.2s;
 }
-.menu-buttons button.active{box-shadow:0 0 15px rgba(34,211,238,0.4);}
+.nav-menu button:hover{text-decoration:underline;}
+.header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 #search-input{
   padding:6px 12px;border-radius:8px;border:none;outline:none;width:180px;
 }
-.container{padding:120px 20px 40px;}
+.category-btn{
+  padding:6px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;
+  background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;transition:0.2s;
+}
+.category-btn.active{box-shadow:0 0 15px rgba(34,211,238,0.4);}
+#toggle-theme{padding:6px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;}
+.container{padding:140px 20px 40px;}
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
@@ -72,17 +79,25 @@ body.light .card{background:#fff;border-color:#ccc;color:#111;}
   background:#334155;color:#94a3b8;cursor:not-allowed;
 }
 footer{margin-top:40px;font-size:0.8rem;color:#6b7280;text-align:center;}
-@media(max-width:600px){
-  header{flex-direction:column;align-items:flex-start;}
-  .menu-buttons{margin-top:10px;}
+@media(max-width:700px){
+  header{flex-direction:column;align-items:flex-start;gap:10px;}
+  .header-left,.header-right{flex-wrap:wrap;}
   #search-input{width:100%;}
 }
 </style>
 </head>
 <body>
 <header>
-  <h1>🎮 Hub de Jogos HTML</h1>
-  <div class="menu-buttons">
+  <div class="header-left">
+    <h1>🎮 Hub de Jogos</h1>
+    <nav class="nav-menu">
+      <button>Home</button>
+      <button>Comunidade</button>
+      <button>Notificações</button>
+      <button>Perfil</button>
+    </nav>
+  </div>
+  <div class="header-right">
     <input type="text" id="search-input" placeholder="🔎 Buscar jogos...">
     <button class="category-btn active" data-category="all">Todos</button>
     <button class="category-btn" data-category="acao">Ação</button>
