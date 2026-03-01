@@ -143,7 +143,6 @@
 </style>
 </head>
 <body>
-  -- MENU -->
 <div id="screen-menu" class="screen active">
   <p class="subtitle">FREDDY FAZBEAR'S PIZZA</p>
   <h1>FIVE NIGHTS<br>AT FREDDY'S</h1>
@@ -250,7 +249,8 @@
 
   <button id="btn-cameras">▲ CÂMERAS</button>
 </div>
-  cript>
+ <script>
+
 // ═══════════════════════════════════════
 // CONFIGURAÇÕES
 // ═══════════════════════════════════════
@@ -319,7 +319,9 @@ function initState() {
     camOpen:false, activeCam:"CAM 1A",
     dead:false, won:false,
   };
-  // ═══════════════════════════════════════
+} // <--- ADICIONE ESTA CHAVE AQUI!
+
+// ═══════════════════════════════════════
 // TELAS
 // ═══════════════════════════════════════
 function showScreen(id) {
