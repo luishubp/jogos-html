@@ -2,176 +2,258 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>🎮 Hub de Jogos HTML - Atualizado</title>
+<title>🎮 Hub de Jogos HTML</title>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
+
 body{
   font-family:'Segoe UI',Arial,sans-serif;
   background:radial-gradient(circle at top,#0f1724,#020617);
   color:#e5e7eb;
-  transition:0.3s;
+  transition:.3s;
 }
+
 body.light{
   background:#f0f0f0;
   color:#111;
 }
+
 header{
-  position:fixed;top:0;left:0;width:100%;
-  background:rgba(15,23,36,0.95);
-  display:flex;justify-content:space-between;align-items:center;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  background:rgba(15,23,36,.95);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   padding:15px 30px;
   border-bottom:1px solid #1e293b;
   z-index:1000;
 }
-body.light header{background:#fff;border-color:#ccc;color:#111;}
+
+body.light header{
+  background:#fff;
+  border-color:#ccc;
+}
+
 header h1{
   font-size:1.8rem;
-  background:linear-gradient(90deg,#22d3ee,#14b8a6);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
-.menu-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.menu-buttons button{
-  padding:6px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;
-  background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;transition:0.2s;
+
+.menu-buttons{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
 }
-.menu-buttons button.active{box-shadow:0 0 15px rgba(34,211,238,0.4);}
-#search-input{
-  padding:6px 12px;border-radius:8px;border:none;outline:none;width:180px;
+
+button,input{
+  padding:8px 12px;
+  border:none;
+  border-radius:8px;
 }
-.container{padding:120px 20px 40px;}
+
+button{
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.category-btn.active{
+  box-shadow:0 0 15px rgba(34,211,238,.4);
+}
+
+.container{
+  padding:120px 20px 40px;
+}
+
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
   gap:25px;
 }
+
 .card{
   background:linear-gradient(180deg,#0b1220,#020617);
   border:1px solid #1e293b;
   border-radius:16px;
   padding:25px;
-  transition:all 0.3s ease;
   display:flex;
   flex-direction:column;
-  justify-content:space-between;
-  position:relative;
+  gap:10px;
+  transition:.3s;
 }
-body.light .card{background:#fff;border-color:#ccc;color:#111;}
-.card:hover{transform:translateY(-8px);border-color:#22d3ee;box-shadow:0 0 20px rgba(34,211,238,0.2);}
-.icon{font-size:3rem;margin-bottom:10px;}
-.title{font-size:1.3rem;margin-bottom:10px;font-weight:bold;}
-.desc{font-size:0.95rem;color:#9ca3af;margin-bottom:20px;flex-grow:1;}
-.btn{display:inline-block;padding:12px 20px;border-radius:10px;background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;text-decoration:none;font-weight:bold;border:none;cursor:pointer;}
-.fav-btn{background:none;border:none;cursor:pointer;font-size:1.3rem;margin-bottom:10px;transition:transform 0.2s;}
-.fav-btn.active{color:#f87171;}
-.card.futuro-jogo{
-  opacity:0.6;
-  background:linear-gradient(180deg,#050812,#020617);
-  border:1px dashed #555;
+
+body.light .card{
+  background:#fff;
+  border-color:#ccc;
 }
-.btn-disabled{
-  background:#334155;color:#94a3b8;cursor:not-allowed;
+
+.card:hover{
+  transform:translateY(-8px);
 }
-footer{margin-top:40px;font-size:0.8rem;color:#6b7280;text-align:center;}
+
+.icon{
+  font-size:3rem;
+}
+
+.title{
+  font-size:1.3rem;
+  font-weight:bold;
+}
+
+.desc{
+  color:#9ca3af;
+  flex-grow:1;
+}
+
+.btn{
+  padding:12px;
+  border-radius:10px;
+  background:linear-gradient(90deg,#14b8a6,#22d3ee);
+  text-decoration:none;
+  color:#020617;
+  text-align:center;
+  font-weight:bold;
+}
+
+.fav-btn{
+  background:none;
+  font-size:1.4rem;
+}
+
+.fav-btn.active{
+  color:#f87171;
+}
+
+#fav-counter{
+  font-weight:bold;
+}
+
+footer{
+  text-align:center;
+  margin-top:40px;
+}
+
 @media(max-width:600px){
-  header{flex-direction:column;align-items:flex-start;}
-  .menu-buttons{margin-top:10px;}
-  #search-input{width:100%;}
+  header{
+    flex-direction:column;
+    align-items:flex-start;
+  }
 }
 </style>
 </head>
+
 <body>
+
 <header>
-  <h1>🎮 Hub de Jogos HTML</h1>
+  <h1>🎮 Hub de Jogos</h1>
+
   <div class="menu-buttons">
-    <input type="text" id="search-input" placeholder="🔎 Buscar jogos...">
+    <input type="text" id="search-input" placeholder="🔎 Buscar">
+
     <button class="category-btn active" data-category="all">Todos</button>
     <button class="category-btn" data-category="acao">Ação</button>
     <button class="category-btn" data-category="terror">Terror</button>
-    <button id="toggle-theme">🌙 Dark/Light</button>
+
+    <button id="toggle-theme">🌙</button>
+
+    <span id="fav-counter">❤️ 0</span>
   </div>
 </header>
 
 <div class="container">
-  <div class="grid">
-    <div class="card" data-category="acao">
-      <div class="icon">🚀</div>
-      <div class="title">Alien Space Wars</div>
-      <div class="desc">Shooter espacial clássico com naves e explosões.</div>
-      <a href="./games/alien-space-wars/" class="btn">Jogar</a>
-    </div>
+<div class="grid">
 
-    <div class="card" data-category="terror">
-      <div class="icon">👁️</div>
-      <div class="title">FNAF Night Watch</div>
-      <div class="desc">Sobreviva à noite monitorando câmeras e portas.</div>
-      <a href="./games/fnaf-night-watch/" class="btn">Jogar</a>
-    </div>
-
-    <div class="card futuro-jogo" data-category="futuro">
-      <div class="icon">🔧</div>
-      <div class="title">Em Manutenção</div>
-      <div class="desc">Voltaremos em breve. Obrigado pela paciência! 💙</div>
-      <button class="btn btn-disabled" disabled>Em breve</button>
-    </div>
-
-    <div class="card" data-category="terror">
-      <div class="icon">❓</div>
-      <div class="title">Fazenda Velho Moço</div>
-      <div class="desc">Jogo de terror em uma fazenda. Tente sobreviver à criatura que aparece à noite.</div>
-      <a href="./games/novo-experimento/" class="btn">Jogar</a>
-    </div>
-  </div>
+<div class="card" data-category="acao" data-id="alien">
+<div class="icon">🚀</div>
+<div class="title">Alien Space Wars</div>
+<div class="desc">Shooter espacial clássico.</div>
+<button class="fav-btn">❤️</button>
+<a href="./games/alien-space-wars/" class="btn">Jogar</a>
 </div>
 
-<footer>Feito com HTML + JavaScript • GitHub Pages</footer>
+<div class="card" data-category="terror" data-id="fnaf">
+<div class="icon">👁️</div>
+<div class="title">FNAF Night Watch</div>
+<div class="desc">Sobreviva monitorando câmeras.</div>
+<button class="fav-btn">❤️</button>
+<a href="./games/fnaf-night-watch/" class="btn">Jogar</a>
+</div>
+
+<div class="card" data-category="terror" data-id="fazenda">
+<div class="icon">❓</div>
+<div class="title">Fazenda Velho Moço</div>
+<div class="desc">Sobreviva à criatura da fazenda.</div>
+<button class="fav-btn">❤️</button>
+<a href="./games/novo-experimento/" class="btn">Jogar</a>
+</div>
+
+</div>
+</div>
+
+<footer>HTML + JavaScript</footer>
 
 <script>
-  // Dark/Light
-  const toggle = document.getElementById('toggle-theme');
-  toggle.addEventListener('click', ()=>{
-    document.body.classList.toggle('light');
-    toggle.textContent = document.body.classList.contains('light') ? '🌞 Modo Claro' : '🌙 Dark/Light';
-  });
 
-  // Categorias
-  const categoryButtons = document.querySelectorAll('.category-btn');
-  const cards = document.querySelectorAll('.card');
-  categoryButtons.forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      categoryButtons.forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      const cat = btn.dataset.category;
-      cards.forEach(card=>{
-        card.style.display = (cat==='all' || card.dataset.category===cat)?'flex':'none';
-      });
-    });
-  });
+const toggle = document.getElementById('toggle-theme');
+const cards = document.querySelectorAll('.card');
+const searchInput = document.getElementById('search-input');
+const categoryButtons = document.querySelectorAll('.category-btn');
+const favCounter = document.getElementById('fav-counter');
 
-  // Pesquisa
-  const searchInput = document.getElementById('search-input');
-  searchInput.addEventListener('input', ()=>{
-    const term = searchInput.value.toLowerCase();
-    cards.forEach(card=>{
-      const title = card.querySelector('.title').textContent.toLowerCase();
-      card.style.display = title.includes(term)?'flex':'none';
-    });
-  });
+toggle.onclick=()=>{
+  document.body.classList.toggle('light');
+};
 
-  // Favoritos automáticos apenas em cards válidos
-  cards.forEach((card,i)=>{
-    if(!card.classList.contains('futuro-jogo') && !card.querySelector('.fav-btn')){
-      const favBtn = document.createElement('button');
-      favBtn.className = 'fav-btn';
-      favBtn.textContent = '❤️';
-      card.insertBefore(favBtn, card.querySelector('.btn'));
-      favBtn.addEventListener('click',()=>{
-        favBtn.classList.toggle('active');
-        localStorage.setItem('fav'+i,favBtn.classList.contains('active'));
-        favBtn.animate([{transform:'scale(1)'},{transform:'scale(1.5)'},{transform:'scale(1)'}],{duration:300});
-      });
-      if(localStorage.getItem('fav'+i)==='true') favBtn.classList.add('active');
-    }
+function updateCards(){
+  const term = searchInput.value.toLowerCase();
+  const activeCategory = document.querySelector('.category-btn.active').dataset.category;
+
+  cards.forEach(card=>{
+    const title = card.querySelector('.title').textContent.toLowerCase();
+
+    const matchCategory = activeCategory==='all' || card.dataset.category===activeCategory;
+    const matchSearch = title.includes(term);
+
+    card.style.display = (matchCategory && matchSearch)?'flex':'none';
   });
+}
+
+categoryButtons.forEach(btn=>{
+  btn.onclick=()=>{
+    categoryButtons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    updateCards();
+  };
+});
+
+searchInput.addEventListener('input',updateCards);
+
+function updateFavCounter(){
+  const total = document.querySelectorAll('.fav-btn.active').length;
+  favCounter.textContent=`❤️ ${total}`;
+}
+
+document.querySelectorAll('.fav-btn').forEach(btn=>{
+  const card = btn.closest('.card');
+  const id = card.dataset.id;
+
+  if(localStorage.getItem(id)==='true'){
+    btn.classList.add('active');
+  }
+
+  btn.onclick=()=>{
+    btn.classList.toggle('active');
+    localStorage.setItem(id,btn.classList.contains('active'));
+    updateFavCounter();
+  };
+});
+
+updateFavCounter();
+
 </script>
+
 </body>
 </html>
