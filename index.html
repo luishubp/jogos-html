@@ -88,7 +88,6 @@ footer{margin-top:40px;font-size:0.8rem;color:#6b7280;text-align:center;}
     <button class="category-btn" data-category="acao">Ação</button>
     <button class="category-btn" data-category="terror">Terror</button>
     <button id="toggle-theme">🌙 Dark/Light</button>
-    <button id="toggle-sound">🔊</button>
   </div>
 </header>
 
@@ -131,67 +130,53 @@ footer{margin-top:40px;font-size:0.8rem;color:#6b7280;text-align:center;}
 <footer>Feito com HTML + JavaScript • GitHub Pages</footer>
 
 <script>
+// Dark/Light
 const toggle = document.getElementById('toggle-theme');
-const toggleSound = document.getElementById('toggle-sound');
-const cards = document.querySelectorAll('.card');
-const searchInput = document.getElementById('search-input');
-const categoryButtons = document.querySelectorAll('.category-btn');
-
-let soundEnabled = true;
-toggleSound.onclick = () => { 
-  soundEnabled = !soundEnabled; 
-  toggleSound.textContent = soundEnabled ? '🔊' : '🔇'; 
-};
-
-const clickSound = new Audio('./sounds/click.mp3');
-const hoverSound = new Audio('./sounds/hover.mp3');
-
-toggle.onclick = () => { 
-  document.body.classList.toggle('light'); 
-  if(soundEnabled) clickSound.play(); 
-};
-
-function updateCards(){
-  const term = searchInput.value.toLowerCase();
-  const activeCategory = document.querySelector('.category-btn.active').dataset.category;
-  cards.forEach(card=>{
-    const title = card.querySelector('.title')?.textContent.toLowerCase() || '';
-    const matchCategory = activeCategory==='all' || card.dataset.category===activeCategory;
-    const matchSearch = title.includes(term);
-    card.style.display = (matchCategory && matchSearch)?'flex':'none';
-  });
-}
-
-categoryButtons.forEach(btn=>{
-  btn.onclick=()=>{
-    categoryButtons.forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    updateCards();
-    if(soundEnabled) clickSound.play();
-  };
+toggle.addEventListener('click', ()=>{
+  document.body.classList.toggle('light');
+  toggle.textContent = document.body.classList.contains('light') ? '🌞 Modo Claro' : '🌙 Dark/Light';
 });
 
-searchInput.addEventListener('input', updateCards);
+// Categorias
+const categoryButtons = document.querySelectorAll('.category-btn');
+const cards = document.querySelectorAll('.card');
 
-// Favoritos com localStorage
-document.querySelectorAll('.card').forEach(card=>{
-  const favBtn = card.querySelector('.fav-btn');
-  if(favBtn){
-    const id = card.dataset.id;
-    if(localStorage.getItem(id)==='true') favBtn.classList.add('active');
-
-    favBtn.onclick = ()=>{
-      favBtn.classList.toggle('active');
-      localStorage.setItem(id, favBtn.classList.contains('active'));
-      if(soundEnabled) clickSound.play();
-    };
-
-    card.addEventListener('mouseenter', ()=>{
-      if(soundEnabled) hoverSound.play();
+categoryButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    categoryButtons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.category;
+    cards.forEach(card=>{
+      card.style.display = (cat==='all' || card.dataset.category===cat)?'flex':'none';
     });
+  });
+});
+
+// Pesquisa
+const searchInput = document.getElementById('search-input');
+searchInput.addEventListener('input', ()=>{
+  const term = searchInput.value.toLowerCase();
+  cards.forEach(card=>{
+    const title = card.querySelector('.title').textContent.toLowerCase();
+    card.style.display = title.includes(term)?'flex':'none';
+  });
+});
+
+// Favoritos automáticos apenas em cards válidos
+cards.forEach((card,i)=>{
+  if(!card.classList.contains('futuro-jogo') && !card.querySelector('.fav-btn')){
+    const favBtn = document.createElement('button');
+    favBtn.className = 'fav-btn';
+    favBtn.textContent = '❤️';
+    card.insertBefore(favBtn, card.querySelector('.btn'));
+    favBtn.addEventListener('click',()=>{
+      favBtn.classList.toggle('active');
+      localStorage.setItem('fav'+i,favBtn.classList.contains('active'));
+      favBtn.animate([{transform:'scale(1)'},{transform:'scale(1.5)'},{transform:'scale(1)'}],{duration:300});
+    });
+    if(localStorage.getItem('fav'+i)==='true') favBtn.classList.add('active');
   }
 });
 </script>
-
 </body>
 </html>
