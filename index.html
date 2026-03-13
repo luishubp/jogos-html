@@ -3,169 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <title>🎮 Hub de Jogos HTML</title>
-
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-
-body{
-  font-family:'Segoe UI',Arial,sans-serif;
-  background:radial-gradient(circle at top,#0f1724,#020617);
-  color:#e5e7eb;
-  transition:.3s;
-}
-
-body.light{
-  background:#f0f0f0;
-  color:#111;
-}
-
-header{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  background:rgba(15,23,36,.95);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:15px 30px;
-  border-bottom:1px solid #1e293b;
-  z-index:1000;
-}
-
-body.light header{
-  background:#fff;
-  border-color:#ccc;
-}
-
-header h1{
-  font-size:1.8rem;
-}
-
-.menu-buttons{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  align-items:center;
-}
-
-button,input{
-  padding:8px 12px;
-  border:none;
-  border-radius:8px;
-}
-
-button{
-  cursor:pointer;
-  font-weight:bold;
-}
-
-.category-btn.active{
-  box-shadow:0 0 15px rgba(34,211,238,.4);
-}
-
-.container{
-  padding:120px 20px 40px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:25px;
-}
-
-.card{
-  background:linear-gradient(180deg,#0b1220,#020617);
-  border:1px solid #1e293b;
-  border-radius:16px;
-  padding:25px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  transition:.3s;
-}
-
-body.light .card{
-  background:#fff;
-  border-color:#ccc;
-}
-
-.card:hover{
-  transform:translateY(-8px);
-}
-
-.icon{
-  font-size:3rem;
-}
-
-.title{
-  font-size:1.3rem;
-  font-weight:bold;
-}
-
-.desc{
-  color:#9ca3af;
-  flex-grow:1;
-}
-
-.btn{
-  padding:12px;
-  border-radius:10px;
-  background:linear-gradient(90deg,#14b8a6,#22d3ee);
-  text-decoration:none;
-  color:#020617;
-  text-align:center;
-  font-weight:bold;
-}
-
-.fav-btn{
-  background:none;
-  font-size:1.4rem;
-}
-
-.fav-btn.active{
-  color:#f87171;
-}
-
-#fav-counter{
-  font-weight:bold;
-}
-
-footer{
-  text-align:center;
-  margin-top:40px;
-}
-
-@media(max-width:600px){
-  header{
-    flex-direction:column;
-    align-items:flex-start;
-  }
-}
+body{font-family:'Segoe UI',Arial,sans-serif;background:radial-gradient(circle at top,#0f1724,#020617);color:#e5e7eb;transition:.3s;}
+body.light{background:#f0f0f0;color:#111;}
+header{position:fixed;top:0;left:0;width:100%;background:rgba(15,23,36,.95);display:flex;justify-content:space-between;align-items:center;padding:15px 30px;border-bottom:1px solid #1e293b;z-index:1000;}
+body.light header{background:#fff;border-color:#ccc;}
+header h1{font-size:1.8rem;}
+.menu-buttons{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+button,input{padding:8px 12px;border:none;border-radius:8px;}
+button{cursor:pointer;font-weight:bold;}
+.category-btn.active{box-shadow:0 0 15px rgba(34,211,238,.4);}
+.container{padding:120px 20px 40px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;}
+.card{background:linear-gradient(180deg,#0b1220,#020617);border:1px solid #1e293b;border-radius:16px;padding:25px;display:flex;flex-direction:column;gap:10px;transition:.3s;}
+body.light .card{background:#fff;border-color:#ccc;color:#111;}
+.card:hover{transform:translateY(-8px);}
+.icon{font-size:3rem;}
+.title{font-size:1.3rem;font-weight:bold;}
+.desc{color:#9ca3af;flex-grow:1;}
+.btn{padding:12px;border-radius:10px;background:linear-gradient(90deg,#14b8a6,#22d3ee);text-decoration:none;color:#020617;text-align:center;font-weight:bold;}
+.fav-btn{background:none;font-size:1.4rem;}
+.fav-btn.active{color:#f87171;}
+#fav-counter{font-weight:bold;}
+footer{text-align:center;margin-top:40px;}
+@media(max-width:600px){header{flex-direction:column;align-items:flex-start;}}
 </style>
 </head>
-
 <body>
 
 <header>
-  <h1>🎮 Hub de Jogos</h1>
-
-  <div class="menu-buttons">
-    <input type="text" id="search-input" placeholder="🔎 Buscar">
-
-    <button class="category-btn active" data-category="all">Todos</button>
-    <button class="category-btn" data-category="acao">Ação</button>
-    <button class="category-btn" data-category="terror">Terror</button>
-
-    <button id="toggle-theme">🌙</button>
-
-    <span id="fav-counter">❤️ 0</span>
-  </div>
+<h1>🎮 Hub de Jogos</h1>
+<div class="menu-buttons">
+<input type="text" id="search-input" placeholder="🔎 Buscar">
+<button class="category-btn active" data-category="all">Todos</button>
+<button class="category-btn" data-category="acao">Ação</button>
+<button class="category-btn" data-category="terror">Terror</button>
+<button id="toggle-theme">🌙</button>
+<button id="toggle-sound">🔊</button>
+<span id="fav-counter">❤️ 0</span>
+</div>
 </header>
 
 <div class="container">
 <div class="grid">
-
+<!-- Card 1 -->
 <div class="card" data-category="acao" data-id="alien">
 <div class="icon">🚀</div>
 <div class="title">Alien Space Wars</div>
@@ -174,6 +56,7 @@ footer{
 <a href="./games/alien-space-wars/" class="btn">Jogar</a>
 </div>
 
+<!-- Card 2 -->
 <div class="card" data-category="terror" data-id="fnaf">
 <div class="icon">👁️</div>
 <div class="title">FNAF Night Watch</div>
@@ -182,6 +65,15 @@ footer{
 <a href="./games/fnaf-night-watch/" class="btn">Jogar</a>
 </div>
 
+<!-- Card 3 -->
+<div class="card futuro-jogo" data-category="futuro" data-id="manutencao">
+<div class="icon">🔧</div>
+<div class="title">Em Manutenção</div>
+<div class="desc">Voltaremos em breve. Obrigado pela paciência! 💙</div>
+<button class="btn btn-disabled" disabled>Em breve</button>
+</div>
+
+<!-- Card 4 -->
 <div class="card" data-category="terror" data-id="fazenda">
 <div class="icon">❓</div>
 <div class="title">Fazenda Velho Moço</div>
@@ -193,30 +85,31 @@ footer{
 </div>
 </div>
 
-<footer>HTML + JavaScript</footer>
+<footer>HTML + JavaScript • GitHub Pages</footer>
 
 <script>
-
 const toggle = document.getElementById('toggle-theme');
+const toggleSound = document.getElementById('toggle-sound');
 const cards = document.querySelectorAll('.card');
 const searchInput = document.getElementById('search-input');
 const categoryButtons = document.querySelectorAll('.category-btn');
 const favCounter = document.getElementById('fav-counter');
 
-toggle.onclick=()=>{
-  document.body.classList.toggle('light');
-};
+let soundEnabled = true;
+toggleSound.onclick = () => { soundEnabled = !soundEnabled; toggleSound.textContent = soundEnabled ? '🔊' : '🔇'; };
+
+const clickSound = new Audio('./sounds/click.mp3');
+const hoverSound = new Audio('./sounds/hover.mp3');
+
+toggle.onclick = () => { document.body.classList.toggle('light'); if(soundEnabled) clickSound.play(); };
 
 function updateCards(){
   const term = searchInput.value.toLowerCase();
   const activeCategory = document.querySelector('.category-btn.active').dataset.category;
-
   cards.forEach(card=>{
-    const title = card.querySelector('.title').textContent.toLowerCase();
-
+    const title = card.querySelector('.title')?.textContent.toLowerCase() || '';
     const matchCategory = activeCategory==='all' || card.dataset.category===activeCategory;
     const matchSearch = title.includes(term);
-
     card.style.display = (matchCategory && matchSearch)?'flex':'none';
   });
 }
@@ -226,10 +119,11 @@ categoryButtons.forEach(btn=>{
     categoryButtons.forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     updateCards();
+    if(soundEnabled) clickSound.play();
   };
 });
 
-searchInput.addEventListener('input',updateCards);
+searchInput.addEventListener('input', updateCards);
 
 function updateFavCounter(){
   const total = document.querySelectorAll('.fav-btn.active').length;
@@ -239,20 +133,21 @@ function updateFavCounter(){
 document.querySelectorAll('.fav-btn').forEach(btn=>{
   const card = btn.closest('.card');
   const id = card.dataset.id;
+  if(localStorage.getItem(id)==='true') btn.classList.add('active');
 
-  if(localStorage.getItem(id)==='true'){
-    btn.classList.add('active');
-  }
-
-  btn.onclick=()=>{
+  btn.onclick = ()=>{
     btn.classList.toggle('active');
-    localStorage.setItem(id,btn.classList.contains('active'));
+    localStorage.setItem(id, btn.classList.contains('active'));
     updateFavCounter();
+    if(soundEnabled) clickSound.play();
   };
+
+  card.addEventListener('mouseenter', ()=>{
+    if(soundEnabled) hoverSound.play();
+  });
 });
 
 updateFavCounter();
-
 </script>
 
 </body>
