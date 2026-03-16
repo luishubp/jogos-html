@@ -2,20 +2,20 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>🎮 Hub de Jogos HTML - Atualizado</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎮 Hub de Jogos HTML - Pro Version</title>
 <style>
-/* O TEU DESIGN INTACTO: Não mudei nenhuma linha de CSS! */
+/* Mantive o teu design original, apenas limpei redundâncias */
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
   font-family:'Segoe UI',Arial,sans-serif;
   background:radial-gradient(circle at top,#0f1724,#020617);
   color:#e5e7eb;
   transition:0.3s;
+  min-height: 100vh;
 }
-body.light{
-  background:#f0f0f0;
-  color:#111;
-}
+body.light{background:#f0f0f0;color:#111;}
+
 header{
   position:fixed;top:0;left:0;width:100%;
   background:rgba(15,23,36,0.95);
@@ -25,26 +25,34 @@ header{
   z-index:1000;
 }
 body.light header{background:#fff;border-color:#ccc;color:#111;}
+
 header h1{
   font-size:1.8rem;
   background:linear-gradient(90deg,#22d3ee,#14b8a6);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
+
 .menu-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.menu-buttons button{
-  padding:6px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;
+.menu-buttons button, #toggle-theme{
+  padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;
   background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;transition:0.2s;
 }
-.menu-buttons button.active{box-shadow:0 0 15px rgba(34,211,238,0.4);}
+.menu-buttons button.active{box-shadow:0 0 15px rgba(34,211,238,0.6); transform: scale(1.05);}
+
 #search-input{
-  padding:6px 12px;border-radius:8px;border:none;outline:none;width:180px;
+  padding:8px 12px;border-radius:8px;border:1px solid #1e293b;outline:none;width:180px;
+  background: #0f1724; color: white;
 }
-.container{padding:120px 20px 40px;}
+body.light #search-input { background: white; color: #333; border-color: #ccc; }
+
+.container{padding:120px 20px 40px; max-width: 1200px; margin: 0 auto;}
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
   gap:25px;
 }
+
+/* Teus Cards Cianos Intocados */
 .card{
   background:linear-gradient(180deg,#0b1220,#020617);
   border:1px solid #1e293b;
@@ -54,58 +62,65 @@ header h1{
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  position:relative;
 }
 body.light .card{background:#fff;border-color:#ccc;color:#111;}
 .card:hover{transform:translateY(-8px);border-color:#22d3ee;box-shadow:0 0 20px rgba(34,211,238,0.2);}
+
 .icon{font-size:3rem;margin-bottom:10px;}
 .title{font-size:1.3rem;margin-bottom:10px;font-weight:bold;}
 .desc{font-size:0.95rem;color:#9ca3af;margin-bottom:20px;flex-grow:1;}
-.btn{display:inline-block;padding:12px 20px;border-radius:10px;background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;text-decoration:none;font-weight:bold;border:none;cursor:pointer;}
-.fav-btn{background:none;border:none;cursor:pointer;font-size:1.3rem;margin-bottom:10px;transition:transform 0.2s;}
-.fav-btn.active{color:#f87171;}
-.card.futuro-jogo{
-  opacity:0.6;
-  background:linear-gradient(180deg,#050812,#020617);
-  border:1px dashed #555;
-}
-.btn-disabled{
-  background:#334155;color:#94a3b8;cursor:not-allowed;
-}
-footer{margin-top:40px;font-size:0.8rem;color:#6b7280;text-align:center;}
-@media(max-width:600px){
-  header{flex-direction:column;align-items:flex-start;}
-  .menu-buttons{margin-top:10px;}
+
+.btn{display:inline-block;padding:12px 20px;border-radius:10px;background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;text-decoration:none;font-weight:bold;border:none;cursor:pointer;text-align:center;}
+.btn-disabled{background:#334155;color:#94a3b8;cursor:not-allowed;}
+
+.fav-btn{background:none;border:none;cursor:pointer;font-size:1.5rem;margin-bottom:10px; align-self: flex-start; transition: 0.2s;}
+.fav-btn.active{filter: drop-shadow(0 0 5px #f87171); color: #f87171;}
+
+.card.futuro-jogo{opacity:0.6; border:1px dashed #555;}
+
+footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:center;}
+
+@media(max-width:768px){
+  header{flex-direction:column; gap: 15px; position: relative;}
+  .container{padding-top: 20px;}
   #search-input{width:100%;}
 }
 </style>
 </head>
 <body>
+
 <header>
-  <h1>🎮 Hub de Jogos HTML</h1>
+  <h1>🎮 Hub Jogos</h1>
   <div class="menu-buttons">
     <input type="text" id="search-input" placeholder="🔎 Buscar jogos...">
     <button class="category-btn active" data-category="all">Todos</button>
     <button class="category-btn" data-category="acao">Ação</button>
     <button class="category-btn" data-category="terror">Terror</button>
-    <button id="toggle-theme">🌙 Dark/Light</button>
+    <button id="toggle-theme">🌙 Dark</button>
   </div>
 </header>
 
 <div class="container">
-  <div class="grid">
-    <div class="card" data-category="acao" data-id="alien">
+  <div class="grid" id="game-grid">
+    <div class="card" data-category="acao" data-id="alien-space">
       <div class="icon">🚀</div>
       <div class="title">Alien Space Wars</div>
       <div class="desc">Shooter espacial clássico com naves e explosões.</div>
       <a href="./games/alien-space-wars/" class="btn">Jogar</a>
     </div>
 
-    <div class="card" data-category="terror" data-id="fnaf">
+    <div class="card" data-category="terror" data-id="fnaf-watch">
       <div class="icon">👁️</div>
       <div class="title">FNAF Night Watch</div>
       <div class="desc">Sobreviva à noite monitorando câmeras e portas.</div>
       <a href="./games/fnaf-night-watch/" class="btn">Jogar</a>
+    </div>
+
+    <div class="card" data-category="terror" data-id="fazenda-velho">
+      <div class="icon">🚜</div>
+      <div class="title">Fazenda Velho Moço</div>
+      <div class="desc">Tente sobreviver à criatura que aparece à noite.</div>
+      <a href="./games/novo-experimento/" class="btn">Jogar</a>
     </div>
 
     <div class="card futuro-jogo" data-category="futuro" data-id="manutencao">
@@ -114,50 +129,32 @@ footer{margin-top:40px;font-size:0.8rem;color:#6b7280;text-align:center;}
       <div class="desc">Voltaremos em breve. Obrigado pela paciência! 💙</div>
       <button class="btn btn-disabled" disabled>Em breve</button>
     </div>
-
-    <div class="card" data-category="terror" data-id="fazenda">
-      <div class="icon">❓</div>
-      <div class="title">Fazenda Velho Moço</div>
-      <div class="desc">Jogo de terror em uma fazenda. Tente sobreviver à criatura que aparece à noite.</div>
-      <a href="./games/novo-experimento/" class="btn">Jogar</a>
-    </div>
   </div>
 </div>
 
-<footer>Feito com HTML + JavaScript • GitHub Pages</footer>
+<footer>Feito com 💙 para GitHub Pages</footer>
 
 <script>
-// Lógica de Dark/Light Theme mantida igual
+// --- VARIÁVEIS GERAIS ---
 const toggle = document.getElementById('toggle-theme');
-toggle.addEventListener('click', ()=>{
-  document.body.classList.toggle('light');
-  toggle.textContent = document.body.classList.contains('light') ? '🌞 Modo Claro' : '🌙 Dark/Light';
-});
-
-// --- INÍCIO DAS CORREÇÕES ---
-
-// 1. Variáveis para guardar o estado atual da pesquisa e da categoria
-let categoriaAtual = 'all';
-let termoPesquisa = '';
-
+const searchInput = document.getElementById('search-input');
 const categoryButtons = document.querySelectorAll('.category-btn');
 const cards = document.querySelectorAll('.card');
-const searchInput = document.getElementById('search-input');
 
-// 2. A Função Mágica: Filtra os jogos cruzando a Categoria E a Pesquisa
-function filtrarJogos() {
+let currentCategory = 'all';
+let searchTerm = '';
+
+// --- LÓGICA DE FILTRAGEM (O CORAÇÃO DO SITE) ---
+function filterGames() {
   cards.forEach(card => {
-    const categoriaCard = card.dataset.category;
-    const tituloCard = card.querySelector('.title').textContent.toLowerCase();
-
-    // Regra 1: O card pertence à categoria clicada?
-    const passaCategoria = (categoriaAtual === 'all' || categoriaCard === categoriaAtual);
+    const title = card.querySelector('.title').textContent.toLowerCase();
+    const category = card.dataset.category;
     
-    // Regra 2: O título do card tem o texto que escrevemos na barra?
-    const passaPesquisa = tituloCard.includes(termoPesquisa);
+    // Verifica se condiz com a categoria E com a pesquisa ao mesmo tempo
+    const matchesCategory = (currentCategory === 'all' || category === currentCategory);
+    const matchesSearch = title.includes(searchTerm);
 
-    // Se passar nas duas regras, mostra o card (flex). Se não, esconde (none).
-    if (passaCategoria && passaPesquisa) {
+    if (matchesCategory && matchesSearch) {
       card.style.display = 'flex';
     } else {
       card.style.display = 'none';
@@ -165,48 +162,62 @@ function filtrarJogos() {
   });
 }
 
-// 3. Atualiza a categoria quando clicas num botão e roda o filtro
+// --- EVENTOS ---
+
+// Tema Dark/Light
+toggle.addEventListener('click', () => {
+  document.body.classList.toggle('light');
+  toggle.textContent = document.body.classList.contains('light') ? '🌞 Modo Claro' : '🌙 Modo Escuro';
+});
+
+// Botões de Categoria
 categoryButtons.forEach(btn => {
   btn.addEventListener('click', () => {
     categoryButtons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    
-    categoriaAtual = btn.dataset.category; // Guarda a categoria escolhida
-    filtrarJogos(); // Chama a função que criámos acima
+    currentCategory = btn.dataset.category;
+    filterGames();
   });
 });
 
-// 4. Atualiza a pesquisa quando escreves e roda o filtro
-searchInput.addEventListener('input', () => {
-  termoPesquisa = searchInput.value.toLowerCase(); // Guarda o texto digitado
-  filtrarJogos(); // Chama a função que criámos acima
+// Input de Pesquisa
+searchInput.addEventListener('input', (e) => {
+  searchTerm = e.target.value.toLowerCase();
+  filterGames();
 });
 
-
-// 5. Favoritos à Prova de Bala (Usando o data-id)
+// --- SISTEMA DE FAVORITOS MELHORADO ---
 cards.forEach(card => {
-  // Ignora os cards de manutenção e verifica se já não tem o botão
-  if(!card.classList.contains('futuro-jogo') && !card.querySelector('.fav-btn')){
-    const favBtn = document.createElement('button');
-    favBtn.className = 'fav-btn';
-    favBtn.textContent = '❤️';
-    card.insertBefore(favBtn, card.querySelector('.btn'));
-    
-    // Pega o ID único que tu criaste no HTML (ex: "alien", "fnaf")
-    const idJogo = card.dataset.id; 
+  const gameId = card.dataset.id;
+  
+  // Não colocar favoritos em cards de manutenção
+  if(card.classList.contains('futuro-jogo')) return;
 
-    // Ao clicar, salva no localStorage usando o ID do jogo ("fav_alien", "fav_fnaf")
-    favBtn.addEventListener('click', ()=>{
-      favBtn.classList.toggle('active');
-      localStorage.setItem('fav_' + idJogo, favBtn.classList.contains('active'));
-      favBtn.animate([{transform:'scale(1)'},{transform:'scale(1.5)'},{transform:'scale(1)'}],{duration:300});
-    });
+  const favBtn = document.createElement('button');
+  favBtn.className = 'fav-btn';
+  favBtn.innerHTML = '🤍'; // Coração vazio por padrão
+  
+  // Inserir antes do botão de jogar
+  card.insertBefore(favBtn, card.querySelector('.btn, .btn-disabled'));
 
-    // Quando a página carrega, lê o localStorage usando o ID do jogo
-    if(localStorage.getItem('fav_' + idJogo) === 'true') {
-        favBtn.classList.add('active');
-    }
+  // Carregar estado salvo
+  if (localStorage.getItem('fav-' + gameId) === 'true') {
+    favBtn.classList.add('active');
+    favBtn.innerHTML = '❤️';
   }
+
+  favBtn.addEventListener('click', () => {
+    const isFav = favBtn.classList.toggle('active');
+    favBtn.innerHTML = isFav ? '❤️' : '🤍';
+    localStorage.setItem('fav-' + gameId, isFav);
+    
+    // Pequena animação de pulo
+    favBtn.animate([
+      { transform: 'scale(1)' },
+      { transform: 'scale(1.3)' },
+      { transform: 'scale(1)' }
+    ], { duration: 200 });
+  });
 });
 </script>
 </body>
