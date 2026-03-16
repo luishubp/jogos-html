@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎮 Hub de Jogos HTML - Pro Version</title>
+<title>🎮 Hub de Jogos HTML - V3</title>
 <style>
-/* Mantive o teu design original, apenas limpei redundâncias */
+/* CSS - Design Ciano e Estrutura */
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
   font-family:'Segoe UI',Arial,sans-serif;
@@ -39,6 +39,10 @@ header h1{
 }
 .menu-buttons button.active{box-shadow:0 0 15px rgba(34,211,238,0.6); transform: scale(1.05);}
 
+/* Estilo especial para o botão de Favoritos no menu */
+#btn-fav-filter { background: linear-gradient(90deg, #f43f5e, #fb7185); color: white; }
+#btn-fav-filter.active { box-shadow: 0 0 15px rgba(244, 63, 94, 0.6); }
+
 #search-input{
   padding:8px 12px;border-radius:8px;border:1px solid #1e293b;outline:none;width:180px;
   background: #0f1724; color: white;
@@ -52,7 +56,6 @@ body.light #search-input { background: white; color: #333; border-color: #ccc; }
   gap:25px;
 }
 
-/* Teus Cards Cianos Intocados */
 .card{
   background:linear-gradient(180deg,#0b1220,#020617);
   border:1px solid #1e293b;
@@ -93,6 +96,7 @@ footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:
   <h1>🎮 Hub Jogos</h1>
   <div class="menu-buttons">
     <input type="text" id="search-input" placeholder="🔎 Buscar jogos...">
+    <button id="btn-fav-filter">🤍 Favoritos (0)</button>
     <button class="category-btn active" data-category="all">Todos</button>
     <button class="category-btn" data-category="acao">Ação</button>
     <button class="category-btn" data-category="terror">Terror</button>
@@ -139,22 +143,47 @@ footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:
 const toggle = document.getElementById('toggle-theme');
 const searchInput = document.getElementById('search-input');
 const categoryButtons = document.querySelectorAll('.category-btn');
+const btnFavFilter = document.getElementById('btn-fav-filter');
 const cards = document.querySelectorAll('.card');
 
 let currentCategory = 'all';
 let searchTerm = '';
+let showingOnlyFavs = false; // Variável nova para saber se estamos no modo "Apenas Favoritos"
 
-// --- LÓGICA DE FILTRAGEM (O CORAÇÃO DO SITE) ---
+// --- ATUALIZAR CONTADOR DE FAVORITOS ---
+function updateFavCounter() {
+  let count = 0;
+  cards.forEach(card => {
+    const gameId = card.dataset.id;
+    if (localStorage.getItem('fav-' + gameId) === 'true') {
+      count++;
+    }
+  });
+  
+  // Atualiza o texto do botão lá em cima
+  if (count > 0) {
+    btnFavFilter.innerHTML = `❤️ Favoritos (${count})`;
+  } else {
+    btnFavFilter.innerHTML = `🤍 Favoritos (0)`;
+  }
+}
+
+// --- LÓGICA DE FILTRAGEM ---
 function filterGames() {
   cards.forEach(card => {
     const title = card.querySelector('.title').textContent.toLowerCase();
     const category = card.dataset.category;
+    const gameId = card.dataset.id;
     
-    // Verifica se condiz com a categoria E com a pesquisa ao mesmo tempo
+    // Verifica as 3 coisas: Categoria, Pesquisa e se é Favorito (caso o botão esteja ativo)
     const matchesCategory = (currentCategory === 'all' || category === currentCategory);
     const matchesSearch = title.includes(searchTerm);
+    const isFav = localStorage.getItem('fav-' + gameId) === 'true';
+    
+    // Se showingOnlyFavs for true, o jogo TEM de ser favorito para aparecer
+    const matchesFavFilter = showingOnlyFavs ? isFav : true;
 
-    if (matchesCategory && matchesSearch) {
+    if (matchesCategory && matchesSearch && matchesFavFilter) {
       card.style.display = 'flex';
     } else {
       card.style.display = 'none';
@@ -164,15 +193,36 @@ function filterGames() {
 
 // --- EVENTOS ---
 
+// Ativar/Desativar o Filtro de Favoritos no menu
+btnFavFilter.addEventListener('click', () => {
+  showingOnlyFavs = !showingOnlyFavs; // Alterna entre true e false
+  btnFavFilter.classList.toggle('active');
+  
+  // Quando ativamos os favoritos, limpamos as categorias normais para não confundir
+  if (showingOnlyFavs) {
+    categoryButtons.forEach(b => b.classList.remove('active'));
+    currentCategory = 'all';
+  } else {
+    // Se desligarmos, voltamos a selecionar "Todos"
+    document.querySelector('[data-category="all"]').classList.add('active');
+  }
+  
+  filterGames();
+});
+
 // Tema Dark/Light
 toggle.addEventListener('click', () => {
   document.body.classList.toggle('light');
-  toggle.textContent = document.body.classList.contains('light') ? '🌞 Modo Claro' : '🌙 Modo Escuro';
+  toggle.textContent = document.body.classList.contains('light') ? '🌞 Claro' : '🌙 Dark';
 });
 
 // Botões de Categoria
 categoryButtons.forEach(btn => {
   btn.addEventListener('click', () => {
+    // Desliga o filtro de favoritos se clicarmos numa categoria
+    showingOnlyFavs = false;
+    btnFavFilter.classList.remove('active');
+    
     categoryButtons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     currentCategory = btn.dataset.category;
@@ -186,39 +236,47 @@ searchInput.addEventListener('input', (e) => {
   filterGames();
 });
 
-// --- SISTEMA DE FAVORITOS MELHORADO ---
+// --- SISTEMA DE FAVORITOS NOS CARDS ---
 cards.forEach(card => {
   const gameId = card.dataset.id;
   
-  // Não colocar favoritos em cards de manutenção
   if(card.classList.contains('futuro-jogo')) return;
 
   const favBtn = document.createElement('button');
   favBtn.className = 'fav-btn';
-  favBtn.innerHTML = '🤍'; // Coração vazio por padrão
+  favBtn.innerHTML = '🤍'; 
   
-  // Inserir antes do botão de jogar
   card.insertBefore(favBtn, card.querySelector('.btn, .btn-disabled'));
 
-  // Carregar estado salvo
+  // Carrega ao iniciar
   if (localStorage.getItem('fav-' + gameId) === 'true') {
     favBtn.classList.add('active');
     favBtn.innerHTML = '❤️';
   }
 
+  // Quando o utilizador clica no coração de um jogo
   favBtn.addEventListener('click', () => {
     const isFav = favBtn.classList.toggle('active');
     favBtn.innerHTML = isFav ? '❤️' : '🤍';
     localStorage.setItem('fav-' + gameId, isFav);
     
-    // Pequena animação de pulo
     favBtn.animate([
       { transform: 'scale(1)' },
       { transform: 'scale(1.3)' },
       { transform: 'scale(1)' }
     ], { duration: 200 });
+
+    // Atualiza o contador e filtra novamente caso estejamos na aba de favoritos
+    updateFavCounter();
+    if (showingOnlyFavs) {
+      filterGames(); 
+    }
   });
 });
+
+// Executa o contador logo que a página carrega
+updateFavCounter();
 </script>
 </body>
 </html>
+
