@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>🎮 Hub de Jogos HTML - Atualizado</title>
 <style>
+/* O TEU DESIGN INTACTO: Não mudei nenhuma linha de CSS! */
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
   font-family:'Segoe UI',Arial,sans-serif;
@@ -93,7 +94,6 @@ footer{margin-top:40px;font-size:0.8rem;color:#6b7280;text-align:center;}
 
 <div class="container">
   <div class="grid">
-    <!-- Card 1 -->
     <div class="card" data-category="acao" data-id="alien">
       <div class="icon">🚀</div>
       <div class="title">Alien Space Wars</div>
@@ -101,7 +101,6 @@ footer{margin-top:40px;font-size:0.8rem;color:#6b7280;text-align:center;}
       <a href="./games/alien-space-wars/" class="btn">Jogar</a>
     </div>
 
-    <!-- Card 2 -->
     <div class="card" data-category="terror" data-id="fnaf">
       <div class="icon">👁️</div>
       <div class="title">FNAF Night Watch</div>
@@ -109,7 +108,6 @@ footer{margin-top:40px;font-size:0.8rem;color:#6b7280;text-align:center;}
       <a href="./games/fnaf-night-watch/" class="btn">Jogar</a>
     </div>
 
-    <!-- Card 3 -->
     <div class="card futuro-jogo" data-category="futuro" data-id="manutencao">
       <div class="icon">🔧</div>
       <div class="title">Em Manutenção</div>
@@ -117,7 +115,6 @@ footer{margin-top:40px;font-size:0.8rem;color:#6b7280;text-align:center;}
       <button class="btn btn-disabled" disabled>Em breve</button>
     </div>
 
-    <!-- Card 4 -->
     <div class="card" data-category="terror" data-id="fazenda">
       <div class="icon">❓</div>
       <div class="title">Fazenda Velho Moço</div>
@@ -130,51 +127,85 @@ footer{margin-top:40px;font-size:0.8rem;color:#6b7280;text-align:center;}
 <footer>Feito com HTML + JavaScript • GitHub Pages</footer>
 
 <script>
-// Dark/Light
+// Lógica de Dark/Light Theme mantida igual
 const toggle = document.getElementById('toggle-theme');
 toggle.addEventListener('click', ()=>{
   document.body.classList.toggle('light');
   toggle.textContent = document.body.classList.contains('light') ? '🌞 Modo Claro' : '🌙 Dark/Light';
 });
 
-// Categorias
+// --- INÍCIO DAS CORREÇÕES ---
+
+// 1. Variáveis para guardar o estado atual da pesquisa e da categoria
+let categoriaAtual = 'all';
+let termoPesquisa = '';
+
 const categoryButtons = document.querySelectorAll('.category-btn');
 const cards = document.querySelectorAll('.card');
-
-categoryButtons.forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    categoryButtons.forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const cat = btn.dataset.category;
-    cards.forEach(card=>{
-      card.style.display = (cat==='all' || card.dataset.category===cat)?'flex':'none';
-    });
-  });
-});
-
-// Pesquisa
 const searchInput = document.getElementById('search-input');
-searchInput.addEventListener('input', ()=>{
-  const term = searchInput.value.toLowerCase();
-  cards.forEach(card=>{
-    const title = card.querySelector('.title').textContent.toLowerCase();
-    card.style.display = title.includes(term)?'flex':'none';
+
+// 2. A Função Mágica: Filtra os jogos cruzando a Categoria E a Pesquisa
+function filtrarJogos() {
+  cards.forEach(card => {
+    const categoriaCard = card.dataset.category;
+    const tituloCard = card.querySelector('.title').textContent.toLowerCase();
+
+    // Regra 1: O card pertence à categoria clicada?
+    const passaCategoria = (categoriaAtual === 'all' || categoriaCard === categoriaAtual);
+    
+    // Regra 2: O título do card tem o texto que escrevemos na barra?
+    const passaPesquisa = tituloCard.includes(termoPesquisa);
+
+    // Se passar nas duas regras, mostra o card (flex). Se não, esconde (none).
+    if (passaCategoria && passaPesquisa) {
+      card.style.display = 'flex';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+// 3. Atualiza a categoria quando clicas num botão e roda o filtro
+categoryButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    categoryButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    categoriaAtual = btn.dataset.category; // Guarda a categoria escolhida
+    filtrarJogos(); // Chama a função que criámos acima
   });
 });
 
-// Favoritos automáticos apenas em cards válidos
-cards.forEach((card,i)=>{
+// 4. Atualiza a pesquisa quando escreves e roda o filtro
+searchInput.addEventListener('input', () => {
+  termoPesquisa = searchInput.value.toLowerCase(); // Guarda o texto digitado
+  filtrarJogos(); // Chama a função que criámos acima
+});
+
+
+// 5. Favoritos à Prova de Bala (Usando o data-id)
+cards.forEach(card => {
+  // Ignora os cards de manutenção e verifica se já não tem o botão
   if(!card.classList.contains('futuro-jogo') && !card.querySelector('.fav-btn')){
     const favBtn = document.createElement('button');
     favBtn.className = 'fav-btn';
     favBtn.textContent = '❤️';
     card.insertBefore(favBtn, card.querySelector('.btn'));
-    favBtn.addEventListener('click',()=>{
+    
+    // Pega o ID único que tu criaste no HTML (ex: "alien", "fnaf")
+    const idJogo = card.dataset.id; 
+
+    // Ao clicar, salva no localStorage usando o ID do jogo ("fav_alien", "fav_fnaf")
+    favBtn.addEventListener('click', ()=>{
       favBtn.classList.toggle('active');
-      localStorage.setItem('fav'+i,favBtn.classList.contains('active'));
+      localStorage.setItem('fav_' + idJogo, favBtn.classList.contains('active'));
       favBtn.animate([{transform:'scale(1)'},{transform:'scale(1.5)'},{transform:'scale(1)'}],{duration:300});
     });
-    if(localStorage.getItem('fav'+i)==='true') favBtn.classList.add('active');
+
+    // Quando a página carrega, lê o localStorage usando o ID do jogo
+    if(localStorage.getItem('fav_' + idJogo) === 'true') {
+        favBtn.classList.add('active');
+    }
   }
 });
 </script>
