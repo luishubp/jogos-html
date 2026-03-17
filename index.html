@@ -4,8 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎮 Hub de Jogos HTML - Pro Version</title>
+
+<meta name="description" content="Hub de Jogos HTML - Acesse e jogue seus games favoritos online!">
+<meta property="og:title" content="🎮 Hub de Jogos HTML">
+<meta property="og:description" content="Hub de Jogos HTML - Acesse e jogue seus games favoritos online!">
+<meta property="og:type" content="website">
+
 <style>
-/* --- TEU DESIGN ORIGINAL MANTIDO --- */
+/* --- RESET E BASE --- */
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
   font-family:'Segoe UI',Arial,sans-serif;
@@ -16,13 +22,21 @@ body{
 }
 body.light{background:#f0f0f0;color:#111;}
 
+/* --- LOADER --- */
+#loader {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background:#020617; color:#fff; display:flex;
+  align-items:center; justify-content:center;
+  font-size:1.5rem; z-index: 9999;
+}
+body.loaded #loader { display:none; }
+
+/* --- HEADER --- */
 header{
   position:fixed;top:0;left:0;width:100%;
   background:rgba(15,23,36,0.95);
   display:flex;justify-content:space-between;align-items:center;
-  padding:15px 30px;
-  border-bottom:1px solid #1e293b;
-  z-index:1000;
+  padding:15px 30px; border-bottom:1px solid #1e293b; z-index:1000;
 }
 body.light header{background:#fff;border-color:#ccc;color:#111;}
 
@@ -32,51 +46,59 @@ header h1{
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
 
+/* --- MENU E BOTÕES --- */
 .menu-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-
-/* Estilo para os botões e para o novo botão de Login */
 .menu-buttons button, #toggle-theme, #btn-login {
   padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;
   background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;transition:0.2s;
-  display: flex; align-items: center; gap: 8px;
+  display:flex;align-items:center;gap:8px;
 }
-
-#user-photo { width: 22px; height: 22px; border-radius: 50%; display: none; border: 1px solid #020617; }
-
+#user-photo { width: 22px; height: 22px; border-radius: 50%; display:none; border:1px solid #020617; }
 .menu-buttons button.active{box-shadow:0 0 15px rgba(34,211,238,0.6); transform: scale(1.05);}
-
 #search-input{
   padding:8px 12px;border-radius:8px;border:1px solid #1e293b;outline:none;width:180px;
-  background: #0f1724; color: white;
+  background:#0f1724;color:white;
 }
-body.light #search-input { background: white; color: #333; border-color: #ccc; }
+body.light #search-input { background:white;color:#333;border-color:#ccc; }
 
-.container{padding:120px 20px 40px; max-width: 1200px; margin: 0 auto;}
-.grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:25px; }
+/* --- CONTAINER --- */
+.container{padding:180px 20px 40px; max-width: 1200px; margin:0 auto;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;}
 
+/* --- CARDS --- */
 .card{
   background:linear-gradient(180deg,#0b1220,#020617);
-  border:1px solid #1e293b;
-  border-radius:16px;
-  padding:25px;
-  transition:all 0.3s ease;
-  display:flex; flex-direction:column; justify-content:space-between;
+  border:1px solid #1e293b; border-radius:16px; padding:25px;
+  transition: all 0.3s ease; display:flex; flex-direction:column; justify-content:space-between;
+  opacity:1; transform:scale(1);
 }
 body.light .card{background:#fff;border-color:#ccc;color:#111;}
+.card.hide{opacity:0; transform:scale(0.95); pointer-events:none;}
 .card:hover{transform:translateY(-8px);border-color:#22d3ee;box-shadow:0 0 20px rgba(34,211,238,0.2);}
-
 .icon{font-size:3rem;margin-bottom:10px;}
 .title{font-size:1.3rem;margin-bottom:10px;font-weight:bold;}
 .desc{font-size:0.95rem;color:#9ca3af;margin-bottom:20px;flex-grow:1;}
-
 .btn{display:inline-block;padding:12px 20px;border-radius:10px;background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;text-decoration:none;font-weight:bold;border:none;cursor:pointer;text-align:center;}
 .btn-disabled{background:#334155;color:#94a3b8;cursor:not-allowed;}
+.fav-btn{background:none;border:none;cursor:pointer;font-size:1.5rem;margin-bottom:10px; align-self:flex-start; transition:0.2s;}
+.fav-btn.active{filter:drop-shadow(0 0 5px #f87171); color:#f87171;}
+.card.futuro-jogo{opacity:0.6;border:1px dashed #555;}
 
-.fav-btn{background:none;border:none;cursor:pointer;font-size:1.5rem;margin-bottom:10px; align-self: flex-start; transition: 0.2s;}
-.fav-btn.active{filter: drop-shadow(0 0 5px #f87171); color: #f87171;}
+/* --- FOOTER --- */
+footer{margin-top:40px;padding:20px;font-size:0.8rem;color:#6b7280;text-align:center;}
 
-.card.futuro-jogo{opacity:0.6; border:1px dashed #555;}
-footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:center;}
+/* --- PERFIL --- */
+#user-profile{
+  position:fixed;top:80px;right:30px;width:250px;background:rgba(15,23,36,0.95);
+  border-radius:16px;padding:15px;display:none;flex-direction:column;align-items:center;gap:10px;z-index:1000;
+}
+body.light #user-profile{background:#fff;color:#111; border:1px solid #ccc;}
+#user-profile #banner{width:100%;height:80px;object-fit:cover;border-radius:12px;}
+#user-profile #profile-photo{width:50px;height:50px;border-radius:50%;border:2px solid #14b8a6;margin-top:-25px;}
+#user-profile h3{text-align:center;margin-top:5px;}
+
+/* --- CONTADOR FAVORITOS --- */
+#fav-count{margin-left:10px;font-weight:bold;}
 
 @media(max-width:768px){
   header{flex-direction:column; gap: 15px; position: relative;}
@@ -85,7 +107,9 @@ footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:
 }
 </style>
 </head>
+
 <body>
+<div id="loader">Carregando...</div>
 
 <header>
   <h1>🎮 Hub Jogos</h1>
@@ -94,15 +118,21 @@ footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:
     <button class="category-btn active" data-category="all">Todos</button>
     <button class="category-btn" data-category="acao">Ação</button>
     <button class="category-btn" data-category="terror">Terror</button>
-    
     <button id="btn-login">
       <img id="user-photo" src="">
       <span id="user-name">Entrar</span>
     </button>
-
     <button id="toggle-theme">🌙 Dark</button>
+    <span id="fav-count">❤️ 0</span>
   </div>
 </header>
+
+<!-- PERFIL -->
+<div id="user-profile">
+  <img id="banner" src="default-banner.jpg" alt="Banner">
+  <img id="profile-photo" src="" alt="Foto do usuário">
+  <h3 id="profile-name">Usuário</h3>
+</div>
 
 <div class="container">
   <div class="grid" id="game-grid">
@@ -112,21 +142,12 @@ footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:
       <div class="desc">Shooter espacial clássico com naves e explosões.</div>
       <a href="./games/alien-space-wars/" class="btn">Jogar</a>
     </div>
-
     <div class="card" data-category="terror" data-id="fnaf-watch">
       <div class="icon">👁️</div>
       <div class="title">FNAF Night Watch</div>
       <div class="desc">Sobreviva à noite monitorando câmeras e portas.</div>
       <a href="./games/fnaf-night-watch/" class="btn">Jogar</a>
     </div>
-
-    <div class="card" data-category="terror" data-id="fazenda-velho">
-      <div class="icon">🚜</div>
-      <div class="title">Fazenda Velho Moço</div>
-      <div class="desc">Tente sobreviver à criatura que aparece à noite.</div>
-      <a href="./games/novo-experimento/" class="btn">Jogar</a>
-    </div>
-
     <div class="card futuro-jogo" data-category="futuro" data-id="manutencao">
       <div class="icon">🔧</div>
       <div class="title">Em Manutenção</div>
@@ -139,134 +160,128 @@ footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:
 <footer>Feito com 💙 para GitHub Pages + Firebase</footer>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyALp8QDfjyjGQDfaJuVjEEv_mBhnylHUj8",
-    authDomain: "meuhubdejogos.firebaseapp.com",
-    projectId: "meuhubdejogos",
-    storageBucket: "meuhubdejogos.firebasestorage.app",
-    messagingSenderId: "485191017245",
-    appId: "1:485191017245:web:06c2ea7c5aa8f01472b7f4"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyALp8QDfjyjGQDfaJuVjEEv_mBhnylHUj8",
+  authDomain: "meuhubdejogos.firebaseapp.com",
+  projectId: "meuhubdejogos",
+  storageBucket: "meuhubdejogos.firebasestorage.app",
+  messagingSenderId: "485191017245",
+  appId: "1:485191017245:web:06c2ea7c5aa8f01472b7f4"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const provider = new GoogleAuthProvider();
+// --- VARIÁVEIS ---
+const toggle = document.getElementById('toggle-theme');
+const searchInput = document.getElementById('search-input');
+const categoryButtons = document.querySelectorAll('.category-btn');
+const cards = document.querySelectorAll('.card');
+const btnLogin = document.getElementById('btn-login');
+const userNameSpan = document.getElementById('user-name');
+const userPhotoImg = document.getElementById('user-photo');
+const userProfile = document.getElementById('user-profile');
+const profilePhoto = document.getElementById('profile-photo');
+const profileName = document.getElementById('profile-name');
+const favCountSpan = document.getElementById('fav-count');
 
-  // --- VARIÁVEIS DO TEU SITE ---
-  const toggle = document.getElementById('toggle-theme');
-  const searchInput = document.getElementById('search-input');
-  const categoryButtons = document.querySelectorAll('.category-btn');
-  const cards = document.querySelectorAll('.card');
-  const btnLogin = document.getElementById('btn-login');
-  const userNameSpan = document.getElementById('user-name');
-  const userPhotoImg = document.getElementById('user-photo');
+let currentCategory = 'all';
+let searchTerm = '';
 
-  let currentCategory = 'all';
-  let searchTerm = '';
+// --- DARK MODE PERSISTENTE ---
+if(localStorage.getItem('theme') === 'light'){
+  document.body.classList.add('light');
+  toggle.textContent = '🌞 Claro';
+}
+toggle.addEventListener('click', ()=>{
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  toggle.textContent = isLight ? '🌞 Claro' : '🌙 Dark';
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+});
 
-  // --- LÓGICA DE FILTRAGEM (MANTIDA) ---
-  function filterGames() {
-    cards.forEach(card => {
-      const title = card.querySelector('.title').textContent.toLowerCase();
-      const category = card.dataset.category;
-      const matchesCategory = (currentCategory === 'all' || category === currentCategory);
-      const matchesSearch = title.includes(searchTerm);
-      card.style.display = (matchesCategory && matchesSearch) ? 'flex' : 'none';
-    });
-  }
-
-  // --- EVENTOS DO TEMA E CATEGORIA ---
-  toggle.addEventListener('click', () => {
-    document.body.classList.toggle('light');
-    toggle.textContent = document.body.classList.contains('light') ? '🌞 Claro' : '🌙 Dark';
+// --- FILTRAGEM DE JOGOS ---
+function filterGames(){
+  cards.forEach(card=>{
+    const title = card.querySelector('.title').textContent.toLowerCase();
+    const category = card.dataset.category;
+    const matchesCategory = (currentCategory==='all'||category===currentCategory);
+    const matchesSearch = title.includes(searchTerm);
+    card.classList.toggle('hide', !(matchesCategory && matchesSearch));
   });
-
-  categoryButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      categoryButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentCategory = btn.dataset.category;
-      filterGames();
-    });
-  });
-
-  searchInput.addEventListener('input', (e) => {
-    searchTerm = e.target.value.toLowerCase();
+}
+categoryButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    categoryButtons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCategory = btn.dataset.category;
     filterGames();
   });
+});
+searchInput.addEventListener('input',(e)=>{
+  searchTerm = e.target.value.toLowerCase();
+  filterGames();
+});
 
-  // --- LÓGICA DE LOGIN ---
-  btnLogin.addEventListener('click', async () => {
-    if (!auth.currentUser) {
-      await signInWithPopup(auth, provider);
-    } else {
-      if(confirm("Deseja sair da conta?")) signOut(auth);
-    }
-  });
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      userNameSpan.textContent = user.displayName.split(' ')[0];
-      userPhotoImg.src = user.photoURL;
-      userPhotoImg.style.display = "block";
-      baixarFavoritosNuvem();
-    } else {
-      userNameSpan.textContent = "Entrar";
-      userPhotoImg.style.display = "none";
-    }
-  });
-
-  // --- SISTEMA DE FAVORITOS INTEGRADO COM FIREBASE ---
-  cards.forEach(card => {
-    const gameId = card.dataset.id;
-    if(card.classList.contains('futuro-jogo')) return;
-
-    const favBtn = document.createElement('button');
-    favBtn.className = 'fav-btn';
-    favBtn.innerHTML = '🤍';
-    card.insertBefore(favBtn, card.querySelector('.btn, .btn-disabled'));
-
-    // Carregar do LocalStorage primeiro (para ser rápido)
-    if (localStorage.getItem('fav-' + gameId) === 'true') {
-      favBtn.classList.add('active');
-      favBtn.innerHTML = '❤️';
-    }
-
-    favBtn.addEventListener('click', async () => {
-      const isFav = favBtn.classList.toggle('active');
-      favBtn.innerHTML = isFav ? '❤️' : '🤍';
-      localStorage.setItem('fav-' + gameId, isFav);
-
-      // SALVAR NO FIREBASE (Nuvem)
-      if (auth.currentUser) {
-        const userRef = doc(db, "usuarios", auth.currentUser.uid);
-        await setDoc(userRef, { [gameId]: isFav }, { merge: true });
-      }
-
-      favBtn.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.3)' }, { transform: 'scale(1)' }], { duration: 200 });
-    });
-  });
-
-  async function baixarFavoritosNuvem() {
-    const docSnap = await getDoc(doc(db, "usuarios", auth.currentUser.uid));
-    if (docSnap.exists()) {
-      const dados = docSnap.data();
-      Object.keys(dados).forEach(id => {
-        localStorage.setItem('fav-' + id, dados[id]);
-        const btn = document.querySelector(`[data-id="${id}"] .fav-btn`);
-        if (btn) {
-          btn.classList.toggle('active', dados[id]);
-          btn.innerHTML = dados[id] ? '❤️' : '🤍';
-        }
-      });
-    }
+// --- LOGIN GOOGLE ---
+btnLogin.addEventListener('click', async ()=>{
+  if(!auth.currentUser){
+    await signInWithPopup(auth, provider);
+  }else{
+    if(confirm("Deseja sair da conta?")) signOut(auth);
   }
+});
+
+onAuthStateChanged(auth,(user)=>{
+  if(user){
+    userNameSpan.textContent = user.displayName.split(' ')[0];
+    userPhotoImg.src = user.photoURL;
+    userPhotoImg.style.display = "block";
+    profilePhoto.src = user.photoURL;
+    profileName.textContent = user.displayName.split(' ')[0];
+    userProfile.style.display = "flex";
+  }else{
+    userNameSpan.textContent = "Entrar";
+    userPhotoImg.style.display="none";
+    userProfile.style.display="none";
+  }
+});
+
+// --- FAVORITOS LOCAIS ---
+cards.forEach(card=>{
+  const gameId = card.dataset.id;
+  if(card.classList.contains('futuro-jogo')) return;
+
+  const favBtn = document.createElement('button');
+  favBtn.className='fav-btn';
+  favBtn.innerHTML='🤍';
+  card.insertBefore(favBtn, card.querySelector('.btn, .btn-disabled'));
+
+  if(localStorage.getItem('fav-'+gameId)==='true'){
+    favBtn.classList.add('active'); favBtn.innerHTML='❤️';
+  }
+
+  favBtn.addEventListener('click',()=>{
+    const isFav = favBtn.classList.toggle('active');
+    favBtn.innerHTML = isFav ? '❤️':'🤍';
+    localStorage.setItem('fav-'+gameId,isFav);
+    atualizarContador();
+    favBtn.animate([{transform:'scale(1)'},{transform:'scale(1.3)'},{transform:'scale(1)'}],{duration:200});
+  });
+});
+
+// --- CONTADOR FAVORITOS ---
+function atualizarContador(){
+  const total = document.querySelectorAll('.fav-btn.active').length;
+  favCountSpan.textContent = `❤️ ${total}`;
+}
+atualizarContador();
+
+// --- LOADER ---
+window.addEventListener('load',()=>document.body.classList.add('loaded'));
 </script>
 </body>
 </html>
-
