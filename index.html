@@ -6,233 +6,72 @@
 <title>🎮 Hub Jogos Pro</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
+/* --- DESIGN LEVE MANTIDO --- */
+*{ margin:0; padding:0; box-sizing:border-box; }
 body{
   font-family:'Segoe UI',sans-serif;
   background:linear-gradient(180deg,#020617,#0f172a);
-  color:white;
-  min-height:100vh;
+  color:white; min-height:100vh;
 }
-
 header{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  background:rgba(2,6,23,0.95);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid #1e293b;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:15px 25px;
-  z-index:1000;
+  position:fixed; top:0; left:0; width:100%;
+  background:rgba(2,6,23,0.95); backdrop-filter:blur(10px);
+  border-bottom:1px solid #1e293b; display:flex;
+  justify-content:space-between; align-items:center;
+  padding:15px 25px; z-index:1000;
 }
-
 header h1{
-  font-size:1.8rem;
-  background:linear-gradient(90deg,#22d3ee,#14b8a6);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+  font-size:1.8rem; background:linear-gradient(90deg,#22d3ee,#14b8a6);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
 }
-
-.menu-buttons{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  flex-wrap:wrap;
+.menu-buttons{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+button,input{ border:none; outline:none; border-radius:10px; }
+button{ cursor:pointer; }
+.category-btn, #btn-login, #toggle-theme{
+  padding:10px 16px; background:linear-gradient(90deg,#14b8a6,#22d3ee);
+  font-weight:bold; color:#020617; transition: 0.2s;
 }
-
-button,input{
-  border:none;
-  outline:none;
-  border-radius:10px;
-}
-
-button{
-  cursor:pointer;
-}
-
-.category-btn,
-#toggle-theme,
-#btn-login{
-  padding:10px 16px;
-  background:linear-gradient(90deg,#14b8a6,#22d3ee);
-  font-weight:bold;
-  color:#020617;
-}
-
-#search-input{
-  padding:10px;
-  background:#0f172a;
-  border:1px solid #334155;
-  color:white;
-  width:180px;
-}
-
-.container{
-  padding:110px 20px 40px;
-  max-width:1200px;
-  margin:auto;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:25px;
-}
-
+.category-btn.active { box-shadow: 0 0 15px rgba(34,211,238,0.5); transform: scale(1.05); }
+#search-input{ padding:10px; background:#0f172a; border:1px solid #334155; color:white; width:180px; }
+.container{ padding:130px 20px 40px; max-width:1200px; margin:auto; }
+.grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:25px; }
 .card{
   background:linear-gradient(180deg,#0b1220,#020617);
-  border:1px solid #1e293b;
-  border-radius:18px;
-  padding:25px;
-  transition:0.3s;
-  display:flex;
-  flex-direction:column;
-  gap:15px;
+  border:1px solid #1e293b; border-radius:18px;
+  padding:25px; transition:0.3s; display:flex; flex-direction:column; gap:15px;
 }
-
-.card:hover{
-  transform:translateY(-8px);
-  border-color:#22d3ee;
-  box-shadow:0 0 25px rgba(34,211,238,0.25);
-}
-
-.icon{
-  font-size:3rem;
-}
-
-.title{
-  font-size:1.3rem;
-  font-weight:bold;
-}
-
-.desc{
-  color:#94a3b8;
-  flex-grow:1;
-}
-
+.card:hover{ transform:translateY(-8px); border-color:#22d3ee; box-shadow:0 0 25px rgba(34,211,238,0.25); }
+.icon{ font-size:3rem; }
+.title{ font-size:1.3rem; font-weight:bold; }
+.desc{ color:#94a3b8; flex-grow:1; }
 .btn{
-  display:block;
-  text-align:center;
-  padding:12px;
-  border-radius:10px;
-  text-decoration:none;
-  font-weight:bold;
-  background:linear-gradient(90deg,#14b8a6,#22d3ee);
-  color:#020617;
+  display:block; text-align:center; padding:12px; border-radius:10px;
+  text-decoration:none; font-weight:bold; background:linear-gradient(90deg,#14b8a6,#22d3ee); color:#020617;
 }
-
-.fav-btn{
-  background:none;
-  border:none;
-  font-size:1.5rem;
-  cursor:pointer;
-}
-
-.profile-container{
-  position:relative;
-}
-
+.fav-btn{ background:none; border:none; font-size:1.5rem; cursor:pointer; align-self: flex-start; }
+.profile-container{ position:relative; }
 .dropdown-content{
-  display:none;
-  position:absolute;
-  right:0;
-  top:110%;
-  background:#111827;
-  border:1px solid #334155;
-  border-radius:14px;
-  min-width:240px;
-  overflow:hidden;
-  box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  display:none; position:absolute; right:0; top:110%;
+  background:#111827; border:1px solid #334155; border-radius:14px;
+  min-width:240px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
-
-.dropdown-content.show{
-  display:block;
-  animation:fadeIn 0.25s ease;
+.dropdown-content.show{ display:block; animation:fadeIn 0.25s ease; }
+.dropdown-content a, .logout-btn{
+  display:block; padding:12px 16px; color:#e5e7eb; text-decoration:none;
+  background:none; border:none; width:100%; text-align:left; cursor: pointer;
 }
+.dropdown-content a:hover{ background:#1e293b; color:#22d3ee; }
+.menu-header{ padding:14px 16px; background:#0f1724; border-bottom: 1px solid #334155; }
+.menu-bastidores{ padding:14px 16px; background:#0b1220; border-top: 1px solid #334155; border-bottom: 1px solid #334155;}
+.menu-bastidores h4{ color:#22d3ee; margin-bottom:8px; font-size: 0.9rem;}
+.menu-bastidores li{ list-style:none; font-size:0.8rem; color:#94a3b8; margin:4px 0; }
+.logout-btn{ color:#f87171; font-weight:bold; }
+footer{ text-align:center; padding:30px; color:#64748b; }
 
-.dropdown-content a,
-.logout-btn{
-  display:block;
-  padding:12px 16px;
-  color:#e5e7eb;
-  text-decoration:none;
-  background:none;
-  border:none;
-  width:100%;
-  text-align:left;
-}
-
-.dropdown-content a:hover{
-  background:#1e293b;
-  color:#22d3ee;
-}
-
-.menu-header{
-  padding:14px 16px;
-  background:#0f172a;
-  font-weight:bold;
-}
-
-.menu-bastidores{
-  padding:14px 16px;
-  background:#0b1220;
-}
-
-.menu-bastidores h4{
-  color:#22d3ee;
-  margin-bottom:8px;
-}
-
-.menu-bastidores li{
-  list-style:none;
-  font-size:0.9rem;
-  color:#94a3b8;
-  margin:4px 0;
-}
-
-.logout-btn{
-  color:#f87171;
-  font-weight:bold;
-}
-
-footer{
-  text-align:center;
-  padding:30px;
-  color:#64748b;
-}
-
-@keyframes fadeIn{
-  from{
-    opacity:0;
-    transform:translateY(-10px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
-}
-
+@keyframes fadeIn{ from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);} }
 @media(max-width:768px){
-  header{
-    flex-direction:column;
-    gap:15px;
-  }
-
-  .container{
-    padding-top:150px;
-  }
-
-  #search-input{
-    width:100%;
-  }
+  header{ flex-direction:column; gap: 15px; position: static; }
+  .container{ padding-top: 20px; }
 }
 </style>
 </head>
@@ -245,7 +84,7 @@ footer{
   <div class="menu-buttons">
     <input id="search-input" placeholder="🔎 Buscar jogos...">
 
-    <button class="category-btn" data-category="all">Todos</button>
+    <button class="category-btn active" data-category="all">Todos</button>
     <button class="category-btn" data-category="acao">Ação</button>
     <button class="category-btn" data-category="terror">Terror</button>
 
@@ -254,10 +93,11 @@ footer{
 
       <div id="drop-menu" class="dropdown-content">
         <div class="menu-header">
-          <p>Olá!</p>
+          <p id="menu-user-hello">Olá!</p>
         </div>
 
-        <a href="perfil.html">👤 Editar Perfil</a>
+        <a href="perfil.html" style="color: #22d3ee; font-weight: bold;">👤 Editar Perfil</a>
+        
         <a href="https://patreon.com/MidNight" target="_blank">🏅 Seja VIP</a>
         <a href="https://ko-fi.com/TEU_USER" target="_blank">☕ Apoiar</a>
 
@@ -271,7 +111,7 @@ footer{
           </ul>
         </div>
 
-        <button class="logout-btn">🚪 Sair</button>
+        <button id="btn-logout" class="logout-btn">🚪 Sair</button>
       </div>
     </div>
 
@@ -280,71 +120,142 @@ footer{
 </header>
 
 <div class="container">
-  <div class="grid">
+  <div class="grid" id="game-grid">
 
-    <div class="card" data-category="acao">
+    <div class="card" data-category="acao" data-id="alien-space">
       <div class="icon">🚀</div>
       <div class="title">Alien Space Wars</div>
       <div class="desc">Shooter espacial clássico.</div>
-      <button class="fav-btn">🤍</button>
-      <a href="#" class="btn">Jogar</a>
+      <a href="./games/alien-space-wars/" class="btn">Jogar</a>
     </div>
 
-    <div class="card" data-category="terror">
+    <div class="card" data-category="terror" data-id="fnaf-watch">
       <div class="icon">👁️</div>
       <div class="title">FNAF Night Watch</div>
       <div class="desc">Sobreviva à noite.</div>
-      <button class="fav-btn">🤍</button>
-      <a href="#" class="btn">Jogar</a>
+      <a href="./games/fnaf-night-watch/" class="btn">Jogar</a>
     </div>
 
-    <div class="card" data-category="terror">
+    <div class="card" data-category="terror" data-id="fazenda-velho">
       <div class="icon">🚜</div>
       <div class="title">Fazenda Velho Moço</div>
       <div class="desc">A criatura aparece à noite.</div>
-      <button class="fav-btn">🤍</button>
-      <a href="#" class="btn">Jogar</a>
+      <a href="./games/novo-experimento/" class="btn">Jogar</a>
     </div>
 
   </div>
 </div>
 
-<footer>
-Feito com 💙 versão profissional
-</footer>
+<footer>Feito com 💙 versão profissional</footer>
 
-<script>
-const btnLogin = document.getElementById('btn-login');
-const dropMenu = document.getElementById('drop-menu');
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-btnLogin.addEventListener('click',()=>{
-  dropMenu.classList.toggle('show');
-});
+  const firebaseConfig = {
+    apiKey: "AIzaSyALp8QDfjyjGQDfaJuVjEEv_mBhnylHUj8",
+    authDomain: "meuhubdejogos.firebaseapp.com",
+    projectId: "meuhubdejogos",
+    storageBucket: "meuhubdejogos.firebasestorage.app",
+    messagingSenderId: "485191017245",
+    appId: "1:485191017245:web:06c2ea7c5aa8f01472b7f4"
+  };
 
-window.addEventListener('click',(e)=>{
-  if(!btnLogin.contains(e.target) && !dropMenu.contains(e.target)){
-    dropMenu.classList.remove('show');
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  const btnLogin = document.getElementById('btn-login');
+  const dropMenu = document.getElementById('drop-menu');
+  const btnLogout = document.getElementById('btn-logout');
+  const menuUserHello = document.getElementById('menu-user-hello');
+  const searchInput = document.getElementById('search-input');
+  const categoryBtns = document.querySelectorAll('.category-btn');
+  const cards = document.querySelectorAll('.card');
+
+  // --- LOGIN E PERFIL ---
+  btnLogin.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    if (!auth.currentUser) {
+      await signInWithPopup(auth, provider);
+    } else {
+      dropMenu.classList.toggle('show');
+    }
+  });
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const userRef = doc(db, "usuarios", user.uid);
+      const docSnap = await getDoc(userRef);
+      let nome = user.displayName.split(' ')[0];
+
+      if (docSnap.exists() && docSnap.data().nickname) {
+        nome = docSnap.data().nickname;
+      }
+
+      btnLogin.textContent = nome;
+      menuUserHello.textContent = "Olá, " + nome + "!";
+      baixarFavoritos();
+    } else {
+      btnLogin.textContent = "Entrar";
+      menuUserHello.textContent = "Olá!";
+    }
+  });
+
+  btnLogout.addEventListener('click', () => { signOut(auth); dropMenu.classList.remove('show'); });
+  window.addEventListener('click', (e) => { if(!btnLogin.contains(e.target)) dropMenu.classList.remove('show'); });
+
+  // --- BUSCA E FILTRO ---
+  function filtrar() {
+    const term = searchInput.value.toLowerCase();
+    const activeCat = document.querySelector('.category-btn.active').dataset.category;
+
+    cards.forEach(card => {
+      const title = card.querySelector('.title').textContent.toLowerCase();
+      const cat = card.dataset.category;
+      const matchesSearch = title.includes(term);
+      const matchesCat = activeCat === 'all' || cat === activeCat;
+      card.style.display = (matchesSearch && matchesCat) ? 'flex' : 'none';
+    });
   }
-});
 
-document.querySelectorAll('.fav-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    btn.textContent = btn.textContent==="🤍" ? "❤️" : "🤍";
+  searchInput.addEventListener('input', filtrar);
+  categoryBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      categoryBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filtrar();
+    });
   });
-});
 
-const search = document.getElementById('search-input');
-const cards = document.querySelectorAll('.card');
+  // --- FAVORITOS REAIS (FIREBASE) ---
+  cards.forEach(card => {
+    const id = card.dataset.id;
+    const fBtn = document.createElement('button');
+    fBtn.className = 'fav-btn';
+    fBtn.textContent = '🤍';
+    card.insertBefore(fBtn, card.querySelector('.btn'));
 
-search.addEventListener('input',()=>{
-  const value = search.value.toLowerCase();
-
-  cards.forEach(card=>{
-    const title = card.querySelector('.title').textContent.toLowerCase();
-    card.style.display = title.includes(value) ? 'flex':'none';
+    fBtn.addEventListener('click', async () => {
+      if(!auth.currentUser) return alert("Faz login!");
+      const isFav = fBtn.textContent === '🤍';
+      fBtn.textContent = isFav ? '❤️' : '🤍';
+      await setDoc(doc(db, "usuarios", auth.currentUser.uid), { [id]: isFav }, { merge: true });
+    });
   });
-});
+
+  async function baixarFavoritos() {
+    const snap = await getDoc(doc(db, "usuarios", auth.currentUser.uid));
+    if (snap.exists()) {
+      const dados = snap.data();
+      Object.keys(dados).forEach(id => {
+        const btn = document.querySelector(`[data-id="${id}"] .fav-btn`);
+        if(btn) btn.textContent = dados[id] ? '❤️' : '🤍';
+      });
+    }
+  }
 </script>
-
 </body>
 </html>
