@@ -289,22 +289,32 @@ body.light .menu-bastidores li { color: #555; }
     }
   });
 
-  onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, async (user) => {
     if (user) {
-      const primeiroNome = user.displayName.split(' ')[0];
-      userNameSpan.textContent = primeiroNome;
-      menuUserHello.textContent = "Olá, " + primeiroNome + "!"; // Dynamic "Olá, Luís!" text
       userPhotoImg.src = user.photoURL;
       userPhotoImg.style.display = "block";
+      
+      // Busca o Nickname no Firestore para exibir no Hub
+      const userRef = doc(db, "usuarios", user.uid);
+      const docSnap = await getDoc(userRef);
+      
+      let nomeExibicao = user.displayName.split(' ')[0]; // Padrão: Primeiro nome do Google
+      
+      if (docSnap.exists() && docSnap.data().nickname) {
+        nomeExibicao = docSnap.data().nickname; // Se tiver apelido salvo, usa ele
+      }
+
+      userNameSpan.textContent = nomeExibicao;
+      menuUserHello.textContent = "Olá, " + nomeExibicao + "!";
+      
       await baixarFavoritosNuvem();
     } else {
       userNameSpan.textContent = "Entrar";
-      userNameSpan.classList.remove('vip-name');
-      menuUserHello.textContent = "Olá!"; // Reset text
+      menuUserHello.textContent = "Olá!";
       userPhotoImg.style.display = "none";
-      dropMenu.classList.remove('show');
     }
   });
+
 
   // --- SISTEMA DE FAVORITOS E VIP ---
   cards.forEach(card => {
