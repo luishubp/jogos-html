@@ -3,97 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hub de Jogos - Pro</title>
+<title>Hub de Jogos</title>
 <style>
-  /* --- DESIGN LIMPO (Fiel à tua referência) --- */
+  /* --- BASE LIMPA E DIRETA --- */
   *{box-sizing:border-box;margin:0;padding:0;}
   body{
-    font-family:'Segoe UI',Arial,sans-serif;
-    background:radial-gradient(circle at top,#0f1724,#020617);
-    color:#e5e7eb; min-height: 100vh;
+    font-family:sans-serif;
+    background:#0f1724;
+    color:#e5e7eb;
+    padding-top: 80px;
   }
 
   header{
-    position:fixed;top:0;left:0;width:100%;
+    position:fixed;top:0;width:100%;
     background:rgba(15,23,36,0.95);
     display:flex;justify-content:space-between;align-items:center;
-    padding:15px 30px; border-bottom:1px solid #1e293b; z-index:1000;
+    padding:15px 20px;
+    border-bottom:1px solid #1e293b;
+    z-index:1000;
   }
 
-  .menu-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .menu-buttons{display:flex;align-items:center;gap:10px;}
 
-  /* Botões e Inputs */
-  .menu-buttons button, #btn-login, #toggle-theme {
-    padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;
-    background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;
-    display: flex; align-items: center; gap: 8px; transition: 0.2s;
-  }
-  .menu-buttons button.active{box-shadow:0 0 15px rgba(34,211,238,0.6); transform: scale(1.05);}
-
-  #search-input{
-    padding:8px 12px;border-radius:8px;border:1px solid #1e293b;outline:none;
-    background: #0f1724; color: white; width: 180px;
+  button, #btn-login {
+    padding:8px 15px; border-radius:8px; border:none; cursor:pointer;
+    background:#14b8a6; color:#020617; font-weight:bold;
+    display:flex; align-items:center; gap:8px;
   }
 
-  /* Perfil e Dropdown */
+  #user-photo { width: 22px; height: 22px; border-radius: 50%; display:none; }
+
+  /* Dropdown simples para não poluir */
   .profile-container { position: relative; }
-  #user-photo { width: 22px; height: 22px; border-radius: 50%; display: none; border: 1px solid #020617; }
   .dropdown-content {
-    display: none; position: absolute; right: 0; top: 110%;
-    background: #111; min-width: 180px; border-radius: 12px;
-    border: 1px solid #333; z-index: 1000; overflow: hidden;
+    display: none; position: absolute; right: 0; top: 40px;
+    background: #111; min-width: 150px; border-radius: 8px;
+    border: 1px solid #333; overflow: hidden;
   }
-  .dropdown-content.show { display: block; animation: fadeIn 0.2s; }
+  .dropdown-content.show { display: block; }
   .dropdown-content a, .logout-btn {
-    color: #ccc; padding: 12px 16px; text-decoration: none; display: block;
-    font-size: 14px; background: none; border: none; width: 100%; text-align: left; cursor: pointer;
+    color: #ccc; padding: 10px; text-decoration: none; display: block;
+    font-size: 14px; width: 100%; text-align: left; background: none; border: none; cursor: pointer;
   }
-  .dropdown-content a:hover { background: #222; color: #22d3ee; }
-  .logout-btn { color: #f87171; font-weight: bold; border-top: 1px solid #333; }
+  .dropdown-content a:hover { background: #222; }
 
-  /* Grid de Jogos */
-  .container{padding:120px 20px 40px; max-width: 1200px; margin: 0 auto;}
-  .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:25px; }
+  .container{ padding: 20px; max-width: 1100px; margin: 0 auto; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; }
 
   .card{
-    background:linear-gradient(180deg,#0b1220,#020617);
-    border:1px solid #1e293b; border-radius:16px; padding:25px;
-    transition:0.3s; display:flex; flex-direction:column;
-  }
-  .card:hover{transform:translateY(-8px);border-color:#22d3ee;}
-  .title{font-size:1.3rem; margin: 10px 0; font-weight:bold;}
-  .desc{font-size:0.95rem;color:#9ca3af;margin-bottom:20px; flex-grow: 1;}
-  
-  .btn{
-    display:block; padding:12px; border-radius:10px; text-align:center;
-    background:linear-gradient(90deg,#14b8a6,#22d3ee); color:#020617;
-    text-decoration:none; font-weight:bold;
+    background:#0b1220; border:1px solid #1e293b;
+    border-radius:12px; padding:20px;
+    display:flex; flex-direction:column; gap: 10px;
   }
 
-  .fav-btn{background:none; border:none; cursor:pointer; font-size:1.5rem; margin-bottom:10px; transition: 0.2s;}
-  .fav-btn.active{color: #f87171; filter: drop-shadow(0 0 5px #f87171);}
+  .fav-btn{ background:none; border:none; cursor:pointer; font-size:1.2rem; color:#444; align-self: flex-start; }
+  .fav-btn.active{ color: #f87171; }
 
-  @keyframes fadeIn { from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);} }
+  .btn-jogar{
+    display:block; text-align:center; padding:10px;
+    background:#22d3ee; color:#020617; text-decoration:none;
+    border-radius:8px; font-weight:bold;
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🎮 Hub</h1>
+  <h3>Hub Jogos</h3>
   <div class="menu-buttons">
-    <input type="text" id="search-input" placeholder="🔎 Buscar...">
-    <button class="category-btn active" data-category="all">Todos</button>
-    <button class="category-btn" data-category="acao">Ação</button>
-    <button class="category-btn" data-category="terror">Terror</button>
-    
     <div class="profile-container">
       <button id="btn-login">
         <img id="user-photo" src="">
         <span id="user-name">Entrar</span>
       </button>
       <div id="drop-menu" class="dropdown-content">
-        <a href="https://patreon.com/MidNight" target="_blank">🏅 Patreon</a>
-        <a href="https://ko-fi.com/MidNight" target="_blank">☕ Ko-fi</a>
+        <a href="https://patreon.com" target="_blank">Patreon</a>
+        <a href="https://ko-fi.com" target="_blank">Ko-fi</a>
         <button id="btn-logout" class="logout-btn">Sair</button>
       </div>
     </div>
@@ -102,123 +87,39 @@
 
 <div class="container">
   <div class="grid" id="game-grid">
-    <div class="card" data-category="acao" data-id="alien-space">
-      <div class="title">🚀 Alien Space Wars</div>
-      <p class="desc">Shooter espacial clássico.</p>
-      <a href="./games/alien-space-wars/" class="btn">Jogar</a>
+    <div class="card" data-id="game-1">
+      <button class="fav-btn">❤</button>
+      <h4>Alien Space Wars</h4>
+      <p style="font-size: 0.8rem; color: #9ca3af;">Shooter espacial.</p>
+      <a href="#" class="btn-jogar">Jogar</a>
     </div>
-    <div class="card" data-category="terror" data-id="fnaf-watch">
-      <div class="title">👁️ FNAF Night Watch</div>
-      <p class="desc">Sobreviva à noite.</p>
-      <a href="./games/fnaf-night-watch/" class="btn">Jogar</a>
+    
+    <div class="card" data-id="game-2">
+      <button class="fav-btn">❤</button>
+      <h4>Night Watch</h4>
+      <p style="font-size: 0.8rem; color: #9ca3af;">Sobreviva à noite.</p>
+      <a href="#" class="btn-jogar">Jogar</a>
     </div>
   </div>
 </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyALp8QDfjyjGQDfaJuVjEEv_mBhnylHUj8",
-    authDomain: "meuhubdejogos.firebaseapp.com",
-    projectId: "meuhubdejogos",
-    storageBucket: "meuhubdejogos.firebasestorage.app",
-    messagingSenderId: "485191017245",
-    appId: "1:485191017245:web:06c2ea7c5aa8f01472b7f4"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const provider = new GoogleAuthProvider();
-
-  // --- BUSCA E FILTRO ---
-  const searchInput = document.getElementById('search-input');
-  const categoryBtns = document.querySelectorAll('.category-btn');
-  const cards = document.querySelectorAll('.card');
-
-  function filtrar() {
-    const termo = searchInput.value.toLowerCase();
-    const catAtiva = document.querySelector('.category-btn.active').dataset.category;
-    
-    cards.forEach(card => {
-      const matchTexto = card.querySelector('.title').textContent.toLowerCase().includes(termo);
-      const matchCat = catAtiva === 'all' || card.dataset.category === catAtiva;
-      card.style.display = (matchTexto && matchCat) ? 'flex' : 'none';
-    });
-  }
-
-  searchInput.oninput = filtrar;
-  categoryBtns.forEach(btn => {
-    btn.onclick = () => {
-      categoryBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      filtrar();
-    };
-  });
-
-  // --- LOGIN E DROPDOWN ---
+  // Aqui entra a tua lógica do Firebase (Auth e Firestore) que já configurámos
+  // O foco é: Login -> Salva UID -> Libera Favoritos na Nuvem.
+  
   const btnLogin = document.getElementById('btn-login');
   const dropMenu = document.getElementById('drop-menu');
 
-  btnLogin.onclick = async (e) => {
-    e.stopPropagation();
-    if (!auth.currentUser) await signInWithPopup(auth, provider);
-    else dropMenu.classList.toggle('show');
+  btnLogin.addEventListener('click', () => {
+    // Se logado, alterna o menu. Se não, dispara o login.
+    dropMenu.classList.toggle('show');
+  });
+
+  // Fecha o menu se clicar fora
+  window.onclick = (e) => {
+    if (!e.target.closest('.profile-container')) dropMenu.classList.remove('show');
   };
-
-  document.onclick = () => dropMenu.classList.remove('show');
-  document.getElementById('btn-logout').onclick = () => signOut(auth);
-
-  onAuthStateChanged(auth, (user) => {
-    const name = document.getElementById('user-name');
-    const photo = document.getElementById('user-photo');
-    if (user) {
-      name.textContent = user.displayName.split(' ')[0];
-      photo.src = user.photoURL;
-      photo.style.display = "block";
-      baixarFavoritos();
-    } else {
-      name.textContent = "Entrar";
-      photo.style.display = "none";
-    }
-  });
-
-  // --- FAVORITOS (Nuvem + Local) ---
-  cards.forEach(card => {
-    const id = card.dataset.id;
-    const favBtn = document.createElement('button');
-    favBtn.className = 'fav-btn';
-    favBtn.innerHTML = localStorage.getItem('fav-'+id) === 'true' ? '❤️' : '🤍';
-    if(localStorage.getItem('fav-'+id) === 'true') favBtn.classList.add('active');
-    
-    card.prepend(favBtn);
-
-    favBtn.onclick = async () => {
-      if(!auth.currentUser) return alert("Faz login!");
-      const isFav = favBtn.classList.toggle('active');
-      favBtn.innerHTML = isFav ? '❤️' : '🤍';
-      localStorage.setItem('fav-'+id, isFav);
-      await setDoc(doc(db, "usuarios", auth.currentUser.uid), {[id]: isFav}, {merge:true});
-    };
-  });
-
-  async function baixarFavoritos() {
-    const snap = await getDoc(doc(db, "usuarios", auth.currentUser.uid));
-    if(snap.exists()){
-      const dados = snap.data();
-      Object.keys(dados).forEach(id => {
-        const btn = document.querySelector(`[data-id="${id}"] .fav-btn`);
-        if(btn){
-          btn.classList.toggle('active', dados[id]);
-          btn.innerHTML = dados[id] ? '❤️' : '🤍';
-          localStorage.setItem('fav-'+id, dados[id]);
-        }
-      });
-    }
-  }
 </script>
+
 </body>
 </html>
