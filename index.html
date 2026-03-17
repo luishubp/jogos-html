@@ -76,7 +76,8 @@ body.light .card{background:#fff;border-color:#ccc;color:#111;}
 .card.futuro-jogo{opacity:0.6; border:1px dashed #555;}
 footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:center;}
 
-/* === MENU DROPDOWN DE PERFIL === */
+/* === MENU DROPDOWN DE PERFIL COM CONTEÚDO CONSOLIDADO === */
+
 .profile-container { position: relative; display: inline-block; }
 .dropdown-content {
   display: none; position: absolute; right: 0; top: 110%;
@@ -102,7 +103,7 @@ body.light .menu-header { border-color: #ccc; background: #eee; }
 /* Estilo VIP */
 .vip-name { color: #ffca28 !important; text-shadow: 0 0 10px rgba(255, 202, 40, 0.6); }
 
-/* SEÇÃO DE CONTEÚDO CONSOLIDADO */
+/* SEÇÃO DE CONTEÚDO CONSOLIDADO (Acessos Exclusivos) */
 .menu-bastidores { padding: 15px 16px; border-top: 1px solid #333; background: #0b1220; border-bottom: 1px solid #333;}
 body.light .menu-bastidores { border-color: #ccc; background: #eee; }
 .menu-bastidores h4 { color: #22d3ee; font-size: 0.85rem; margin-bottom: 10px; font-weight: bold; }
@@ -110,31 +111,6 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
 .menu-bastidores li { color: #aaa; font-size: 0.8rem; padding: 4px 0; display: flex; align-items: center; gap: 8px; }
 body.light .menu-bastidores h4 { color: #14b8a6; }
 body.light .menu-bastidores li { color: #555; }
-
-/* === NOVO: ESTILOS DO MODAL DE PERFIL === */
-.modal-overlay {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 2000;
-}
-.modal-overlay.show { display: flex; animation: fadeIn 0.2s; }
-.modal-content {
-  background: #0f1724; border: 1px solid #14b8a6; padding: 30px;
-  border-radius: 16px; width: 90%; max-width: 400px; color: white;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-}
-body.light .modal-content { background: #fff; color: #111; border-color: #ccc; }
-.modal-content h3 { margin-bottom: 15px; color: #22d3ee; }
-.modal-content label { font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; display: block; color: #9ca3af;}
-body.light .modal-content label { color: #555; }
-.modal-content input, .modal-content textarea {
-  width: 100%; padding: 10px; margin-bottom: 20px;
-  background: #020617; border: 1px solid #1e293b; color: white; border-radius: 8px; outline: none; font-family: inherit;
-}
-body.light .modal-content input, body.light .modal-content textarea { background: #eee; color: #111; border-color: #ccc; }
-.modal-content textarea { resize: vertical; min-height: 80px; }
-.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-.btn-secundario { background: #334155; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s;}
-.btn-secundario:hover { background: #475569; }
 
 @keyframes fadeIn { from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);} }
 @media(max-width:768px){
@@ -177,7 +153,6 @@ body.light .modal-content input, body.light .modal-content textarea { background
         </div>
         
         <hr style="border-color:#333; margin:0;">
-        <button id="btn-open-edit" class="logout-btn" style="color:#22d3ee; border-bottom: 1px solid #333;">✏️ Editar Perfil</button>
         <button id="btn-logout" class="logout-btn">🚪 Sair da Conta</button>
       </div>
     </div>
@@ -187,6 +162,7 @@ body.light .modal-content input, body.light .modal-content textarea { background
 </header>
 
 <div class="container">
+
   <div class="grid" id="game-grid">
     <div class="card" data-category="acao" data-id="alien-space">
       <div class="icon">🚀</div>
@@ -218,26 +194,6 @@ body.light .modal-content input, body.light .modal-content textarea { background
   </div>
 </div>
 
-<div id="modal-perfil" class="modal-overlay">
-  <div class="modal-content">
-    <h3>📝 Personalizar Perfil</h3>
-    
-    <label>Como quer ser chamado?</label>
-    <input type="text" id="edit-nickname" placeholder="Ex: Zênite, ProGamer...">
-    
-    <label>Link do Banner (URL da imagem)</label>
-    <input type="text" id="edit-banner" placeholder="Cole o link de uma imagem aqui...">
-
-    <label>Sua Bio</label>
-    <textarea id="edit-bio" placeholder="Explorando novos mundos..."></textarea>
-    
-    <div class="modal-actions">
-      <button id="btn-cancelar" class="btn-secundario">Cancelar</button>
-      <button id="btn-salvar-perfil" class="btn">Salvar Alterações</button>
-    </div>
-  </div>
-</div>
-
 <footer>Feito com 💙 para GitHub Pages + Firebase</footer>
 
 <script type="module">
@@ -259,7 +215,7 @@ body.light .modal-content input, body.light .modal-content textarea { background
   const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
-  // Elementos originais
+  // Define all elements
   const toggle = document.getElementById('toggle-theme');
   const searchInput = document.getElementById('search-input');
   const categoryButtons = document.querySelectorAll('.category-btn');
@@ -269,16 +225,7 @@ body.light .modal-content input, body.light .modal-content textarea { background
   const userPhotoImg = document.getElementById('user-photo');
   const dropMenu = document.getElementById('drop-menu');
   const btnLogout = document.getElementById('btn-logout');
-  const menuUserHello = document.getElementById('menu-user-hello');
-
-  // NOVO: Elementos do Modal
-  const btnOpenEdit = document.getElementById('btn-open-edit');
-  const modalPerfil = document.getElementById('modal-perfil');
-  const btnCancelar = document.getElementById('btn-cancelar');
-  const btnSalvarPerfil = document.getElementById('btn-salvar-perfil');
-  const editNickname = document.getElementById('edit-nickname');
-  const editBanner = document.getElementById('edit-banner');
-  const editBio = document.getElementById('edit-bio');
+  const menuUserHello = document.getElementById('menu-user-hello'); // NEW ID
 
   let currentCategory = 'all';
   let searchTerm = '';
@@ -312,25 +259,25 @@ body.light .modal-content input, body.light .modal-content textarea { background
     filterGames();
   });
 
+  // --- LÓGICA DE LOGIN COM DROPDOWN ---
   btnLogin.addEventListener('click', async (event) => {
-    event.stopPropagation();
+    event.stopPropagation(); // Evita fechar o menu na hora
     if (!auth.currentUser) {
       await signInWithPopup(auth, provider);
     } else {
+      // Se já está logado, abre o menu dropdown
       dropMenu.classList.toggle('show');
     }
   });
 
+  // Fechar o menu ao clicar fora dele
   window.addEventListener('click', (e) => {
     if (!btnLogin.contains(e.target) && !dropMenu.contains(e.target)) {
       dropMenu.classList.remove('show');
     }
-    // NOVO: Fechar modal clicando fora dele
-    if (e.target === modalPerfil) {
-      modalPerfil.classList.remove('show');
-    }
   });
 
+  // Botão de Sair dentro do menu
   btnLogout.addEventListener('click', () => {
     if(confirm("Deseja sair da conta?")) {
       signOut(auth);
@@ -338,56 +285,24 @@ body.light .modal-content input, body.light .modal-content textarea { background
     }
   });
 
-  // NOVO: Lógica de abrir e fechar o Modal
-  btnOpenEdit.addEventListener('click', () => {
-    modalPerfil.classList.add('show');
-    dropMenu.classList.remove('show');
-  });
-
-  btnCancelar.addEventListener('click', () => {
-    modalPerfil.classList.remove('show');
-  });
-
-  // NOVO: Lógica de Salvar os Dados no Firestore
-  btnSalvarPerfil.addEventListener('click', async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const userRef = doc(db, "usuarios", user.uid);
-    const novosDados = {
-      nickname: editNickname.value,
-      bannerUrl: editBanner.value,
-      bio: editBio.value
-    };
-
-    btnSalvarPerfil.textContent = "Salvando...";
-    try {
-      // Usamos merge: true para não apagar os jogos favoritos!
-      await setDoc(userRef, novosDados, { merge: true });
-      alert("Perfil atualizado com sucesso!");
-      location.reload(); 
-    } catch (e) {
-      console.error("Erro ao salvar:", e);
-      alert("Erro ao salvar perfil.");
-    } finally {
-      btnSalvarPerfil.textContent = "Salvar Alterações";
-    }
-  });
-
   onAuthStateChanged(auth, async (user) => {
     if (user) {
+      const primeiroNome = user.displayName.split(' ')[0];
+      userNameSpan.textContent = primeiroNome;
+      menuUserHello.textContent = "Olá, " + primeiroNome + "!"; // Dynamic "Olá, Luís!" text
       userPhotoImg.src = user.photoURL;
       userPhotoImg.style.display = "block";
       await baixarFavoritosNuvem();
     } else {
       userNameSpan.textContent = "Entrar";
       userNameSpan.classList.remove('vip-name');
-      menuUserHello.textContent = "Olá!";
+      menuUserHello.textContent = "Olá!"; // Reset text
       userPhotoImg.style.display = "none";
       dropMenu.classList.remove('show');
     }
   });
 
+  // --- SISTEMA DE FAVORITOS E VIP ---
   cards.forEach(card => {
     const gameId = card.dataset.id;
     if(card.classList.contains('futuro-jogo')) return;
@@ -423,31 +338,18 @@ body.light .modal-content input, body.light .modal-content textarea { background
 
   async function baixarFavoritosNuvem() {
     const docSnap = await getDoc(doc(db, "usuarios", auth.currentUser.uid));
-    
-    let nomeExibicao = auth.currentUser.displayName.split(' ')[0]; // Padrão do Google
-
     if (docSnap.exists()) {
       const dados = docSnap.data();
       
-      // NOVO: Verifica se o usuário salvou um Nickname personalizado
-      if (dados.nickname) {
-        nomeExibicao = dados.nickname;
-      }
-
-      // Preenche os campos do modal com os dados que já estão no banco
-      editNickname.value = dados.nickname || "";
-      editBanner.value = dados.bannerUrl || "";
-      editBio.value = dados.bio || "";
-      
+      // Verifica se o usuário é VIP
       if (dados.isVip === true) {
         userNameSpan.classList.add('vip-name');
-        menuUserHello.innerHTML = "Olá, " + nomeExibicao + " 💎";
-      } else {
-        menuUserHello.innerHTML = "Olá, " + nomeExibicao + "!";
+        menuUserHello.innerHTML = "Olá, " + auth.currentUser.displayName.split(' ')[0] + " 💎";
       }
 
+      // Aplica os corações
       Object.keys(dados).forEach(id => {
-        if(id !== "isVip" && id !== "nickname" && id !== "bannerUrl" && id !== "bio") { 
+        if(id !== "isVip") { // Ignora a chave VIP para os corações
           localStorage.setItem('fav-' + id, dados[id]);
           const btn = document.querySelector(`[data-id="${id}"] .fav-btn`);
           if (btn) {
@@ -456,13 +358,8 @@ body.light .modal-content input, body.light .modal-content textarea { background
           }
         }
       });
-    } else {
-      menuUserHello.innerHTML = "Olá, " + nomeExibicao + "!";
     }
-
-    userNameSpan.textContent = nomeExibicao;
   }
 </script>
 </body>
-    </html>
-  
+</html>
