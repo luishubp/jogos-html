@@ -3,162 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>👤 Meu Perfil - Hub Jogos</title>
+<title>🎮 Hub Jogos Pro</title>
+
 <style>
-/* --- RESET E FUNDO (MANTIDO DO HUB) --- */
-*{box-sizing:border-box;margin:0;padding:0;}
+/* --- DESIGN LEVE MANTIDO --- */
+*{ margin:0; padding:0; box-sizing:border-box; }
 body{
-  font-family:'Segoe UI',Arial,sans-serif;
-  background:radial-gradient(circle at top,#0f1724,#020617);
-  color:#e5e7eb;
-  min-height: 100vh;
-  display: flex; align-items: center; justify-content: center;
-  padding: 40px 20px;
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(180deg,#020617,#0f172a);
+  color:white; min-height:100vh;
 }
+header{
+  position:fixed; top:0; left:0; width:100%;
+  background:rgba(2,6,23,0.95); backdrop-filter:blur(10px);
+  border-bottom:1px solid #1e293b; display:flex;
+  justify-content:space-between; align-items:center;
+  padding:15px 25px; z-index:1000;
+}
+header h1{
+  font-size:1.8rem; background:linear-gradient(90deg,#22d3ee,#14b8a6);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.menu-buttons{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+button,input{ border:none; outline:none; border-radius:10px; }
+button{ cursor:pointer; }
+.category-btn, #btn-login, #toggle-theme{
+  padding:10px 16px; background:linear-gradient(90deg,#14b8a6,#22d3ee);
+  font-weight:bold; color:#020617; transition: 0.2s;
+}
+.category-btn.active { box-shadow: 0 0 15px rgba(34,211,238,0.5); transform: scale(1.05); }
+#search-input{ padding:10px; background:#0f172a; border:1px solid #334155; color:white; width:180px; }
+.container{ padding:130px 20px 40px; max-width:1200px; margin:auto; }
+.grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:25px; }
+.card{
+  background:linear-gradient(180deg,#0b1220,#020617);
+  border:1px solid #1e293b; border-radius:18px;
+  padding:25px; transition:0.3s; display:flex; flex-direction:column; gap:15px;
+}
+.card:hover{ transform:translateY(-8px); border-color:#22d3ee; box-shadow:0 0 25px rgba(34,211,238,0.25); }
+.icon{ font-size:3rem; }
+.title{ font-size:1.3rem; font-weight:bold; }
+.desc{ color:#94a3b8; flex-grow:1; }
+.btn{
+  display:block; text-align:center; padding:12px; border-radius:10px;
+  text-decoration:none; font-weight:bold; background:linear-gradient(90deg,#14b8a6,#22d3ee); color:#020617;
+}
+.fav-btn{ background:none; border:none; font-size:1.5rem; cursor:pointer; align-self: flex-start; }
+.profile-container{ position:relative; }
+.dropdown-content{
+  display:none; position:absolute; right:0; top:110%;
+  background:#111827; border:1px solid #334155; border-radius:14px;
+  min-width:240px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+.dropdown-content.show{ display:block; animation:fadeIn 0.25s ease; }
+.dropdown-content a, .logout-btn{
+  display:block; padding:12px 16px; color:#e5e7eb; text-decoration:none;
+  background:none; border:none; width:100%; text-align:left; cursor: pointer;
+}
+.dropdown-content a:hover{ background:#1e293b; color:#22d3ee; }
+.menu-header{ padding:14px 16px; background:#0f1724; border-bottom: 1px solid #334155; }
+.menu-bastidores{ padding:14px 16px; background:#0b1220; border-top: 1px solid #334155; border-bottom: 1px solid #334155;}
+.menu-bastidores h4{ color:#22d3ee; margin-bottom:8px; font-size: 0.9rem;}
+.menu-bastidores li{ list-style:none; font-size:0.8rem; color:#94a3b8; margin:4px 0; }
+.logout-btn{ color:#f87171; font-weight:bold; }
+footer{ text-align:center; padding:30px; color:#64748b; }
 
-/* --- CONTAINER PRINCIPAL --- */
-.profile-container {
-  background: linear-gradient(180deg,#0b1220,#020617);
-  border: 1px solid #14b8a6;
-  border-radius: 20px;
-  width: 100%; max-width: 600px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  overflow: hidden; /* Mantém o banner arredondado dentro do card */
-}
-
-/* --- DESIGN DO BANNER (HEADER) --- */
-.profile-header {
-  position: relative;
-  width: 100%; height: 200px;
-}
-.banner-fundo {
-  width: 100%; height: 100%;
-  background-size: cover;
-  background-position: center;
-  position: absolute; top: 0; left: 0;
-  background-color: #1e293b; /* Cor de fundo caso a imagem demore a carregar */
-}
-.banner-gradient {
-  width: 100%; height: 100%;
-  background: linear-gradient(to bottom, rgba(2, 6, 23, 0) 40%, #0b1220 100%);
-  position: absolute; bottom: 0; left: 0;
-}
-
-/* --- DESIGN DO AVATAR (SOBREPOSIÇÃO) --- */
-.avatar-wrapper {
-  position: absolute;
-  bottom: -50px; /* Faz o avatar sobrepor o banner e o conteúdo */
-  left: 40px;
-  width: 110px; height: 110px;
-  border-radius: 50%;
-  border: 6px solid #0b1220; /* Borda grossa da cor do fundo do card */
-  box-shadow: 0 5px 15px rgba(0,0,0,0.6);
-  z-index: 10;
-  background: #020617;
-}
-.user-img, .avatar-placeholder {
-  width: 100%; height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  position: absolute; top: 0; left: 0;
-}
-
-/* --- EFEITO NEON DA INICIAL --- */
-.avatar-placeholder {
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Montserrat', 'Segoe UI', sans-serif;
-  font-weight: bold; font-size: 3.5rem;
-  text-transform: uppercase;
-  color: #22d3ee;
-  text-shadow: 0 0 5px rgba(34, 211, 238, 0.6), 0 0 15px rgba(34, 211, 238, 0.4);
-}
-
-/* --- CONTEÚDO (TEXTOS E INPUTS) --- */
-.profile-content {
-  padding: 70px 40px 40px; /* Espaço extra em cima por causa do avatar */
-  text-align: left;
-}
-.profile-title { color: #22d3ee; font-size: 1.8rem; margin-bottom: 5px; }
-.profile-bio-text { color: #9ca3af; font-size: 0.95rem; margin-bottom: 25px; min-height: 20px;}
-.divider { border: 0; border-top: 1px solid #1e293b; margin-bottom: 25px; }
-
-/* --- CAMPOS DE EDIÇÃO --- */
-.input-group { margin-bottom: 20px; }
-label { display: block; margin-bottom: 8px; color: #9ca3af; font-size: 0.9rem; font-weight: bold;}
-input, textarea {
-  width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #1e293b;
-  background: #0f1724; color: white; outline: none; font-family: inherit; transition: 0.2s;
-}
-input:focus, textarea:focus { border-color: #22d3ee; box-shadow: 0 0 8px rgba(34,211,238,0.2); }
-textarea { resize: vertical; height: 80px; }
-
-/* --- BOTÕES --- */
-.btn-save {
-  width: 100%; padding: 15px; border-radius: 10px; border: none; margin-top: 10px;
-  background: linear-gradient(90deg,#14b8a6,#22d3ee); color: #020617;
-  font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1rem;
-}
-.btn-save:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(34,211,238,0.4); }
-.back-link { display: block; margin-top: 25px; color: #6b7280; text-decoration: none; font-size: 0.9rem; text-align: center; transition: 0.2s;}
-.back-link:hover { color: #22d3ee; }
-
-@media(max-width: 600px) {
-  .profile-content { padding: 60px 20px 30px; }
-  .avatar-wrapper { left: 50%; transform: translateX(-50%); bottom: -55px; }
-  .profile-title, .profile-bio-text { text-align: center; }
+@keyframes fadeIn{ from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);} }
+@media(max-width:768px){
+  header{ flex-direction:column; gap: 15px; position: static; }
+  .container{ padding-top: 20px; }
 }
 </style>
 </head>
+
 <body>
 
-<div class="profile-container">
-  
-  <header class="profile-header">
-    <div id="banner-fundo" class="banner-fundo" style="background-image: url('https://via.placeholder.com/1200x300/1e293b/1e293b');">
-      <div class="banner-gradient"></div>
-    </div>
-    
-    <div class="avatar-wrapper">
-      <img id="user-avatar" class="user-img" src="" alt="Avatar" style="display: none;">
-      
-      <div id="avatar-placeholder" class="avatar-placeholder">
-        <span id="avatar-initial">?</span>
+<header>
+  <h1>🎮 Hub Jogos</h1>
+
+  <div class="menu-buttons">
+    <input id="search-input" placeholder="🔎 Buscar jogos...">
+
+    <button class="category-btn active" data-category="all">Todos</button>
+    <button class="category-btn" data-category="acao">Ação</button>
+    <button class="category-btn" data-category="terror">Terror</button>
+
+    <div class="profile-container">
+      <button id="btn-login">Entrar</button>
+
+      <div id="drop-menu" class="dropdown-content">
+        <div class="menu-header">
+          <p id="menu-user-hello">Olá!</p>
+        </div>
+
+        <a href="perfil.html" style="color: #22d3ee; font-weight: bold;">👤 Editar Perfil</a>
+        
+        <a href="https://patreon.com/MidNight" target="_blank">🏅 Seja VIP</a>
+        <a href="https://ko-fi.com/TEU_USER" target="_blank">☕ Apoiar</a>
+
+        <div class="menu-bastidores">
+          <h4>Seu acesso MidNight 🌑</h4>
+          <ul>
+            <li>🛠️ Diário dev</li>
+            <li>🎨 Artes</li>
+            <li>🗳️ Enquetes</li>
+            <li>🚀 Acesso antecipado</li>
+          </ul>
+        </div>
+
+        <button id="btn-logout" class="logout-btn">🚪 Sair</button>
       </div>
     </div>
-  </header>
-  
-  <div class="profile-content">
-    <h2 id="welcome-msg" class="profile-title">Carregando...</h2>
-    <p id="profile-bio" class="profile-bio-text"></p>
 
-    <hr class="divider">
-
-    <div class="input-group">
-      <label>Link do Banner (URL de imagem)</label>
-      <input type="text" id="banner-url" placeholder="Ex: https://i.imgur.com/sua-imagem.jpg">
-    </div>
-
-    <div class="input-group">
-      <label>Nome de Usuário (Nickname)</label>
-      <input type="text" id="nickname" placeholder="Como quer ser chamado?">
-    </div>
-
-    <div class="input-group">
-      <label>Sua Bio</label>
-      <textarea id="bio" placeholder="Escreva algo sobre você..." maxlength="150"></textarea>
-    </div>
-
-    <button class="btn-save" id="btn-save">Salvar Perfil</button>
-    
-    <a href="index.html" class="back-link">← Voltar para o Hub</a>
+    <button id="toggle-theme">🌙</button>
   </div>
+</header>
 
+<div class="container">
+  <div class="grid" id="game-grid">
+
+    <div class="card" data-category="acao" data-id="alien-space">
+      <div class="icon">🚀</div>
+      <div class="title">Alien Space Wars</div>
+      <div class="desc">Shooter espacial clássico.</div>
+      <a href="./games/alien-space-wars/" class="btn">Jogar</a>
+    </div>
+
+    <div class="card" data-category="terror" data-id="fnaf-watch">
+      <div class="icon">👁️</div>
+      <div class="title">FNAF Night Watch</div>
+      <div class="desc">Sobreviva à noite.</div>
+      <a href="./games/fnaf-night-watch/" class="btn">Jogar</a>
+    </div>
+
+    <div class="card" data-category="terror" data-id="fazenda-velho">
+      <div class="icon">🚜</div>
+      <div class="title">Fazenda Velho Moço</div>
+      <div class="desc">A criatura aparece à noite.</div>
+      <a href="./games/novo-experimento/" class="btn">Jogar</a>
+    </div>
+
+  </div>
 </div>
+
+<footer>Feito com 💙 versão profissional</footer>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyALp8QDfjyjGQDfaJuVjEEv_mBhnylHUj8",
@@ -172,106 +165,98 @@ textarea { resize: vertical; height: 80px; }
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
 
-  // Elementos do DOM
-  const nicknameInput = document.getElementById('nickname');
-  const bioInput = document.getElementById('bio');
-  const bannerUrlInput = document.getElementById('banner-url');
-  
-  const welcomeMsg = document.getElementById('welcome-msg');
-  const profileBioText = document.getElementById('profile-bio');
-  const bannerFundoDiv = document.getElementById('banner-fundo');
-  
-  const userAvatarImg = document.getElementById('user-avatar');
-  const avatarPlaceholderDiv = document.getElementById('avatar-placeholder');
-  const avatarInitialSpan = document.getElementById('avatar-initial');
-  
-  const btnSave = document.getElementById('btn-save');
+  const btnLogin = document.getElementById('btn-login');
+  const dropMenu = document.getElementById('drop-menu');
+  const btnLogout = document.getElementById('btn-logout');
+  const menuUserHello = document.getElementById('menu-user-hello');
+  const searchInput = document.getElementById('search-input');
+  const categoryBtns = document.querySelectorAll('.category-btn');
+  const cards = document.querySelectorAll('.card');
 
-  // Lógica de Carregamento
+  // --- LOGIN E PERFIL ---
+  btnLogin.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    if (!auth.currentUser) {
+      await signInWithPopup(auth, provider);
+    } else {
+      dropMenu.classList.toggle('show');
+    }
+  });
+
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const userRef = doc(db, "usuarios", user.uid);
       const docSnap = await getDoc(userRef);
-      
-      let nomeParaUsar = user.displayName;
+      let nome = user.displayName.split(' ')[0];
 
-      if (docSnap.exists()) {
-        const dados = docSnap.data();
-        
-        // Preenche os inputs
-        nicknameInput.value = dados.nickname || "";
-        bioInput.value = dados.bio || "";
-        bannerUrlInput.value = dados.bannerUrl || "";
-        
-        // Atualiza a tela
-        nomeParaUsar = dados.nickname || user.displayName;
-        profileBioText.textContent = dados.bio || "Adicione uma bio para personalizar seu perfil.";
-        
-        if (dados.bannerUrl) {
-          bannerFundoDiv.style.backgroundImage = `url('${dados.bannerUrl}')`;
-        }
+      if (docSnap.exists() && docSnap.data().nickname) {
+        nome = docSnap.data().nickname;
       }
 
-      welcomeMsg.textContent = nomeParaUsar;
-
-      // Lógica do Avatar
-      if (user.photoURL) {
-        userAvatarImg.src = user.photoURL;
-        userAvatarImg.style.display = 'block';
-        avatarPlaceholderDiv.style.display = 'none';
-      } else {
-        userAvatarImg.style.display = 'none';
-        avatarPlaceholderDiv.style.display = 'flex';
-        avatarInitialSpan.textContent = nomeParaUsar ? nomeParaUsar.charAt(0).toUpperCase() : '?';
-      }
-
+      btnLogin.textContent = nome;
+      menuUserHello.textContent = "Olá, " + nome + "!";
+      baixarFavoritos();
     } else {
-      window.location.href = "index.html"; // Redireciona se não estiver logado
+      btnLogin.textContent = "Entrar";
+      menuUserHello.textContent = "Olá!";
     }
   });
 
-  // Atualização da inicial em tempo real
-  nicknameInput.addEventListener('input', () => {
-    const valor = nicknameInput.value;
-    if (valor && (!auth.currentUser || !auth.currentUser.photoURL)) {
-      avatarInitialSpan.textContent = valor.charAt(0).toUpperCase();
-    } else if (!valor && auth.currentUser && !auth.currentUser.photoURL) {
-       avatarInitialSpan.textContent = auth.currentUser.displayName.charAt(0).toUpperCase();
-    }
+  btnLogout.addEventListener('click', () => { signOut(auth); dropMenu.classList.remove('show'); });
+  window.addEventListener('click', (e) => { if(!btnLogin.contains(e.target)) dropMenu.classList.remove('show'); });
+
+  // --- BUSCA E FILTRO ---
+  function filtrar() {
+    const term = searchInput.value.toLowerCase();
+    const activeCat = document.querySelector('.category-btn.active').dataset.category;
+
+    cards.forEach(card => {
+      const title = card.querySelector('.title').textContent.toLowerCase();
+      const cat = card.dataset.category;
+      const matchesSearch = title.includes(term);
+      const matchesCat = activeCat === 'all' || cat === activeCat;
+      card.style.display = (matchesSearch && matchesCat) ? 'flex' : 'none';
+    });
+  }
+
+  searchInput.addEventListener('input', filtrar);
+  categoryBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      categoryBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filtrar();
+    });
   });
 
-  // Salvar no Banco de Dados
-  btnSave.addEventListener('click', async () => {
-    const user = auth.currentUser;
-    if (!user) return;
+  // --- FAVORITOS REAIS (FIREBASE) ---
+  cards.forEach(card => {
+    const id = card.dataset.id;
+    const fBtn = document.createElement('button');
+    fBtn.className = 'fav-btn';
+    fBtn.textContent = '🤍';
+    card.insertBefore(fBtn, card.querySelector('.btn'));
 
-    btnSave.textContent = "Salvando...";
-    const userRef = doc(db, "usuarios", user.uid);
-
-    try {
-      await setDoc(userRef, {
-        nickname: nicknameInput.value,
-        bio: bioInput.value,
-        bannerUrl: bannerUrlInput.value
-      }, { merge: true });
-      
-      // Atualiza os textos e imagens na tela na mesma hora
-      welcomeMsg.textContent = nicknameInput.value || user.displayName;
-      profileBioText.textContent = bioInput.value;
-      if(bannerUrlInput.value) {
-         bannerFundoDiv.style.backgroundImage = `url('${bannerUrlInput.value}')`;
-      }
-      
-      btnSave.textContent = "Salvo com sucesso! ✔️";
-      setTimeout(() => { btnSave.textContent = "Salvar Perfil"; }, 2000);
-      
-    } catch (e) {
-      console.error(e);
-      alert("Erro ao salvar o perfil.");
-      btnSave.textContent = "Salvar Perfil";
-    }
+    fBtn.addEventListener('click', async () => {
+      if(!auth.currentUser) return alert("Faz login!");
+      const isFav = fBtn.textContent === '🤍';
+      fBtn.textContent = isFav ? '❤️' : '🤍';
+      await setDoc(doc(db, "usuarios", auth.currentUser.uid), { [id]: isFav }, { merge: true });
+    });
   });
+
+  async function baixarFavoritos() {
+    const snap = await getDoc(doc(db, "usuarios", auth.currentUser.uid));
+    if (snap.exists()) {
+      const dados = snap.data();
+      Object.keys(dados).forEach(id => {
+        const btn = document.querySelector(`[data-id="${id}"] .fav-btn`);
+        if(btn) btn.textContent = dados[id] ? '❤️' : '🤍';
+      });
+    }
+  }
 </script>
 </body>
 </html>
+
