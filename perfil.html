@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>👤 Meu Perfil - Hub Jogos</title>
+<style>
+/* Mantendo a identidade visual do seu Hub */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Segoe UI',Arial,sans-serif;
+  background:radial-gradient(circle at top,#0f1724,#020617);
+  color:#e5e7eb;
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.profile-card {
+  background: linear-gradient(180deg,#0b1220,#020617);
+  border: 1px solid #14b8a6;
+  border-radius: 20px;
+  padding: 40px;
+  width: 90%; max-width: 500px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  text-align: center;
+}
+
+h2 { margin-bottom: 25px; color: #22d3ee; }
+
+.user-img {
+  width: 100px; height: 100px; border-radius: 50%;
+  border: 3px solid #14b8a6; margin-bottom: 20px;
+  object-fit: cover;
+}
+
+.input-group { text-align: left; margin-bottom: 20px; }
+label { display: block; margin-bottom: 8px; color: #9ca3af; font-size: 0.9rem; }
+input, textarea {
+  width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #1e293b;
+  background: #0f1724; color: white; outline: none; font-family: inherit;
+}
+input:focus { border-color: #22d3ee; }
+
+.btn-save {
+  width: 100%; padding: 15px; border-radius: 10px; border: none;
+  background: linear-gradient(90deg,#14b8a6,#22d3ee); color: #020617;
+  font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1rem;
+}
+.btn-save:hover { transform: scale(1.02); filter: brightness(1.1); }
+
+.back-link {
+  display: inline-block; margin-top: 20px; color: #6b7280;
+  text-decoration: none; font-size: 0.9rem;
+}
+.back-link:hover { color: #22d3ee; }
+</style>
+</head>
+<body>
+
+<div class="profile-card">
+  <img id="user-avatar" class="user-img" src="https://via.placeholder.com/100" alt="Avatar">
+  <h2 id="welcome-msg">Carregando Perfil...</h2>
+
+  <div class="input-group">
+    <label>Como quer ser chamado? (Nickname)</label>
+    <input type="text" id="nickname" placeholder="Seu apelido no Hub">
+  </div>
+
+  <div class="input-group">
+    <label>Sua Bio</label>
+    <textarea id="bio" placeholder="Escreva algo sobre você..."></textarea>
+  </div>
+
+  <button class="btn-save" id="btn-save">Salvar Alterações</button>
+  
+  <a href="index.html" class="back-link">← Voltar para o Hub</a>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // Use a mesma config que você já tem no index.html
+  const firebaseConfig = {
+    apiKey: "AIzaSyALp8QDfjyjGQDfaJuVjEEv_mBhnylHUj8",
+    authDomain: "meuhubdejogos.firebaseapp.com",
+    projectId: "meuhubdejogos",
+    storageBucket: "meuhubdejogos.firebasestorage.app",
+    messagingSenderId: "485191017245",
+    appId: "1:485191017245:web:06c2ea7c5aa8f01472b7f4"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const nicknameInput = document.getElementById('nickname');
+  const bioInput = document.getElementById('bio');
+  const btnSave = document.getElementById('btn-save');
+  const userAvatar = document.getElementById('user-avatar');
+  const welcomeMsg = document.getElementById('welcome-msg');
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      userAvatar.src = user.photoURL;
+      
+      // Busca dados no Firestore
+      const userRef = doc(db, "usuarios", user.uid);
+      const docSnap = await getDoc(userRef);
+
+      if (docSnap.exists()) {
+        const dados = docSnap.data();
+        nicknameInput.value = dados.nickname || "";
+        bioInput.value = dados.bio || "";
+        welcomeMsg.textContent = "Perfil de " + (dados.nickname || user.displayName.split(' ')[0]);
+      } else {
+        welcomeMsg.textContent = "Configure seu Perfil";
+      }
+    } else {
+      // Se não estiver logado, volta pro Hub
+      window.location.href = "index.html";
+    }
+  });
+
+  btnSave.addEventListener('click', async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    btnSave.textContent = "Salvando...";
+    const userRef = doc(db, "usuarios", user.uid);
+
+    try {
+      await setDoc(userRef, {
+        nickname: nicknameInput.value,
+        bio: bioInput.value
+      }, { merge: true });
+      
+      alert("Alterações salvas com sucesso!");
+      btnSave.textContent = "Salvar Alterações";
+    } catch (e) {
+      console.error(e);
+      alert("Erro ao salvar.");
+      btnSave.textContent = "Salvar Alterações";
+    }
+  });
+</script>
+</body>
+                                                              </html>
+
