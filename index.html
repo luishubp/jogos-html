@@ -34,14 +34,13 @@ header h1{
 
 .menu-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 
-/* Estilo para os botões e para o novo botão de Login */
 .menu-buttons button, #toggle-theme, #btn-login {
   padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;
   background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;transition:0.2s;
   display: flex; align-items: center; gap: 8px;
 }
 
-#user-photo { width: 22px; height: 22px; border-radius: 50%; display: none; border: 1px solid #020617; }
+#user-photo { width: 22px; height: 22px; border-radius: 50%; display: none; border: 1px solid #020617; object-fit: cover; }
 
 .menu-buttons button.active{box-shadow:0 0 15px rgba(34,211,238,0.6); transform: scale(1.05);}
 
@@ -51,7 +50,7 @@ header h1{
 }
 body.light #search-input { background: white; color: #333; border-color: #ccc; }
 
-.container{padding:120px 20px 40px; max-width: 1200px; margin: 0 auto;}
+.container{padding:100px 20px 40px; max-width: 1200px; margin: 0 auto;}
 .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:25px; }
 
 .card{
@@ -74,14 +73,55 @@ body.light .card{background:#fff;border-color:#ccc;color:#111;}
 
 .fav-btn{background:none;border:none;cursor:pointer;font-size:1.5rem;margin-bottom:10px; align-self: flex-start; transition: 0.2s;}
 .fav-btn.active{filter: drop-shadow(0 0 5px #f87171); color: #f87171;}
-
 .card.futuro-jogo{opacity:0.6; border:1px dashed #555;}
 footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:center;}
 
+/* === NOVAS ADIÇÕES CSS === */
+
+/* 1. Card do Patreon */
+.patreon-news-card {
+  background: linear-gradient(135deg, #0f1724 0%, #1e293b 100%);
+  border: 2px solid #ff424d; border-radius: 20px; padding: 25px;
+  margin-bottom: 30px; text-align: center;
+}
+body.light .patreon-news-card { background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.tag-live { background: #ff424d; color: white; padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: bold; }
+.patreon-news-card h3 { margin: 15px 0; font-size: 1.4rem; color: #fff; }
+body.light .patreon-news-card h3 { color: #111; }
+.patreon-news-card p { color: #9ca3af; margin-bottom: 20px; }
+.btn-primary { background: #ff424d; color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block; transition: 0.3s; }
+.btn-primary:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 66, 77, 0.4); }
+
+/* 2. Menu Dropdown de Perfil */
+.profile-container { position: relative; display: inline-block; }
+.dropdown-content {
+  display: none; position: absolute; right: 0; top: 110%;
+  background: #111; min-width: 180px; border-radius: 12px;
+  border: 1px solid #333; z-index: 1000; overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+body.light .dropdown-content { background: #fff; border-color: #ccc; }
+.dropdown-content.show { display: block; animation: fadeIn 0.2s; }
+.dropdown-content a, .logout-btn {
+  color: #ccc; padding: 12px 16px; text-decoration: none; display: block;
+  font-size: 14px; background: none; border: none; width: 100%; text-align: left; cursor: pointer;
+}
+body.light .dropdown-content a, body.light .logout-btn { color: #333; }
+.dropdown-content a:hover { background: #222; color: #22d3ee; }
+body.light .dropdown-content a:hover { background: #eee; }
+.logout-btn { color: #f87171; font-weight: bold; }
+.menu-header { padding: 12px 16px; font-weight: bold; border-bottom: 1px solid #333; font-size: 0.9rem;}
+body.light .menu-header { border-color: #ccc; }
+
+/* 3. Estilo VIP */
+.vip-name { color: #ffca28 !important; text-shadow: 0 0 10px rgba(255, 202, 40, 0.6); }
+
+@keyframes fadeIn { from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);} }
 @media(max-width:768px){
   header{flex-direction:column; gap: 15px; position: relative;}
   .container{padding-top: 20px;}
   #search-input{width:100%;}
+  .dropdown-content { right: auto; left: 0; }
 }
 </style>
 </head>
@@ -95,16 +135,36 @@ footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:
     <button class="category-btn" data-category="acao">Ação</button>
     <button class="category-btn" data-category="terror">Terror</button>
     
-    <button id="btn-login">
-      <img id="user-photo" src="">
-      <span id="user-name">Entrar</span>
-    </button>
+    <div class="profile-container">
+      <button id="btn-login">
+        <img id="user-photo" src="">
+        <span id="user-name">Entrar</span>
+      </button>
+      
+      <div id="drop-menu" class="dropdown-content">
+        <div class="menu-header"><p id="menu-user-name">Carregando...</p></div>
+        <a href="https://patreon.com/TEU_USER" target="_blank">🏅 Seja VIP (Patreon)</a>
+        <a href="https://ko-fi.com/TEU_USER" target="_blank">☕ Apoiar (Ko-fi)</a>
+        <hr style="border-color:#333; margin:0;">
+        <button id="btn-logout" class="logout-btn">🚪 Sair da Conta</button>
+      </div>
+    </div>
 
     <button id="toggle-theme">🌙 Dark</button>
   </div>
 </header>
 
 <div class="container">
+
+  <div class="patreon-news-card">
+    <div class="card-content">
+      <span class="tag-live">DIÁRIO DE BORDO 🚀</span>
+      <h3>Acompanhe o desenvolvimento do Hub!</h3>
+      <p>Artes conceituais, testes antecipados e votações exclusivas no Patreon.</p>
+      <a href="https://patreon.com/TEU_USER" target="_blank" class="btn-primary">Acesso Exclusivo</a>
+    </div>
+  </div>
+
   <div class="grid" id="game-grid">
     <div class="card" data-category="acao" data-id="alien-space">
       <div class="icon">🚀</div>
@@ -157,7 +217,6 @@ footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:
   const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
-  // --- VARIÁVEIS DO TEU SITE ---
   const toggle = document.getElementById('toggle-theme');
   const searchInput = document.getElementById('search-input');
   const categoryButtons = document.querySelectorAll('.category-btn');
@@ -165,11 +224,13 @@ footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:
   const btnLogin = document.getElementById('btn-login');
   const userNameSpan = document.getElementById('user-name');
   const userPhotoImg = document.getElementById('user-photo');
+  const dropMenu = document.getElementById('drop-menu');
+  const btnLogout = document.getElementById('btn-logout');
+  const menuUserName = document.getElementById('menu-user-name');
 
   let currentCategory = 'all';
   let searchTerm = '';
 
-  // --- LÓGICA DE FILTRAGEM (MANTIDA) ---
   function filterGames() {
     cards.forEach(card => {
       const title = card.querySelector('.title').textContent.toLowerCase();
@@ -180,7 +241,6 @@ footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:
     });
   }
 
-  // --- EVENTOS DO TEMA E CATEGORIA ---
   toggle.addEventListener('click', () => {
     document.body.classList.toggle('light');
     toggle.textContent = document.body.classList.contains('light') ? '🌞 Claro' : '🌙 Dark';
@@ -200,28 +260,51 @@ footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:
     filterGames();
   });
 
-  // --- LÓGICA DE LOGIN ---
-  btnLogin.addEventListener('click', async () => {
+  // --- NOVA LÓGICA DE LOGIN COM DROPDOWN ---
+  btnLogin.addEventListener('click', async (event) => {
+    event.stopPropagation(); // Evita fechar o menu na hora
     if (!auth.currentUser) {
       await signInWithPopup(auth, provider);
     } else {
-      if(confirm("Deseja sair da conta?")) signOut(auth);
+      // Se já está logado, abre o menu dropdown
+      dropMenu.classList.toggle('show');
     }
   });
 
-  onAuthStateChanged(auth, (user) => {
+  // Fechar o menu ao clicar fora dele
+  window.addEventListener('click', (e) => {
+    if (!btnLogin.contains(e.target) && !dropMenu.contains(e.target)) {
+      dropMenu.classList.remove('show');
+    }
+  });
+
+  // Botão de Sair dentro do menu
+  btnLogout.addEventListener('click', () => {
+    if(confirm("Deseja sair da conta?")) {
+      signOut(auth);
+      dropMenu.classList.remove('show');
+    }
+  });
+
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
-      userNameSpan.textContent = user.displayName.split(' ')[0];
+      const primeiroNome = user.displayName.split(' ')[0];
+      userNameSpan.textContent = primeiroNome;
+      menuUserName.textContent = "Olá, " + primeiroNome + "!";
       userPhotoImg.src = user.photoURL;
       userPhotoImg.style.display = "block";
-      baixarFavoritosNuvem();
+      
+      // Verifica se é VIP e baixa os favoritos
+      await baixarFavoritosNuvem();
     } else {
       userNameSpan.textContent = "Entrar";
+      userNameSpan.classList.remove('vip-name');
       userPhotoImg.style.display = "none";
+      dropMenu.classList.remove('show');
     }
   });
 
-  // --- SISTEMA DE FAVORITOS INTEGRADO COM FIREBASE ---
+  // --- SISTEMA DE FAVORITOS E VIP ---
   cards.forEach(card => {
     const gameId = card.dataset.id;
     if(card.classList.contains('futuro-jogo')) return;
@@ -231,18 +314,21 @@ footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:
     favBtn.innerHTML = '🤍';
     card.insertBefore(favBtn, card.querySelector('.btn, .btn-disabled'));
 
-    // Carregar do LocalStorage primeiro (para ser rápido)
     if (localStorage.getItem('fav-' + gameId) === 'true') {
       favBtn.classList.add('active');
       favBtn.innerHTML = '❤️';
     }
 
     favBtn.addEventListener('click', async () => {
+      if(!auth.currentUser) {
+        alert("Faz login para guardar os teus favoritos!");
+        return;
+      }
+
       const isFav = favBtn.classList.toggle('active');
       favBtn.innerHTML = isFav ? '❤️' : '🤍';
       localStorage.setItem('fav-' + gameId, isFav);
 
-      // SALVAR NO FIREBASE (Nuvem)
       if (auth.currentUser) {
         const userRef = doc(db, "usuarios", auth.currentUser.uid);
         await setDoc(userRef, { [gameId]: isFav }, { merge: true });
@@ -256,12 +342,22 @@ footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:
     const docSnap = await getDoc(doc(db, "usuarios", auth.currentUser.uid));
     if (docSnap.exists()) {
       const dados = docSnap.data();
+      
+      // Verifica se o usuário é VIP
+      if (dados.isVip === true) {
+        userNameSpan.classList.add('vip-name');
+        menuUserName.innerHTML = "Olá, " + auth.currentUser.displayName.split(' ')[0] + " 💎";
+      }
+
+      // Aplica os corações
       Object.keys(dados).forEach(id => {
-        localStorage.setItem('fav-' + id, dados[id]);
-        const btn = document.querySelector(`[data-id="${id}"] .fav-btn`);
-        if (btn) {
-          btn.classList.toggle('active', dados[id]);
-          btn.innerHTML = dados[id] ? '❤️' : '🤍';
+        if(id !== "isVip") { // Ignora a chave VIP para os corações
+          localStorage.setItem('fav-' + id, dados[id]);
+          const btn = document.querySelector(`[data-id="${id}"] .fav-btn`);
+          if (btn) {
+            btn.classList.toggle('active', dados[id]);
+            btn.innerHTML = dados[id] ? '❤️' : '🤍';
+          }
         }
       });
     }
