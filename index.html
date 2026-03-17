@@ -3,64 +3,146 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎮 Meu Hub de Jogos</title>
+<title>🎮 Hub de Jogos HTML - Pro Version</title>
 <style>
-/* DESIGN NEON - IGUAL AO TEU ORIGINAL */
+/* --- TEU DESIGN ORIGINAL MANTIDO --- */
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Segoe UI',sans-serif;background:radial-gradient(circle at top,#0f1724,#020617);color:#e5e7eb;transition:0.3s;min-height:100vh;}
+body{
+  font-family:'Segoe UI',Arial,sans-serif;
+  background:radial-gradient(circle at top,#0f1724,#020617);
+  color:#e5e7eb;
+  transition:0.3s;
+  min-height: 100vh;
+}
 body.light{background:#f0f0f0;color:#111;}
-header{position:fixed;top:0;left:0;width:100%;background:rgba(15,23,36,0.95);display:flex;justify-content:space-between;align-items:center;padding:15px 30px;border-bottom:1px solid #1e293b;z-index:1000;}
-body.light header{background:#fff;border-color:#ccc;}
-header h1{font-size:1.8rem;background:linear-gradient(90deg,#22d3ee,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.menu-buttons{display:flex;align-items:center;gap:10px;}
-button, #btn-login{padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;transition:0.2s;display:flex;align-items:center;gap:8px;}
-#user-photo{width:22px;height:22px;border-radius:50%;display:none;border:1px solid #000;}
-.container{padding:120px 20px 40px;max-width:1200px;margin:0 auto;}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;}
-.card{background:linear-gradient(180deg,#0b1220,#020617);border:1px solid #1e293b;border-radius:16px;padding:25px;display:flex;flex-direction:column;transition:0.3s;}
-body.light .card{background:#fff;border-color:#ccc;}
+
+header{
+  position:fixed;top:0;left:0;width:100%;
+  background:rgba(15,23,36,0.95);
+  display:flex;justify-content:space-between;align-items:center;
+  padding:15px 30px;
+  border-bottom:1px solid #1e293b;
+  z-index:1000;
+}
+body.light header{background:#fff;border-color:#ccc;color:#111;}
+
+header h1{
+  font-size:1.8rem;
+  background:linear-gradient(90deg,#22d3ee,#14b8a6);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+.menu-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+
+/* Estilo para os botões e para o novo botão de Login */
+.menu-buttons button, #toggle-theme, #btn-login {
+  padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;
+  background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;transition:0.2s;
+  display: flex; align-items: center; gap: 8px;
+}
+
+#user-photo { width: 22px; height: 22px; border-radius: 50%; display: none; border: 1px solid #020617; }
+
+.menu-buttons button.active{box-shadow:0 0 15px rgba(34,211,238,0.6); transform: scale(1.05);}
+
+#search-input{
+  padding:8px 12px;border-radius:8px;border:1px solid #1e293b;outline:none;width:180px;
+  background: #0f1724; color: white;
+}
+body.light #search-input { background: white; color: #333; border-color: #ccc; }
+
+.container{padding:120px 20px 40px; max-width: 1200px; margin: 0 auto;}
+.grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:25px; }
+
+.card{
+  background:linear-gradient(180deg,#0b1220,#020617);
+  border:1px solid #1e293b;
+  border-radius:16px;
+  padding:25px;
+  transition:all 0.3s ease;
+  display:flex; flex-direction:column; justify-content:space-between;
+}
+body.light .card{background:#fff;border-color:#ccc;color:#111;}
 .card:hover{transform:translateY(-8px);border-color:#22d3ee;box-shadow:0 0 20px rgba(34,211,238,0.2);}
+
+.icon{font-size:3rem;margin-bottom:10px;}
 .title{font-size:1.3rem;margin-bottom:10px;font-weight:bold;}
-.fav-btn{background:none;border:none;cursor:pointer;font-size:1.5rem;align-self:flex-start;margin-bottom:10px;}
-.btn-jogar{display:block;padding:12px;border-radius:10px;background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;text-decoration:none;font-weight:bold;text-align:center;margin-top:auto;}
+.desc{font-size:0.95rem;color:#9ca3af;margin-bottom:20px;flex-grow:1;}
+
+.btn{display:inline-block;padding:12px 20px;border-radius:10px;background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;text-decoration:none;font-weight:bold;border:none;cursor:pointer;text-align:center;}
+.btn-disabled{background:#334155;color:#94a3b8;cursor:not-allowed;}
+
+.fav-btn{background:none;border:none;cursor:pointer;font-size:1.5rem;margin-bottom:10px; align-self: flex-start; transition: 0.2s;}
+.fav-btn.active{filter: drop-shadow(0 0 5px #f87171); color: #f87171;}
+
+.card.futuro-jogo{opacity:0.6; border:1px dashed #555;}
+footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:center;}
+
+@media(max-width:768px){
+  header{flex-direction:column; gap: 15px; position: relative;}
+  .container{padding-top: 20px;}
+  #search-input{width:100%;}
+}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🎮 Meu Hub</h1>
+  <h1>🎮 Hub Jogos</h1>
   <div class="menu-buttons">
-    <button id="btn-login" onclick="fazerLogin()">
+    <input type="text" id="search-input" placeholder="🔎 Buscar jogos...">
+    <button class="category-btn active" data-category="all">Todos</button>
+    <button class="category-btn" data-category="acao">Ação</button>
+    <button class="category-btn" data-category="terror">Terror</button>
+    
+    <button id="btn-login">
       <img id="user-photo" src="">
-      <span id="user-name">Login Google</span>
+      <span id="user-name">Entrar</span>
     </button>
-    <button onclick="document.body.classList.toggle('light')">🌓</button>
+
+    <button id="toggle-theme">🌙 Dark</button>
   </div>
 </header>
 
 <div class="container">
   <div class="grid" id="game-grid">
-    <div class="card" data-id="alien-wars">
-      <button class="fav-btn" onclick="toggleFav('alien-wars')">🤍</button>
-      <div class="title">🚀 Alien Space Wars</div>
-      <p>Shooter espacial clássico.</p>
-      <a href="./games/alien-space-wars/" class="btn-jogar">Jogar</a>
+    <div class="card" data-category="acao" data-id="alien-space">
+      <div class="icon">🚀</div>
+      <div class="title">Alien Space Wars</div>
+      <div class="desc">Shooter espacial clássico com naves e explosões.</div>
+      <a href="./games/alien-space-wars/" class="btn">Jogar</a>
     </div>
-    <div class="card" data-id="fnaf-watch">
-      <button class="fav-btn" onclick="toggleFav('fnaf-watch')">🤍</button>
-      <div class="title">👁️ FNAF Night Watch</div>
-      <p>Sobreviva monitorando câmeras.</p>
-      <a href="./games/fnaf-night-watch/" class="btn-jogar">Jogar</a>
+
+    <div class="card" data-category="terror" data-id="fnaf-watch">
+      <div class="icon">👁️</div>
+      <div class="title">FNAF Night Watch</div>
+      <div class="desc">Sobreviva à noite monitorando câmeras e portas.</div>
+      <a href="./games/fnaf-night-watch/" class="btn">Jogar</a>
+    </div>
+
+    <div class="card" data-category="terror" data-id="fazenda-velho">
+      <div class="icon">🚜</div>
+      <div class="title">Fazenda Velho Moço</div>
+      <div class="desc">Tente sobreviver à criatura que aparece à noite.</div>
+      <a href="./games/novo-experimento/" class="btn">Jogar</a>
+    </div>
+
+    <div class="card futuro-jogo" data-category="futuro" data-id="manutencao">
+      <div class="icon">🔧</div>
+      <div class="title">Em Manutenção</div>
+      <div class="desc">Voltaremos em breve. Obrigado pela paciência! 💙</div>
+      <button class="btn btn-disabled" disabled>Em breve</button>
     </div>
   </div>
 </div>
+
+<footer>Feito com 💙 para GitHub Pages + Firebase</footer>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // Configuração vinda das tuas fotos
   const firebaseConfig = {
     apiKey: "AIzaSyALp8QDfjyjGQDfaJuVjEEv_mBhnylHUj8",
     authDomain: "meuhubdejogos.firebaseapp.com",
@@ -75,58 +157,116 @@ body.light .card{background:#fff;border-color:#ccc;}
   const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
-  // --- FUNÇÕES DE LOGIN ---
-  window.fazerLogin = async () => {
-    if (!auth.currentUser) {
-      try { await signInWithPopup(auth, provider); } catch (e) { alert("Erro no login!"); }
-    } else {
-      if(confirm("Sair da conta?")) signOut(auth);
-    }
-  };
+  // --- VARIÁVEIS DO TEU SITE ---
+  const toggle = document.getElementById('toggle-theme');
+  const searchInput = document.getElementById('search-input');
+  const categoryButtons = document.querySelectorAll('.category-btn');
+  const cards = document.querySelectorAll('.card');
+  const btnLogin = document.getElementById('btn-login');
+  const userNameSpan = document.getElementById('user-name');
+  const userPhotoImg = document.getElementById('user-photo');
 
-  onAuthStateChanged(auth, (user) => {
-    const nameSpan = document.getElementById('user-name');
-    const photoImg = document.getElementById('user-photo');
-    if (user) {
-      nameSpan.textContent = user.displayName.split(' ')[0];
-      photoImg.src = user.photoURL;
-      photoImg.style.display = "block";
-      carregarFavoritosNuvem();
+  let currentCategory = 'all';
+  let searchTerm = '';
+
+  // --- LÓGICA DE FILTRAGEM (MANTIDA) ---
+  function filterGames() {
+    cards.forEach(card => {
+      const title = card.querySelector('.title').textContent.toLowerCase();
+      const category = card.dataset.category;
+      const matchesCategory = (currentCategory === 'all' || category === currentCategory);
+      const matchesSearch = title.includes(searchTerm);
+      card.style.display = (matchesCategory && matchesSearch) ? 'flex' : 'none';
+    });
+  }
+
+  // --- EVENTOS DO TEMA E CATEGORIA ---
+  toggle.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    toggle.textContent = document.body.classList.contains('light') ? '🌞 Claro' : '🌙 Dark';
+  });
+
+  categoryButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      categoryButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentCategory = btn.dataset.category;
+      filterGames();
+    });
+  });
+
+  searchInput.addEventListener('input', (e) => {
+    searchTerm = e.target.value.toLowerCase();
+    filterGames();
+  });
+
+  // --- LÓGICA DE LOGIN ---
+  btnLogin.addEventListener('click', async () => {
+    if (!auth.currentUser) {
+      await signInWithPopup(auth, provider);
     } else {
-      nameSpan.textContent = "Login Google";
-      photoImg.style.display = "none";
+      if(confirm("Deseja sair da conta?")) signOut(auth);
     }
   });
 
-  // --- FUNÇÕES DE FAVORITOS (FIRESTORE) ---
-  window.toggleFav = async (gameId) => {
-    const isFav = localStorage.getItem('fav-' + gameId) !== 'true';
-    localStorage.setItem('fav-' + gameId, isFav);
-    
-    // Atualiza Visual
-    const btn = document.querySelector(`[data-id="${gameId}"] .fav-btn`);
-    btn.innerHTML = isFav ? '❤️' : '🤍';
-
-    // Salva no Firebase se logado
-    if (auth.currentUser) {
-      const userRef = doc(db, "usuarios", auth.currentUser.uid);
-      await setDoc(userRef, { [gameId]: isFav }, { merge: true });
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      userNameSpan.textContent = user.displayName.split(' ')[0];
+      userPhotoImg.src = user.photoURL;
+      userPhotoImg.style.display = "block";
+      baixarFavoritosNuvem();
+    } else {
+      userNameSpan.textContent = "Entrar";
+      userPhotoImg.style.display = "none";
     }
-  };
+  });
 
-  async function carregarFavoritosNuvem() {
-    if (auth.currentUser) {
-      const docSnap = await getDoc(doc(db, "usuarios", auth.currentUser.uid));
-      if (docSnap.exists()) {
-        const dados = docSnap.data();
-        Object.keys(dados).forEach(gameId => {
-          localStorage.setItem('fav-' + gameId, dados[gameId]);
-          const btn = document.querySelector(`[data-id="${gameId}"] .fav-btn`);
-          if (btn) btn.innerHTML = dados[gameId] ? '❤️' : '🤍';
-        });
+  // --- SISTEMA DE FAVORITOS INTEGRADO COM FIREBASE ---
+  cards.forEach(card => {
+    const gameId = card.dataset.id;
+    if(card.classList.contains('futuro-jogo')) return;
+
+    const favBtn = document.createElement('button');
+    favBtn.className = 'fav-btn';
+    favBtn.innerHTML = '🤍';
+    card.insertBefore(favBtn, card.querySelector('.btn, .btn-disabled'));
+
+    // Carregar do LocalStorage primeiro (para ser rápido)
+    if (localStorage.getItem('fav-' + gameId) === 'true') {
+      favBtn.classList.add('active');
+      favBtn.innerHTML = '❤️';
+    }
+
+    favBtn.addEventListener('click', async () => {
+      const isFav = favBtn.classList.toggle('active');
+      favBtn.innerHTML = isFav ? '❤️' : '🤍';
+      localStorage.setItem('fav-' + gameId, isFav);
+
+      // SALVAR NO FIREBASE (Nuvem)
+      if (auth.currentUser) {
+        const userRef = doc(db, "usuarios", auth.currentUser.uid);
+        await setDoc(userRef, { [gameId]: isFav }, { merge: true });
       }
+
+      favBtn.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.3)' }, { transform: 'scale(1)' }], { duration: 200 });
+    });
+  });
+
+  async function baixarFavoritosNuvem() {
+    const docSnap = await getDoc(doc(db, "usuarios", auth.currentUser.uid));
+    if (docSnap.exists()) {
+      const dados = docSnap.data();
+      Object.keys(dados).forEach(id => {
+        localStorage.setItem('fav-' + id, dados[id]);
+        const btn = document.querySelector(`[data-id="${id}"] .fav-btn`);
+        if (btn) {
+          btn.classList.toggle('active', dados[id]);
+          btn.innerHTML = dados[id] ? '❤️' : '🤍';
+        }
+      });
     }
   }
 </script>
 </body>
 </html>
+
