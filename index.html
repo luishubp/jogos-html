@@ -3,280 +3,130 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎮 Hub de Jogos HTML - V3</title>
+<title>🎮 Meu Hub de Jogos</title>
 <style>
-/* CSS - Design Ciano e Estrutura */
+/* DESIGN NEON - IGUAL AO TEU ORIGINAL */
 *{box-sizing:border-box;margin:0;padding:0;}
-body{
-  font-family:'Segoe UI',Arial,sans-serif;
-  background:radial-gradient(circle at top,#0f1724,#020617);
-  color:#e5e7eb;
-  transition:0.3s;
-  min-height: 100vh;
-}
+body{font-family:'Segoe UI',sans-serif;background:radial-gradient(circle at top,#0f1724,#020617);color:#e5e7eb;transition:0.3s;min-height:100vh;}
 body.light{background:#f0f0f0;color:#111;}
-
-header{
-  position:fixed;top:0;left:0;width:100%;
-  background:rgba(15,23,36,0.95);
-  display:flex;justify-content:space-between;align-items:center;
-  padding:15px 30px;
-  border-bottom:1px solid #1e293b;
-  z-index:1000;
-}
-body.light header{background:#fff;border-color:#ccc;color:#111;}
-
-header h1{
-  font-size:1.8rem;
-  background:linear-gradient(90deg,#22d3ee,#14b8a6);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-
-.menu-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.menu-buttons button, #toggle-theme{
-  padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;
-  background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;transition:0.2s;
-}
-.menu-buttons button.active{box-shadow:0 0 15px rgba(34,211,238,0.6); transform: scale(1.05);}
-
-/* Estilo especial para o botão de Favoritos no menu */
-#btn-fav-filter { background: linear-gradient(90deg, #f43f5e, #fb7185); color: white; }
-#btn-fav-filter.active { box-shadow: 0 0 15px rgba(244, 63, 94, 0.6); }
-
-#search-input{
-  padding:8px 12px;border-radius:8px;border:1px solid #1e293b;outline:none;width:180px;
-  background: #0f1724; color: white;
-}
-body.light #search-input { background: white; color: #333; border-color: #ccc; }
-
-.container{padding:120px 20px 40px; max-width: 1200px; margin: 0 auto;}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:25px;
-}
-
-.card{
-  background:linear-gradient(180deg,#0b1220,#020617);
-  border:1px solid #1e293b;
-  border-radius:16px;
-  padding:25px;
-  transition:all 0.3s ease;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-body.light .card{background:#fff;border-color:#ccc;color:#111;}
+header{position:fixed;top:0;left:0;width:100%;background:rgba(15,23,36,0.95);display:flex;justify-content:space-between;align-items:center;padding:15px 30px;border-bottom:1px solid #1e293b;z-index:1000;}
+body.light header{background:#fff;border-color:#ccc;}
+header h1{font-size:1.8rem;background:linear-gradient(90deg,#22d3ee,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.menu-buttons{display:flex;align-items:center;gap:10px;}
+button, #btn-login{padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;transition:0.2s;display:flex;align-items:center;gap:8px;}
+#user-photo{width:22px;height:22px;border-radius:50%;display:none;border:1px solid #000;}
+.container{padding:120px 20px 40px;max-width:1200px;margin:0 auto;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;}
+.card{background:linear-gradient(180deg,#0b1220,#020617);border:1px solid #1e293b;border-radius:16px;padding:25px;display:flex;flex-direction:column;transition:0.3s;}
+body.light .card{background:#fff;border-color:#ccc;}
 .card:hover{transform:translateY(-8px);border-color:#22d3ee;box-shadow:0 0 20px rgba(34,211,238,0.2);}
-
-.icon{font-size:3rem;margin-bottom:10px;}
 .title{font-size:1.3rem;margin-bottom:10px;font-weight:bold;}
-.desc{font-size:0.95rem;color:#9ca3af;margin-bottom:20px;flex-grow:1;}
-
-.btn{display:inline-block;padding:12px 20px;border-radius:10px;background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;text-decoration:none;font-weight:bold;border:none;cursor:pointer;text-align:center;}
-.btn-disabled{background:#334155;color:#94a3b8;cursor:not-allowed;}
-
-.fav-btn{background:none;border:none;cursor:pointer;font-size:1.5rem;margin-bottom:10px; align-self: flex-start; transition: 0.2s;}
-.fav-btn.active{filter: drop-shadow(0 0 5px #f87171); color: #f87171;}
-
-.card.futuro-jogo{opacity:0.6; border:1px dashed #555;}
-
-footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:center;}
-
-@media(max-width:768px){
-  header{flex-direction:column; gap: 15px; position: relative;}
-  .container{padding-top: 20px;}
-  #search-input{width:100%;}
-}
+.fav-btn{background:none;border:none;cursor:pointer;font-size:1.5rem;align-self:flex-start;margin-bottom:10px;}
+.btn-jogar{display:block;padding:12px;border-radius:10px;background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;text-decoration:none;font-weight:bold;text-align:center;margin-top:auto;}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🎮 Hub Jogos</h1>
+  <h1>🎮 Meu Hub</h1>
   <div class="menu-buttons">
-    <input type="text" id="search-input" placeholder="🔎 Buscar jogos...">
-    <button id="btn-fav-filter">🤍 Favoritos (0)</button>
-    <button class="category-btn active" data-category="all">Todos</button>
-    <button class="category-btn" data-category="acao">Ação</button>
-    <button class="category-btn" data-category="terror">Terror</button>
-    <button id="toggle-theme">🌙 Dark</button>
+    <button id="btn-login" onclick="fazerLogin()">
+      <img id="user-photo" src="">
+      <span id="user-name">Login Google</span>
+    </button>
+    <button onclick="document.body.classList.toggle('light')">🌓</button>
   </div>
 </header>
 
 <div class="container">
   <div class="grid" id="game-grid">
-    <div class="card" data-category="acao" data-id="alien-space">
-      <div class="icon">🚀</div>
-      <div class="title">Alien Space Wars</div>
-      <div class="desc">Shooter espacial clássico com naves e explosões.</div>
-      <a href="./games/alien-space-wars/" class="btn">Jogar</a>
+    <div class="card" data-id="alien-wars">
+      <button class="fav-btn" onclick="toggleFav('alien-wars')">🤍</button>
+      <div class="title">🚀 Alien Space Wars</div>
+      <p>Shooter espacial clássico.</p>
+      <a href="./games/alien-space-wars/" class="btn-jogar">Jogar</a>
     </div>
-
-    <div class="card" data-category="terror" data-id="fnaf-watch">
-      <div class="icon">👁️</div>
-      <div class="title">FNAF Night Watch</div>
-      <div class="desc">Sobreviva à noite monitorando câmeras e portas.</div>
-      <a href="./games/fnaf-night-watch/" class="btn">Jogar</a>
-    </div>
-
-    <div class="card" data-category="terror" data-id="fazenda-velho">
-      <div class="icon">🚜</div>
-      <div class="title">Fazenda Velho Moço</div>
-      <div class="desc">Tente sobreviver à criatura que aparece à noite.</div>
-      <a href="./games/novo-experimento/" class="btn">Jogar</a>
-    </div>
-
-    <div class="card futuro-jogo" data-category="futuro" data-id="manutencao">
-      <div class="icon">🔧</div>
-      <div class="title">Em Manutenção</div>
-      <div class="desc">Voltaremos em breve. Obrigado pela paciência! 💙</div>
-      <button class="btn btn-disabled" disabled>Em breve</button>
+    <div class="card" data-id="fnaf-watch">
+      <button class="fav-btn" onclick="toggleFav('fnaf-watch')">🤍</button>
+      <div class="title">👁️ FNAF Night Watch</div>
+      <p>Sobreviva monitorando câmeras.</p>
+      <a href="./games/fnaf-night-watch/" class="btn-jogar">Jogar</a>
     </div>
   </div>
 </div>
 
-<footer>Feito com 💙 para GitHub Pages</footer>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-<script>
-// --- VARIÁVEIS GERAIS ---
-const toggle = document.getElementById('toggle-theme');
-const searchInput = document.getElementById('search-input');
-const categoryButtons = document.querySelectorAll('.category-btn');
-const btnFavFilter = document.getElementById('btn-fav-filter');
-const cards = document.querySelectorAll('.card');
+  // Configuração vinda das tuas fotos
+  const firebaseConfig = {
+    apiKey: "AIzaSyALp8QDfjyjGQDfaJuVjEEv_mBhnylHUj8",
+    authDomain: "meuhubdejogos.firebaseapp.com",
+    projectId: "meuhubdejogos",
+    storageBucket: "meuhubdejogos.firebasestorage.app",
+    messagingSenderId: "485191017245",
+    appId: "1:485191017245:web:06c2ea7c5aa8f01472b7f4"
+  };
 
-let currentCategory = 'all';
-let searchTerm = '';
-let showingOnlyFavs = false; // Variável nova para saber se estamos no modo "Apenas Favoritos"
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
 
-// --- ATUALIZAR CONTADOR DE FAVORITOS ---
-function updateFavCounter() {
-  let count = 0;
-  cards.forEach(card => {
-    const gameId = card.dataset.id;
-    if (localStorage.getItem('fav-' + gameId) === 'true') {
-      count++;
-    }
-  });
-  
-  // Atualiza o texto do botão lá em cima
-  if (count > 0) {
-    btnFavFilter.innerHTML = `❤️ Favoritos (${count})`;
-  } else {
-    btnFavFilter.innerHTML = `🤍 Favoritos (0)`;
-  }
-}
-
-// --- LÓGICA DE FILTRAGEM ---
-function filterGames() {
-  cards.forEach(card => {
-    const title = card.querySelector('.title').textContent.toLowerCase();
-    const category = card.dataset.category;
-    const gameId = card.dataset.id;
-    
-    // Verifica as 3 coisas: Categoria, Pesquisa e se é Favorito (caso o botão esteja ativo)
-    const matchesCategory = (currentCategory === 'all' || category === currentCategory);
-    const matchesSearch = title.includes(searchTerm);
-    const isFav = localStorage.getItem('fav-' + gameId) === 'true';
-    
-    // Se showingOnlyFavs for true, o jogo TEM de ser favorito para aparecer
-    const matchesFavFilter = showingOnlyFavs ? isFav : true;
-
-    if (matchesCategory && matchesSearch && matchesFavFilter) {
-      card.style.display = 'flex';
+  // --- FUNÇÕES DE LOGIN ---
+  window.fazerLogin = async () => {
+    if (!auth.currentUser) {
+      try { await signInWithPopup(auth, provider); } catch (e) { alert("Erro no login!"); }
     } else {
-      card.style.display = 'none';
+      if(confirm("Sair da conta?")) signOut(auth);
+    }
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    const nameSpan = document.getElementById('user-name');
+    const photoImg = document.getElementById('user-photo');
+    if (user) {
+      nameSpan.textContent = user.displayName.split(' ')[0];
+      photoImg.src = user.photoURL;
+      photoImg.style.display = "block";
+      carregarFavoritosNuvem();
+    } else {
+      nameSpan.textContent = "Login Google";
+      photoImg.style.display = "none";
     }
   });
-}
 
-// --- EVENTOS ---
-
-// Ativar/Desativar o Filtro de Favoritos no menu
-btnFavFilter.addEventListener('click', () => {
-  showingOnlyFavs = !showingOnlyFavs; // Alterna entre true e false
-  btnFavFilter.classList.toggle('active');
-  
-  // Quando ativamos os favoritos, limpamos as categorias normais para não confundir
-  if (showingOnlyFavs) {
-    categoryButtons.forEach(b => b.classList.remove('active'));
-    currentCategory = 'all';
-  } else {
-    // Se desligarmos, voltamos a selecionar "Todos"
-    document.querySelector('[data-category="all"]').classList.add('active');
-  }
-  
-  filterGames();
-});
-
-// Tema Dark/Light
-toggle.addEventListener('click', () => {
-  document.body.classList.toggle('light');
-  toggle.textContent = document.body.classList.contains('light') ? '🌞 Claro' : '🌙 Dark';
-});
-
-// Botões de Categoria
-categoryButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    // Desliga o filtro de favoritos se clicarmos numa categoria
-    showingOnlyFavs = false;
-    btnFavFilter.classList.remove('active');
-    
-    categoryButtons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentCategory = btn.dataset.category;
-    filterGames();
-  });
-});
-
-// Input de Pesquisa
-searchInput.addEventListener('input', (e) => {
-  searchTerm = e.target.value.toLowerCase();
-  filterGames();
-});
-
-// --- SISTEMA DE FAVORITOS NOS CARDS ---
-cards.forEach(card => {
-  const gameId = card.dataset.id;
-  
-  if(card.classList.contains('futuro-jogo')) return;
-
-  const favBtn = document.createElement('button');
-  favBtn.className = 'fav-btn';
-  favBtn.innerHTML = '🤍'; 
-  
-  card.insertBefore(favBtn, card.querySelector('.btn, .btn-disabled'));
-
-  // Carrega ao iniciar
-  if (localStorage.getItem('fav-' + gameId) === 'true') {
-    favBtn.classList.add('active');
-    favBtn.innerHTML = '❤️';
-  }
-
-  // Quando o utilizador clica no coração de um jogo
-  favBtn.addEventListener('click', () => {
-    const isFav = favBtn.classList.toggle('active');
-    favBtn.innerHTML = isFav ? '❤️' : '🤍';
+  // --- FUNÇÕES DE FAVORITOS (FIRESTORE) ---
+  window.toggleFav = async (gameId) => {
+    const isFav = localStorage.getItem('fav-' + gameId) !== 'true';
     localStorage.setItem('fav-' + gameId, isFav);
     
-    favBtn.animate([
-      { transform: 'scale(1)' },
-      { transform: 'scale(1.3)' },
-      { transform: 'scale(1)' }
-    ], { duration: 200 });
+    // Atualiza Visual
+    const btn = document.querySelector(`[data-id="${gameId}"] .fav-btn`);
+    btn.innerHTML = isFav ? '❤️' : '🤍';
 
-    // Atualiza o contador e filtra novamente caso estejamos na aba de favoritos
-    updateFavCounter();
-    if (showingOnlyFavs) {
-      filterGames(); 
+    // Salva no Firebase se logado
+    if (auth.currentUser) {
+      const userRef = doc(db, "usuarios", auth.currentUser.uid);
+      await setDoc(userRef, { [gameId]: isFav }, { merge: true });
     }
-  });
-});
+  };
 
-// Executa o contador logo que a página carrega
-updateFavCounter();
+  async function carregarFavoritosNuvem() {
+    if (auth.currentUser) {
+      const docSnap = await getDoc(doc(db, "usuarios", auth.currentUser.uid));
+      if (docSnap.exists()) {
+        const dados = docSnap.data();
+        Object.keys(dados).forEach(gameId => {
+          localStorage.setItem('fav-' + gameId, dados[gameId]);
+          const btn = document.querySelector(`[data-id="${gameId}"] .fav-btn`);
+          if (btn) btn.innerHTML = dados[gameId] ? '❤️' : '🤍';
+        });
+      }
+    }
+  }
 </script>
 </body>
 </html>
-
