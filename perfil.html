@@ -3,108 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>👤 Editar Perfil - Hub Jogos</title>
+<title>👤 Ajustar Perfil - Hub Jogos</title>
 <style>
-/* --- SETUP DE DESIGN --- */
-*{box-sizing:border-box;margin:0;padding:0;}
-body{
-  font-family:'Segoe UI',sans-serif;
-  background:#020617; color:#e5e7eb;
-  display: flex; align-items: center; justify-content: center;
-  min-height: 100vh; padding: 20px;
-}
+  /* RESET E FONTES */
+  *{box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI', sans-serif;}
+  body{ background:#020617; color:#e5e7eb; display:flex; justify-content:center; padding:20px; min-height:100vh;}
 
-.profile-card {
-  background: #0b1220; border: 1px solid #1e293b;
-  width: 100%; max-width: 500px; border-radius: 20px;
-  overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-}
+  .card {
+    background:#0b1220; border:1px solid #1e293b; border-radius:15px;
+    width:100%; max-width:450px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  }
 
-/* --- BANNER E AVATAR --- */
-.header-section { position: relative; height: 160px; background: #1e293b; }
-#banner-preview { width: 100%; height: 100%; object-fit: cover; }
+  /* HEADER COM BANNER E AVATAR */
+  .header { position:relative; height:140px; background:#1e293b; }
+  #banner-view { width:100%; height:100%; object-fit:cover; opacity:0.6; }
+  
+  .avatar-box {
+    position:absolute; bottom:-35px; left:20px;
+    width:90px; height:90px; border-radius:50%;
+    border:4px solid #0b1220; background:#020617; overflow:hidden;
+    cursor:pointer; transition:0.2s;
+  }
+  .avatar-box:hover { border-color:#22d3ee; }
+  #avatar-view { width:100%; height:100%; object-fit:cover; }
 
-.avatar-container {
-  position: absolute; bottom: -40px; left: 30px;
-  width: 100px; height: 100px; border-radius: 50%;
-  border: 5px solid #0b1220; background: #020617;
-  overflow: hidden; cursor: pointer; transition: 0.3s;
-}
-.avatar-container:hover { border-color: #22d3ee; transform: scale(1.05); }
-#avatar-preview { width: 100%; height: 100%; object-fit: cover; }
+  /* CONTEÚDO */
+  .main { padding:50px 25px 25px; }
+  
+  /* RESOLVE O NOME GRANDE */
+  .user-info-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; }
+  #display-name { 
+    font-size:1.4rem; color:#22d3ee; font-weight:bold;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:250px;
+  }
 
-/* --- FORMULÁRIO --- */
-.content { padding: 60px 30px 30px; }
-.name-row { 
-  display: flex; align-items: center; justify-content: space-between; 
-  gap: 10px; margin-bottom: 5px; 
-}
-/* AQUI RESOLVE O NOME EMPURRANDO TUDO */
-#display-name { 
-  color: #22d3ee; font-size: 1.5rem; font-weight: bold;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-  max-width: 80%;
-}
+  .input-group { margin-top:15px; }
+  label { display:block; font-size:0.8rem; color:#94a3b8; margin-bottom:5px; font-weight:600; }
+  input, textarea {
+    width:100%; padding:12px; background:#0f172a; border:1px solid #334155;
+    border-radius:8px; color:white; outline:none;
+  }
+  
+  /* BOTÃO DA GALERIA PRÁTICO */
+  .btn-galeria {
+    display:block; width:100%; padding:10px; background:#1e293b;
+    border:1px dashed #334155; border-radius:8px; text-align:center;
+    cursor:pointer; font-size:0.9rem; transition:0.2s;
+  }
+  .btn-galeria:hover { background:#26334d; border-color:#22d3ee; }
+  input[type="file"] { display:none; }
 
-.input-group { margin-top: 20px; }
-label { display: block; font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px; font-weight: bold; }
-input, textarea {
-  width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155;
-  border-radius: 10px; color: white; outline: none; transition: 0.2s;
-}
-input:focus { border-color: #22d3ee; }
-
-/* ESCONDE O INPUT DE ARQUIVO REAL E CRIA UM BOTÃO BONITO */
-.file-btn {
-  display: inline-block; padding: 8px 15px; background: #1e293b;
-  border-radius: 8px; cursor: pointer; font-size: 0.8rem; margin-top: 5px;
-}
-.file-btn:hover { background: #334155; }
-input[type="file"] { display: none; }
-
-.btn-save {
-  width: 100%; padding: 15px; margin-top: 30px; border: none;
-  background: linear-gradient(90deg,#14b8a6,#22d3ee); color: #020617;
-  border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem;
-}
-.back-link { display: block; text-align: center; margin-top: 20px; color: #64748b; text-decoration: none; }
+  .btn-save {
+    width:100%; padding:14px; margin-top:25px; border:none;
+    background:linear-gradient(90deg,#14b8a6,#22d3ee); color:#020617;
+    border-radius:10px; font-weight:bold; cursor:pointer;
+  }
+  .back { display:block; text-align:center; margin-top:15px; color:#64748b; text-decoration:none; font-size:0.9rem;}
 </style>
 </head>
 <body>
 
-<div class="profile-card">
-  <div class="header-section">
-    <img id="banner-preview" src="https://via.placeholder.com/800x200/1e293b/1e293b" alt="Banner">
-    
-    <label for="input-avatar" class="avatar-container">
-      <img id="avatar-preview" src="https://via.placeholder.com/150" alt="Avatar">
+<div class="card">
+  <div class="header">
+    <img id="banner-view" src="" alt="">
+    <label for="file-input" class="avatar-box">
+      <img id="avatar-view" src="https://via.placeholder.com/150" alt="Avatar">
     </label>
   </div>
 
-  <div class="content">
-    <div class="name-row">
+  <div class="main">
+    <div class="user-info-row">
       <h2 id="display-name">Carregando...</h2>
     </div>
-    <p id="display-bio" style="color:#94a3b8; font-size:0.9rem;">Sua bio aparecerá aqui</p>
 
     <div class="input-group">
-      <label>Alterar Foto de Perfil (Galeria)</label>
-      <label for="input-avatar" class="file-btn">📸 Escolher da Galeria</label>
-      <input type="file" id="input-avatar" accept="image/*">
+      <label>Foto de Perfil</label>
+      <label for="file-input" class="btn-galeria">📁 Abrir Galeria</label>
+      <input type="file" id="file-input" accept="image/*">
     </div>
 
     <div class="input-group">
       <label>Nickname</label>
-      <input type="text" id="nickname-field">
+      <input type="text" id="nick-in">
     </div>
 
     <div class="input-group">
-      <label>Sua Bio</label>
-      <textarea id="bio-field" maxlength="100"></textarea>
+      <label>Bio</label>
+      <textarea id="bio-in" maxlength="80"></textarea>
     </div>
 
-    <button class="btn-save" id="btn-save">Salvar Alterações</button>
-    <a href="index.html" class="back-link">← Voltar ao Hub</a>
+    <button class="btn-save" id="save-btn">Salvar Alterações</button>
+    <a href="index.html" class="back">← Voltar</a>
   </div>
 </div>
 
@@ -128,55 +117,59 @@ input[type="file"] { display: none; }
   const db = getFirestore(app);
   const storage = getStorage(app);
 
-  let tempAvatarFile = null;
+  let fileToUpload = null;
 
   onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const snap = await getDoc(doc(db, "usuarios", user.uid));
-      if (snap.exists()) {
-        const d = snap.data();
-        document.getElementById('display-name').textContent = d.nickname || user.displayName;
-        document.getElementById('display-bio').textContent = d.bio || "";
-        document.getElementById('nickname-field').value = d.nickname || "";
-        document.getElementById('bio-field').value = d.bio || "";
-        if(d.avatar) document.getElementById('avatar-preview').src = d.avatar;
-      }
+    if (!user) { window.location.href="index.html"; return; }
+    
+    const snap = await getDoc(doc(db, "usuarios", user.uid));
+    if (snap.exists()) {
+      const d = snap.data();
+      document.getElementById('display-name').textContent = d.nickname || user.displayName;
+      document.getElementById('nick-in').value = d.nickname || "";
+      document.getElementById('bio-in').value = d.bio || "";
+      if(d.avatar) document.getElementById('avatar-view').src = d.avatar;
     }
   });
 
-  // Preview da imagem ao escolher na galeria
-  document.getElementById('input-avatar').addEventListener('change', e => {
-    const file = e.target.files[0];
-    if(file) {
-      tempAvatarFile = file;
-      document.getElementById('avatar-preview').src = URL.createObjectURL(file);
+  // PREVIEW DA GALERIA (Instante)
+  document.getElementById('file-input').addEventListener('change', e => {
+    fileToUpload = e.target.files[0];
+    if(fileToUpload) {
+      document.getElementById('avatar-view').src = URL.createObjectURL(fileToUpload);
     }
   });
 
-  document.getElementById('btn-save').addEventListener('click', async () => {
+  // SALVAMENTO REAL
+  document.getElementById('save-btn').addEventListener('click', async () => {
     const user = auth.currentUser;
-    if(!user) return;
-    
-    const btn = document.getElementById('btn-save');
-    btn.textContent = "Salvando...";
-    
-    let finalAvatarUrl = document.getElementById('avatar-preview').src;
+    const btn = document.getElementById('save-btn');
+    btn.textContent = "🚀 Enviando...";
+    btn.disabled = true;
 
-    // Se escolheu uma foto nova, sobe pro Storage
-    if(tempAvatarFile) {
-      const sRef = ref(storage, `perfis/${user.uid}/avatar.png`);
-      await uploadBytes(sRef, tempAvatarFile);
-      finalAvatarUrl = await getDownloadURL(sRef);
+    try {
+      let url = document.getElementById('avatar-view').src;
+
+      if(fileToUpload) {
+        const sRef = ref(storage, `fotos/${user.uid}.png`);
+        const result = await uploadBytes(sRef, fileToUpload);
+        url = await getDownloadURL(result.ref);
+      }
+
+      await setDoc(doc(db, "usuarios", user.uid), {
+        nickname: document.getElementById('nick-in').value,
+        bio: document.getElementById('bio-in').value,
+        avatar: url
+      }, { merge: true });
+
+      btn.textContent = "Sucesso! ✔️";
+      setTimeout(() => { window.location.reload(); }, 1000);
+    } catch (err) {
+      console.error(err);
+      alert("Erro! Verifique as regras do Storage no Firebase.");
+      btn.textContent = "Tentar Novamente";
+      btn.disabled = false;
     }
-
-    await setDoc(doc(db, "usuarios", user.uid), {
-      nickname: document.getElementById('nickname-field').value,
-      bio: document.getElementById('bio-field').value,
-      avatar: finalAvatarUrl
-    }, { merge: true });
-
-    btn.textContent = "Perfil Atualizado! ✔️";
-    setTimeout(() => { location.reload(); }, 1500);
   });
 </script>
 </body>
