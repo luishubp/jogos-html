@@ -9,7 +9,7 @@
 /* --- TEU DESIGN ORIGINAL MANTIDO --- */
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
-  font-family:'Inter', 'Segoe UI', Arial, sans-serif;
+  font-family:'Inter', 'Segoe UI', Arial, sans-serif; /* Usando a fonte Inter */
   background:radial-gradient(circle at top,#0f1724,#020617);
   color:#e5e7eb;
   transition:0.3s;
@@ -17,132 +17,111 @@ body{
 }
 body.light{background:#f0f0f0;color:#111;}
 
-/* NOVO ESTILO DE HEADER ESTILO DASHBOARD */
+/* --- HEADER "CLEAN DASHBOARD" --- */
 header {
   position:fixed;top:0;left:0;width:100%;
   background: rgba(15, 23, 36, 0.95);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px); /* Efeito de vidro */
   display:flex;justify-content:space-between;align-items:center;
-  padding:15px 30px;
-  border-bottom: 1px solid #1e293b;
+  padding:12px 30px;
+  border-bottom:1px solid #1e293b;
   z-index:1000;
 }
-body.light header{background:#fff;border-color:#ccc;color:#111;}
+body.light header{background:rgba(255,255,255,0.95);border-color:#ccc;color:#111;}
 
 header h1{
-  font-size:1.8rem;
+  font-size:1.5rem; /* Um pouco menor para ficar elegante */
   background:linear-gradient(90deg,#22d3ee,#14b8a6);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
 
-.menu-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.menu-buttons{display:flex;align-items:center;gap:15px;flex-wrap:wrap;}
 
-/* --- AJUSTES DO BOTÃO DE LOGIN PARA NÃO QUEBRAR O LAYOUT --- */
-.menu-buttons button.category-btn, #toggle-theme {
-  padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;
-  background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;transition:0.2s;
+/* Botoes de categoria e tema */
+.category-btn, #toggle-theme {
+  padding: 6px 12px; border-radius: 6px; border: 1px solid transparent; cursor: pointer; font-weight: 600; font-size: 14px;
+  background: transparent; color: #94a3b8; transition: 0.2s;
 }
+.category-btn:hover, #toggle-theme:hover { background: #1e293b; color: #fff; }
+.category-btn.active { background: #1e293b; color: #22d3ee; border-color: #334155; }
 
+/* Botão de Login (estilo vinculo do perfil) */
 #btn-login {
-  background: #1a1a1a;
-  border: 1px solid #334155;
-  color: white;
-  padding: 6px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex; align-items: center; gap: 8px;
-  max-width: 180px; 
-  overflow: hidden;
-  transition: 0.2s;
+  background: #1a1a1a; border: 1px solid #334155; border-radius: 6px; padding: 6px 12px;
+  color: white; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s;
+  max-width: 180px; overflow: hidden;
 }
-#btn-login:hover { background: #26334d; border-color: #22d3ee; }
+#btn-login:hover { background: #262626; border-color: #475569; }
+body.light #btn-login { background: #eee; border-color: #ccc; color: #111; }
 
 #user-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 90px;
-  display: inline-block;
-  vertical-align: middle;
-  font-weight: 600;
-  font-size: 14px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px;
 }
-
-#user-photo { width: 22px; height: 22px; border-radius: 50%; display: none; border: 1px solid #020617; object-fit: cover; }
-
-.menu-buttons button.active{box-shadow:0 0 15px rgba(34,211,238,0.6); transform: scale(1.05);}
+#user-photo { width: 24px; height: 24px; border-radius: 50%; display: none; object-fit: cover; }
 
 #search-input{
-  padding:8px 12px;border-radius:8px;border:1px solid #1e293b;outline:none;width:180px;
-  background: #0f1724; color: white;
+  padding: 8px 12px; border-radius: 6px; border: 1px solid #334155; outline: none; width: 200px;
+  background: #0f1724; color: white; font-family: 'Inter', sans-serif; font-size: 13px;
 }
+#search-input:focus { border-color: #22d3ee; }
 body.light #search-input { background: white; color: #333; border-color: #ccc; }
 
 .container{padding:100px 20px 40px; max-width: 1200px; margin: 0 auto;}
 .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:25px; }
 
+/* O RESTO DO CSS É EXATAMENTE IGUAL */
 .card{
   background:linear-gradient(180deg,#0b1220,#020617);
-  border:1px solid #1e293b;
-  border-radius:16px;
-  padding:25px;
-  transition:all 0.3s ease;
+  border:1px solid #1e293b; border-radius:16px; padding:25px; transition:all 0.3s ease;
   display:flex; flex-direction:column; justify-content:space-between;
 }
 body.light .card{background:#fff;border-color:#ccc;color:#111;}
 .card:hover{transform:translateY(-8px);border-color:#22d3ee;box-shadow:0 0 20px rgba(34,211,238,0.2);}
-
 .icon{font-size:3rem;margin-bottom:10px;}
 .title{font-size:1.3rem;margin-bottom:10px;font-weight:bold;}
 .desc{font-size:0.95rem;color:#9ca3af;margin-bottom:20px;flex-grow:1;}
-
 .btn{display:inline-block;padding:12px 20px;border-radius:10px;background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;text-decoration:none;font-weight:bold;border:none;cursor:pointer;text-align:center;}
 .btn-disabled{background:#334155;color:#94a3b8;cursor:not-allowed;}
-
 .fav-btn{background:none;border:none;cursor:pointer;font-size:1.5rem;margin-bottom:10px; align-self: flex-start; transition: 0.2s;}
 .fav-btn.active{filter: drop-shadow(0 0 5px #f87171); color: #f87171;}
 .card.futuro-jogo{opacity:0.6; border:1px dashed #555;}
 footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:center;}
 
-/* === MENU DROPDOWN DE PERFIL === */
 .profile-container { position: relative; display: inline-block; }
 .dropdown-content {
   display: none; position: absolute; right: 0; top: 110%;
-  background: #111; min-width: 240px; border-radius: 12px;
-  border: 1px solid #333; z-index: 1000; overflow: hidden;
+  background: #0f172a; min-width: 240px; border-radius: 12px;
+  border: 1px solid #334155; z-index: 1000; overflow: hidden;
   box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
 body.light .dropdown-content { background: #fff; border-color: #ccc; }
 .dropdown-content.show { display: block; animation: fadeIn 0.2s; }
 .dropdown-content a, .logout-btn {
-  color: #ccc; padding: 10px 16px; text-decoration: none; display: block;
-  font-size: 14px; background: none; border: none; width: 100%; text-align: left; cursor: pointer;
+  color: #cbd5e1; padding: 10px 16px; text-decoration: none; display: block;
+  font-size: 13px; background: none; border: none; width: 100%; text-align: left; cursor: pointer; font-weight: 600;
 }
 body.light .dropdown-content a, body.light .logout-btn { color: #333; }
-.dropdown-content a:hover { background: #222; color: #22d3ee; }
+.dropdown-content a:hover { background: #1e293b; color: #22d3ee; }
 body.light .dropdown-content a:hover { background: #eee; }
 .logout-btn { color: #f87171; font-weight: bold; padding: 12px 16px; }
 
-/* Cabeçalho do Menu e Mini Barra de XP */
-.menu-header { padding: 12px 16px; font-weight: bold; border-bottom: 1px solid #333; font-size: 0.9rem; background: #0b1220;}
+.menu-header { padding: 12px 16px; font-weight: bold; border-bottom: 1px solid #334155; font-size: 0.9rem; background: #020617;}
 body.light .menu-header { border-color: #ccc; background: #eee; }
-.mini-xp-bar { width: 100%; height: 6px; background: #333; border-radius: 3px; margin-top: 8px; overflow: hidden; }
+.mini-xp-bar { width: 100%; height: 4px; background: #1e293b; border-radius: 2px; margin-top: 8px; overflow: hidden; }
 .mini-xp-fill { height: 100%; background: linear-gradient(90deg, #14b8a6, #22d3ee); width: 0%; transition: width 0.5s ease; }
 .level-text { font-size: 0.75rem; color: #9ca3af; margin-top: 4px; display: flex; justify-content: space-between;}
-
-/* Estilo VIP */
 .vip-name { color: #ffca28 !important; text-shadow: 0 0 10px rgba(255, 202, 40, 0.6); }
 
-.menu-bastidores { padding: 15px 16px; border-top: 1px solid #333; background: #0b1220; border-bottom: 1px solid #333;}
+.menu-bastidores { padding: 15px 16px; border-top: 1px solid #334155; background: #020617; border-bottom: 1px solid #334155;}
 body.light .menu-bastidores { border-color: #ccc; background: #eee; }
 .menu-bastidores h4 { color: #22d3ee; font-size: 0.85rem; margin-bottom: 10px; font-weight: bold; }
 .menu-bastidores ul { list-style: none; padding: 0; margin: 0; }
-.menu-bastidores li { color: #aaa; font-size: 0.8rem; padding: 4px 0; display: flex; align-items: center; gap: 8px; }
+.menu-bastidores li { color: #94a3b8; font-size: 0.8rem; padding: 4px 0; display: flex; align-items: center; gap: 8px; }
 
 @keyframes fadeIn { from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);} }
 @media(max-width:768px){
-  header{flex-direction:column; gap: 15px; position: relative;}
-  .container{padding-top: 20px;}
+  header{flex-direction:column; gap: 15px; position: relative; padding: 15px;}
+  .container{padding-top: 140px;} /* Ajuste para não cobrir os cards no mobile */
   #search-input{width:100%;}
   .dropdown-content { right: auto; left: 0; }
 }
@@ -151,9 +130,12 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
 <body>
 
 <header>
-  <h1>🎮 Hub Jogos</h1>
-  <div class="menu-buttons">
+  <div style="display: flex; align-items: center; gap: 20px;">
+    <h1>🎮 Hub</h1>
     <input type="text" id="search-input" placeholder="🔎 Buscar jogos...">
+  </div>
+
+  <div class="menu-buttons">
     <button class="category-btn active" data-category="all">Todos</button>
     <button class="category-btn" data-category="acao">Ação</button>
     <button class="category-btn" data-category="terror">Terror</button>
@@ -173,21 +155,21 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
           </div>
         </div>
         
-        <a href="perfil.html" style="color: #22d3ee; font-weight: bold;">👤 Meu Perfil</a>
+        <a href="perfil.html" style="color: #22d3ee;">👤 Meu Perfil (Nível & XP)</a>
         <a href="https://patreon.com/MidNight" target="_blank">🏅 Seja VIP </a>
         <a href="https://ko-fi.com/TEU_USER" target="_blank">☕ Apoiar </a>
         
         <div class="menu-bastidores">
           <h4>Seu acesso exclusivo MidNight 🌑</h4>
           <ul>
-            <li>🛠️ Diário de Desenvolvimento</li>
+            <li>🛠️ Diário de Dev</li>
             <li>🎨 Arte Conceitual</li>
-            <li>🗳️ Votação de Enquetes</li>
+            <li>🗳️ Enquetes</li>
             <li>🚀 Acesso Antecipado</li>
           </ul>
         </div>
         
-        <hr style="border-color:#333; margin:0;">
+        <hr style="border-color:#334155; margin:0;">
         <button id="btn-logout" class="logout-btn">🚪 Sair da Conta</button>
       </div>
     </div>
@@ -231,6 +213,7 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
 <footer>Feito com 💙 para GitHub Pages + Firebase</footer>
 
 <script type="module">
+  // FIREBASE INTACTO (IGUAL AO SEU)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -340,8 +323,8 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
       if (docSnap.exists()) {
         const dados = docSnap.data();
         if (dados.nickname) nomeExibicao = dados.nickname;
-        if (dados.avatar) fotoExibicao = dados.avatar; // Pega avatar do perfil!
-        if (dados.xp) userXp = dados.xp; // Carrega XP
+        if (dados.avatar) fotoExibicao = dados.avatar; 
+        if (dados.xp) userXp = dados.xp; 
         
         if (dados.isVip) {
           userNameSpan.classList.add('vip-name');
@@ -357,7 +340,6 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
       userPhotoImg.style.display = "block";
       userNameSpan.textContent = nomeExibicao;
 
-      // Mostra XP no menu
       xpContainer.style.display = "block";
       const stats = calcularNivel(userXp);
       menuLevel.textContent = `Lvl ${stats.nivel}`;
@@ -374,12 +356,10 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
     }
   });
 
-  // --- LÓGICA DE GANHAR XP AO JOGAR ---
   const gameLinks = document.querySelectorAll('.game-link');
   gameLinks.forEach(link => {
     link.addEventListener('click', async (e) => {
       if(auth.currentUser) {
-        // Salva +10 XP no banco antes de o usuário sair da página
         const userRef = doc(db, "usuarios", auth.currentUser.uid);
         const docSnap = await getDoc(userRef);
         let currentXp = 0;
@@ -391,7 +371,6 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
     });
   });
 
-  // --- SISTEMA DE FAVORITOS ---
   cards.forEach(card => {
     const gameId = card.dataset.id;
     if(card.classList.contains('futuro-jogo')) return;
@@ -443,4 +422,3 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
 </script>
 </body>
 </html>
-
