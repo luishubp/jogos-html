@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎮 Hub de Jogos HTML - Pro Version</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 /* --- TEU DESIGN ORIGINAL MANTIDO --- */
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
-  font-family:'Segoe UI',Arial,sans-serif;
+  font-family:'Inter', 'Segoe UI', Arial, sans-serif;
   background:radial-gradient(circle at top,#0f1724,#020617);
   color:#e5e7eb;
   transition:0.3s;
@@ -16,12 +17,14 @@ body{
 }
 body.light{background:#f0f0f0;color:#111;}
 
-header{
+/* NOVO ESTILO DE HEADER ESTILO DASHBOARD */
+header {
   position:fixed;top:0;left:0;width:100%;
-  background:rgba(15,23,36,0.95);
+  background: rgba(15, 23, 36, 0.95);
+  backdrop-filter: blur(10px);
   display:flex;justify-content:space-between;align-items:center;
   padding:15px 30px;
-  border-bottom:1px solid #1e293b;
+  border-bottom: 1px solid #1e293b;
   z-index:1000;
 }
 body.light header{background:#fff;border-color:#ccc;color:#111;}
@@ -35,16 +38,24 @@ header h1{
 .menu-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 
 /* --- AJUSTES DO BOTÃO DE LOGIN PARA NÃO QUEBRAR O LAYOUT --- */
-.menu-buttons button, #toggle-theme, #btn-login {
+.menu-buttons button.category-btn, #toggle-theme {
   padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;
   background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;transition:0.2s;
-  display: flex; align-items: center; gap: 8px;
 }
 
 #btn-login {
+  background: #1a1a1a;
+  border: 1px solid #334155;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
   max-width: 180px; 
   overflow: hidden;
+  transition: 0.2s;
 }
+#btn-login:hover { background: #26334d; border-color: #22d3ee; }
 
 #user-name {
   white-space: nowrap;
@@ -53,6 +64,8 @@ header h1{
   max-width: 90px;
   display: inline-block;
   vertical-align: middle;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 #user-photo { width: 22px; height: 22px; border-radius: 50%; display: none; border: 1px solid #020617; object-fit: cover; }
@@ -160,7 +173,7 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
           </div>
         </div>
         
-        <a href="perfil.html" style="color: #22d3ee; font-weight: bold;">👤 Meu Perfil (Nível & XP)</a>
+        <a href="perfil.html" style="color: #22d3ee; font-weight: bold;">👤 Meu Perfil</a>
         <a href="https://patreon.com/MidNight" target="_blank">🏅 Seja VIP </a>
         <a href="https://ko-fi.com/TEU_USER" target="_blank">☕ Apoiar </a>
         
@@ -429,5 +442,5 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
   }
 </script>
 </body>
-  </html>
-  
+</html>
+
