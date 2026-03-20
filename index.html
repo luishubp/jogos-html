@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎮 Hub de Jogos HTML - Pro Version</title>
 <style>
-/* --- TEU DESIGN ORIGINAL MANTIDO --- */
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
   font-family:'Segoe UI',Arial,sans-serif;
@@ -76,8 +75,6 @@ body.light .card{background:#fff;border-color:#ccc;color:#111;}
 .card.futuro-jogo{opacity:0.6; border:1px dashed #555;}
 footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:center;}
 
-/* === MENU DROPDOWN DE PERFIL COM CONTEÚDO CONSOLIDADO === */
-
 .profile-container { position: relative; display: inline-block; }
 .dropdown-content {
   display: none; position: absolute; right: 0; top: 110%;
@@ -96,14 +93,11 @@ body.light .dropdown-content a, body.light .logout-btn { color: #333; }
 body.light .dropdown-content a:hover { background: #eee; }
 .logout-btn { color: #f87171; font-weight: bold; padding: 12px 16px; }
 
-/* Cabeçalho do Menu (Login dinâmico) */
 .menu-header { padding: 12px 16px; font-weight: bold; border-bottom: 1px solid #333; font-size: 0.9rem; background: #0b1220;}
 body.light .menu-header { border-color: #ccc; background: #eee; }
 
-/* Estilo VIP */
 .vip-name { color: #ffca28 !important; text-shadow: 0 0 10px rgba(255, 202, 40, 0.6); }
 
-/* SEÇÃO DE CONTEÚDO CONSOLIDADO (Acessos Exclusivos) */
 .menu-bastidores { padding: 15px 16px; border-top: 1px solid #333; background: #0b1220; border-bottom: 1px solid #333;}
 body.light .menu-bastidores { border-color: #ccc; background: #eee; }
 .menu-bastidores h4 { color: #22d3ee; font-size: 0.85rem; margin-bottom: 10px; font-weight: bold; }
@@ -130,20 +124,18 @@ body.light .menu-bastidores li { color: #555; }
     <button class="category-btn active" data-category="all">Todos</button>
     <button class="category-btn" data-category="acao">Ação</button>
     <button class="category-btn" data-category="terror">Terror</button>
-    
+
     <div class="profile-container">
       <button id="btn-login">
-        <img id="user-photo" src="">
+        <img id="user-photo" src="" alt="foto">
         <span id="user-name">Entrar</span>
       </button>
-      
+
       <div id="drop-menu" class="dropdown-content">
         <div class="menu-header"><p id="menu-user-hello">Olá!</p></div>
-        
         <a href="perfil.html" style="color: #22d3ee; font-weight: bold;">👤 Editar Perfil</a>
-        <a href="https://patreon.com/MidNight" target="_blank">🏅 Seja VIP </a>
-        <a href="https://ko-fi.com/TEU_USER" target="_blank">☕ Apoiar </a>
-        
+        <a href="https://patreon.com/MidNight" target="_blank">🏅 Seja VIP</a>
+        <a href="https://ko-fi.com/TEU_USER" target="_blank">☕ Apoiar</a>
         <div class="menu-bastidores">
           <h4>Seu acesso exclusivo MidNight 🌑</h4>
           <ul>
@@ -153,7 +145,6 @@ body.light .menu-bastidores li { color: #555; }
             <li>🚀 Acesso Antecipado</li>
           </ul>
         </div>
-        
         <hr style="border-color:#333; margin:0;">
         <button id="btn-logout" class="logout-btn">🚪 Sair da Conta</button>
       </div>
@@ -165,6 +156,7 @@ body.light .menu-bastidores li { color: #555; }
 
 <div class="container">
   <div class="grid" id="game-grid">
+
     <div class="card" data-category="acao" data-id="alien-space">
       <div class="icon">🚀</div>
       <div class="title">Alien Space Wars</div>
@@ -192,6 +184,7 @@ body.light .menu-bastidores li { color: #555; }
       <div class="desc">Voltaremos em breve. Obrigado pela paciência! 💙</div>
       <button class="btn btn-disabled" disabled>Em breve</button>
     </div>
+
   </div>
 </div>
 
@@ -199,9 +192,10 @@ body.light .menu-bastidores li { color: #555; }
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut }
-  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc }
+    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyALp8QDfjyjGQDfaJuVjEEv_mBhnylHUj8",
@@ -212,37 +206,36 @@ import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/fireb
     appId: "1:485191017245:web:06c2ea7c5aa8f01472b7f4"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+  const app      = initializeApp(firebaseConfig);
+  const auth     = getAuth(app);
+  const db       = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
-  const toggle = document.getElementById('toggle-theme');
-  const searchInput = document.getElementById('search-input');
-  const categoryButtons = document.querySelectorAll('.category-btn');
-  const cards = document.querySelectorAll('.card');
-  const btnLogin = document.getElementById('btn-login');
-  const userNameSpan = document.getElementById('user-name');
-  const userPhotoImg = document.getElementById('user-photo');
-  const dropMenu = document.getElementById('drop-menu');
-  const btnLogout = document.getElementById('btn-logout');
+  const toggle        = document.getElementById('toggle-theme');
+  const searchInput   = document.getElementById('search-input');
+  const categoryBtns  = document.querySelectorAll('.category-btn');
+  const cards         = document.querySelectorAll('.card');
+  const btnLogin      = document.getElementById('btn-login');
+  const userNameSpan  = document.getElementById('user-name');
+  const userPhotoImg  = document.getElementById('user-photo');
+  const dropMenu      = document.getElementById('drop-menu');
+  const btnLogout     = document.getElementById('btn-logout');
   const menuUserHello = document.getElementById('menu-user-hello');
 
-  // Campos do Firestore que NÃO são favoritos de jogos
-  const CAMPOS_NAO_JOGO = new Set(['isVip', 'nickname', 'email', 'photoURL']);
+  const CAMPOS_NAO_JOGO = new Set(['isVip', 'nickname', 'bio', 'avatar', 'email', 'photoURL']);
 
   let currentCategory = 'all';
   let searchTerm = '';
 
-  // ── Filtro de jogos ──────────────────────────────────────────────────────────
+  // ── Filtro ───────────────────────────────────────────────────────────────────
 
   function filterGames() {
     cards.forEach(card => {
-      const title = card.querySelector('.title').textContent.toLowerCase();
+      const title    = card.querySelector('.title').textContent.toLowerCase();
       const category = card.dataset.category;
-      const matchesCategory = (currentCategory === 'all' || category === currentCategory);
-      const matchesSearch = title.includes(searchTerm);
-      card.style.display = (matchesCategory && matchesSearch) ? 'flex' : 'none';
+      const okCat    = currentCategory === 'all' || category === currentCategory;
+      const okSearch = title.includes(searchTerm);
+      card.style.display = (okCat && okSearch) ? 'flex' : 'none';
     });
   }
 
@@ -251,33 +244,34 @@ import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/fireb
     toggle.textContent = document.body.classList.contains('light') ? '🌞 Claro' : '🌙 Dark';
   });
 
-  categoryButtons.forEach(btn => {
+  categoryBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      categoryButtons.forEach(b => b.classList.remove('active'));
+      categoryBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       currentCategory = btn.dataset.category;
       filterGames();
     });
   });
 
-  searchInput.addEventListener('input', (e) => {
+  searchInput.addEventListener('input', e => {
     searchTerm = e.target.value.toLowerCase();
     filterGames();
   });
 
-  // ── Login / Dropdown ─────────────────────────────────────────────────────────
+  // ── Login com Redirect (compatível com mobile e GitHub Pages) ────────────────
 
-btnLogin.addEventListener('click', () => {
-  if (!auth.currentUser) {
-    signInWithRedirect(auth, provider);
-  } else {
-    dropMenu.classList.toggle('show');
-  }
-});
+  btnLogin.addEventListener('click', () => {
+    if (!auth.currentUser) {
+      signInWithRedirect(auth, provider);
+    } else {
+      dropMenu.classList.toggle('show');
+    }
+  });
 
-getRedirectResult(auth).catch(err => console.error("Redirect error:", err));
+  // Captura o resultado do redirect quando a página volta a carregar
+  getRedirectResult(auth).catch(err => console.error("Redirect error:", err));
 
-  window.addEventListener('click', (e) => {
+  window.addEventListener('click', e => {
     if (!btnLogin.contains(e.target) && !dropMenu.contains(e.target)) {
       dropMenu.classList.remove('show');
     }
@@ -291,30 +285,20 @@ getRedirectResult(auth).catch(err => console.error("Redirect error:", err));
   });
 
   // ── Auth state ───────────────────────────────────────────────────────────────
-  // FIX: Uma única leitura do Firestore por login (era duas).
-  // FIX: VIP e nickname agora usam a mesma variável `nomeExibicao` corretamente.
-  // FIX: Logout remove a classe vip-name para não contaminar próximo login.
-  // FIX: Campos de metadados (nickname, isVip…) excluídos do loop de favoritos.
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       userPhotoImg.src = user.photoURL;
       userPhotoImg.style.display = "block";
 
-      const userRef = doc(db, "usuarios", user.uid);
-      const docSnap = await getDoc(userRef);
-
-      // Resolve o nome a exibir (nickname salvo tem prioridade sobre o Google)
+      const docSnap = await getDoc(doc(db, "usuarios", user.uid));
       let nomeExibicao = user.displayName.split(' ')[0];
 
       if (docSnap.exists()) {
         const dados = docSnap.data();
 
-        if (dados.nickname) {
-          nomeExibicao = dados.nickname;
-        }
+        if (dados.nickname) nomeExibicao = dados.nickname;
 
-        // Aplica badge VIP — usa o nomeExibicao já resolvido acima
         if (dados.isVip === true) {
           userNameSpan.classList.add('vip-name');
           menuUserHello.innerHTML = `Olá, ${nomeExibicao} 💎`;
@@ -322,7 +306,6 @@ getRedirectResult(auth).catch(err => console.error("Redirect error:", err));
           menuUserHello.textContent = `Olá, ${nomeExibicao}!`;
         }
 
-        // Aplica favoritos — ignora campos que não são IDs de jogos
         Object.keys(dados).forEach(id => {
           if (CAMPOS_NAO_JOGO.has(id)) return;
           localStorage.setItem('fav-' + id, dados[id]);
@@ -340,15 +323,14 @@ getRedirectResult(auth).catch(err => console.error("Redirect error:", err));
       userNameSpan.textContent = nomeExibicao;
 
     } else {
-      // Logout: limpa tudo corretamente
       userNameSpan.textContent = "Entrar";
-      userNameSpan.classList.remove('vip-name'); // FIX: removia a classe ao sair
+      userNameSpan.classList.remove('vip-name');
       menuUserHello.textContent = "Olá!";
       userPhotoImg.style.display = "none";
     }
   });
 
-  // ── Favoritos (botões dos cards) ─────────────────────────────────────────────
+  // ── Favoritos ────────────────────────────────────────────────────────────────
 
   cards.forEach(card => {
     const gameId = card.dataset.id;
@@ -369,14 +351,10 @@ getRedirectResult(auth).catch(err => console.error("Redirect error:", err));
         alert("Faz login para guardar os teus favoritos!");
         return;
       }
-
       const isFav = favBtn.classList.toggle('active');
       favBtn.innerHTML = isFav ? '❤️' : '🤍';
       localStorage.setItem('fav-' + gameId, isFav);
-
-      const userRef = doc(db, "usuarios", auth.currentUser.uid);
-      await setDoc(userRef, { [gameId]: isFav }, { merge: true });
-
+      await setDoc(doc(db, "usuarios", auth.currentUser.uid), { [gameId]: isFav }, { merge: true });
       favBtn.animate(
         [{ transform: 'scale(1)' }, { transform: 'scale(1.3)' }, { transform: 'scale(1)' }],
         { duration: 200 }
