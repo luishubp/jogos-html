@@ -16,7 +16,6 @@
     padding: 30px;
   }
 
-  /* LAYOUT IGUAL À FOTO DE REFERÊNCIA */
   .perfil-header {
     display: flex;
     align-items: flex-start;
@@ -34,10 +33,9 @@
 
   .info-container {
     display: flex; flex-direction: column; gap: 8px; flex: 1;
-    min-width: 0; /* Essencial para o ellipsis funcionar */
+    min-width: 0;
   }
 
-  /* NOME COM ELLIPSIS (O SEGREDO QUE VOCÊ ACHOU) */
   .linha-nome { display: flex; align-items: center; gap: 10px; }
   #display-name { 
     font-size: 28px; font-weight: 700; color: white;
@@ -46,10 +44,8 @@
   }
   .edit-icon { color: #64748b; font-size: 14px; cursor: pointer; }
 
-  /* STATUS / BIO */
   .status-text { color: #94a3b8; font-size: 16px; display: flex; align-items: center; gap: 5px; }
 
-  /* BOTÕES DE VÍNCULO (ESTILO DA IMAGEM) */
   .botoes-vinculo { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
   .btn-vinculo {
     background: #1a1a1a; border: 1px solid #334155; border-radius: 6px;
@@ -58,7 +54,6 @@
   }
   .btn-google-vinculado { border-color: #059669; color: #34d399; }
 
-  /* SEÇÃO DE BIBLIOTECA */
   .biblioteca-header {
     display: flex; justify-content: space-between; align-items: center;
     border-top: 1px solid #1e293b; padding-top: 20px; margin-top: 10px;
@@ -66,7 +61,19 @@
   .biblioteca-header h3 { font-size: 18px; font-weight: 700; }
   .fav-count { background: #1e293b; padding: 4px 12px; border-radius: 4px; font-size: 12px; color: #94a3b8; }
 
-  /* FORMULÁRIO DE EDIÇÃO */
+  /* ESTILO DA GRADE DA BIBLIOTECA */
+  .grid-favoritos {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); 
+    gap: 12px; margin-top: 15px;
+  }
+  .jogo-fav-card {
+    background: #0f172a; border: 1px solid #1e293b; border-radius: 8px;
+    padding: 15px 10px; text-align: center; transition: 0.2s;
+  }
+  .jogo-fav-card:hover { border-color: #22d3ee; transform: translateY(-3px); }
+  .jogo-fav-icon { font-size: 24px; margin-bottom: 5px; }
+  .jogo-fav-nome { font-size: 12px; color: #cbd5e1; font-weight: 600; }
+
   .edit-box { background: #0f172a; padding: 20px; border-radius: 10px; margin-top: 20px; border: 1px solid #1e293b; }
   .input-group { margin-bottom: 15px; }
   label { display:block; font-size:0.75rem; color:#94a3b8; margin-bottom:5px; text-transform: uppercase; letter-spacing: 1px; }
@@ -111,10 +118,10 @@
 
   <div class="biblioteca-header">
     <h3>Biblioteca</h3>
-    <span class="fav-count" id="count-total">FAVORITOS (0)</span>
+    <span class="fav-count" id="contagem-favoritos">FAVORITOS (0)</span>
   </div>
-  
-  <div id="lista-favoritos" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+
+  <div id="lista-favoritos" class="grid-favoritos">
     </div>
 
   <div class="edit-box">
@@ -134,6 +141,7 @@
 </div>
 
 <script type="module">
+  // FIREBASE INTACTO
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -153,38 +161,12 @@
 
   let base64Image = null;
 
-  // FUNÇÃO DA BIBLIOTECA DE FAVORITOS
-  function carregarBibliotecaFavoritos(dados) {
-    const container = document.getElementById('lista-favoritos');
-    const countSpan = document.getElementById('count-total');
-    container.innerHTML = ""; 
-    
-    let total = 0;
-
-    // Mapeamento dos IDs do Index.html para Nomes Bonitinhos
-    const nomesJogos = {
-      "alien-space": "🚀 Alien Space Wars",
-      "fnaf-watch": "👁️ FNAF Night Watch",
-      "fazenda-velho": "🚜 Fazenda Velho Moço"
-    };
-
-    Object.keys(dados).forEach(key => {
-      // Verifica se a chave é de um jogo e se está favoritado
-      if (dados[key] === true && nomesJogos[key]) {
-        total++;
-        const miniCard = document.createElement('div');
-        miniCard.style = "background: #1e293b; padding: 10px; border-radius: 8px; text-align: center; font-size: 12px; border: 1px solid #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;";
-        miniCard.textContent = nomesJogos[key];
-        container.appendChild(miniCard);
-      }
-    });
-
-    countSpan.textContent = `FAVORITOS (${total})`;
-    
-    if (total === 0) {
-      container.innerHTML = "<p style='color:#64748b; font-size:12px; grid-column: span 3; text-align:center;'>Nenhum jogo favoritado ainda.</p>";
-    }
-  }
+  // Dicionário para transformar o ID salvo no banco em um card bonito
+  const mapaDeJogos = {
+    "alien-space": { nome: "Alien Space", icone: "🚀" },
+    "fnaf-watch": { nome: "FNAF Watch", icone: "👁️" },
+    "fazenda-velho": { nome: "Fazenda", icone: "🚜" }
+  };
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href="index.html"; return; }
@@ -200,15 +182,39 @@
       if(d.avatar) document.getElementById('avatar-view').src = d.avatar;
       else document.getElementById('avatar-view').src = user.photoURL;
 
-      // Chama a função da biblioteca passando os dados do Firestore
-      carregarBibliotecaFavoritos(d);
+      // --- LÓGICA DE LER E RENDERIZAR A BIBLIOTECA (APENAS LEITURA) ---
+      const containerFavoritos = document.getElementById('lista-favoritos');
+      let totalFavs = 0;
+      
+      Object.keys(d).forEach(key => {
+        // Se a chave for true e existir no nosso mapa de jogos
+        if (d[key] === true && mapaDeJogos[key]) {
+          totalFavs++;
+          const jogoInfo = mapaDeJogos[key];
+          
+          const cardHtml = `
+            <div class="jogo-fav-card">
+              <div class="jogo-fav-icon">${jogoInfo.icone}</div>
+              <div class="jogo-fav-nome">${jogoInfo.nome}</div>
+            </div>
+          `;
+          containerFavoritos.innerHTML += cardHtml;
+        }
+      });
+
+      document.getElementById('contagem-favoritos').textContent = `FAVORITOS (${totalFavs})`;
+      
+      if (totalFavs === 0) {
+        containerFavoritos.innerHTML = "<p style='color: #64748b; font-size: 13px; grid-column: 1 / -1;'>Nenhum jogo favoritado ainda.</p>";
+      }
+
     } else {
       document.getElementById('display-name').textContent = user.displayName;
       document.getElementById('avatar-view').src = user.photoURL;
+      document.getElementById('lista-favoritos').innerHTML = "<p style='color: #64748b; font-size: 13px; grid-column: 1 / -1;'>Nenhum jogo favoritado ainda.</p>";
     }
   });
 
-  // REDIMENSIONAR FOTO
   document.getElementById('file-input').addEventListener('change', e => {
     const file = e.target.files[0];
     if(!file) return;
