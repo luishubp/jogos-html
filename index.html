@@ -106,7 +106,17 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
 body.light .menu-bastidores h4 { color: #14b8a6; }
 body.light .menu-bastidores li { color: #555; }
 
-@keyframes fadeIn { from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);} }
+/* Toast de aviso de popup bloqueado */
+#toast {
+  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+  background: #1e293b; color: #e5e7eb; padding: 14px 24px;
+  border-radius: 10px; font-size: 14px; z-index: 9999;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  display: none; text-align: center; max-width: 320px;
+}
+#toast.show { display: block; animation: fadeIn 0.3s; }
+
+@keyframes fadeIn { from{opacity:0; transform:translateX(-50%) translateY(10px);} to{opacity:1; transform:translateX(-50%) translateY(0);} }
 @media(max-width:768px){
   header{flex-direction:column; gap: 15px; position: relative;}
   .container{padding-top: 20px;}
@@ -190,9 +200,12 @@ body.light .menu-bastidores li { color: #555; }
 
 <footer>Feito com 💙 para GitHub Pages + Firebase</footer>
 
+<!-- Toast para aviso de popup bloqueado -->
+<div id="toast">⚠️ Popup bloqueado! Por favor, permita popups para este site e tente novamente.</div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut }
+  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut }
     from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc }
     from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -221,11 +234,20 @@ body.light .menu-bastidores li { color: #555; }
   const dropMenu      = document.getElementById('drop-menu');
   const btnLogout     = document.getElementById('btn-logout');
   const menuUserHello = document.getElementById('menu-user-hello');
+  const toast         = document.getElementById('toast');
 
   const CAMPOS_NAO_JOGO = new Set(['isVip', 'nickname', 'bio', 'avatar', 'email', 'photoURL']);
 
   let currentCategory = 'all';
   let searchTerm = '';
+
+  // ── Toast ────────────────────────────────────────────────────────────────────
+
+  function showToast(msg, ms = 4000) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), ms);
+  }
 
   // ── Filtro ───────────────────────────────────────────────────────────────────
 
@@ -258,18 +280,31 @@ body.light .menu-bastidores li { color: #555; }
     filterGames();
   });
 
-  // ── Login com Redirect (compatível com mobile e GitHub Pages) ────────────────
+  // ── Login com Popup + tratamento de erros ────────────────────────────────────
 
-  btnLogin.addEventListener('click', () => {
-    if (!auth.currentUser) {
-      signInWithRedirect(auth, provider);
-    } else {
+  btnLogin.addEventListener('click', async () => {
+    if (auth.currentUser) {
       dropMenu.classList.toggle('show');
+      return;
+    }
+
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (err) {
+      // Popup bloqueado pelo navegador/mobile
+      if (err.code === 'auth/popup-blocked') {
+        showToast('⚠️ Popup bloqueado! Permita popups para este site nas configurações do navegador.');
+      }
+      // Utilizador fechou o popup — não faz nada
+      else if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
+        // silencioso
+      }
+      else {
+        console.error('Erro no login:', err.code, err.message);
+        showToast('❌ Erro ao entrar. Tenta novamente.');
+      }
     }
   });
-
-  // Captura o resultado do redirect quando a página volta a carregar
-  getRedirectResult(auth).catch(err => console.error("Redirect error:", err));
 
   window.addEventListener('click', e => {
     if (!btnLogin.contains(e.target) && !dropMenu.contains(e.target)) {
@@ -348,7 +383,7 @@ body.light .menu-bastidores li { color: #555; }
 
     favBtn.addEventListener('click', async () => {
       if (!auth.currentUser) {
-        alert("Faz login para guardar os teus favoritos!");
+        showToast('🔒 Faz login para guardar os teus favoritos!');
         return;
       }
       const isFav = favBtn.classList.toggle('active');
