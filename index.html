@@ -199,8 +199,9 @@ body.light .menu-bastidores li { color: #555; }
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyALp8QDfjyjGQDfaJuVjEEv_mBhnylHUj8",
@@ -266,14 +267,15 @@ body.light .menu-bastidores li { color: #555; }
 
   // ── Login / Dropdown ─────────────────────────────────────────────────────────
 
-  btnLogin.addEventListener('click', async (event) => {
-    event.stopPropagation();
-    if (!auth.currentUser) {
-      await signInWithPopup(auth, provider);
-    } else {
-      dropMenu.classList.toggle('show');
-    }
-  });
+btnLogin.addEventListener('click', () => {
+  if (!auth.currentUser) {
+    signInWithRedirect(auth, provider);
+  } else {
+    dropMenu.classList.toggle('show');
+  }
+});
+
+getRedirectResult(auth).catch(err => console.error("Redirect error:", err));
 
   window.addEventListener('click', (e) => {
     if (!btnLogin.contains(e.target) && !dropMenu.contains(e.target)) {
