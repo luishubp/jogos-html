@@ -34,25 +34,10 @@ header h1{
 
 .menu-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 
-/* --- AJUSTES DO BOTÃO DE LOGIN PARA NÃO QUEBRAR O LAYOUT --- */
 .menu-buttons button, #toggle-theme, #btn-login {
   padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-weight:bold;
   background:linear-gradient(90deg,#14b8a6,#22d3ee);color:#020617;transition:0.2s;
   display: flex; align-items: center; gap: 8px;
-}
-
-#btn-login {
-  max-width: 180px; 
-  overflow: hidden;
-}
-
-#user-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 90px;
-  display: inline-block;
-  vertical-align: middle;
 }
 
 #user-photo { width: 22px; height: 22px; border-radius: 50%; display: none; border: 1px solid #020617; object-fit: cover; }
@@ -91,11 +76,12 @@ body.light .card{background:#fff;border-color:#ccc;color:#111;}
 .card.futuro-jogo{opacity:0.6; border:1px dashed #555;}
 footer{margin-top:40px;padding: 20px; font-size:0.8rem;color:#6b7280;text-align:center;}
 
-/* === MENU DROPDOWN DE PERFIL === */
+/* === MENU DROPDOWN DE PERFIL COM CONTEÚDO CONSOLIDADO === */
+
 .profile-container { position: relative; display: inline-block; }
 .dropdown-content {
   display: none; position: absolute; right: 0; top: 110%;
-  background: #111; min-width: 240px; border-radius: 12px;
+  background: #111; min-width: 220px; border-radius: 12px;
   border: 1px solid #333; z-index: 1000; overflow: hidden;
   box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
@@ -110,21 +96,21 @@ body.light .dropdown-content a, body.light .logout-btn { color: #333; }
 body.light .dropdown-content a:hover { background: #eee; }
 .logout-btn { color: #f87171; font-weight: bold; padding: 12px 16px; }
 
-/* Cabeçalho do Menu e Mini Barra de XP */
+/* Cabeçalho do Menu (Login dinâmico) */
 .menu-header { padding: 12px 16px; font-weight: bold; border-bottom: 1px solid #333; font-size: 0.9rem; background: #0b1220;}
 body.light .menu-header { border-color: #ccc; background: #eee; }
-.mini-xp-bar { width: 100%; height: 6px; background: #333; border-radius: 3px; margin-top: 8px; overflow: hidden; }
-.mini-xp-fill { height: 100%; background: linear-gradient(90deg, #14b8a6, #22d3ee); width: 0%; transition: width 0.5s ease; }
-.level-text { font-size: 0.75rem; color: #9ca3af; margin-top: 4px; display: flex; justify-content: space-between;}
 
 /* Estilo VIP */
 .vip-name { color: #ffca28 !important; text-shadow: 0 0 10px rgba(255, 202, 40, 0.6); }
 
+/* SEÇÃO DE CONTEÚDO CONSOLIDADO (Acessos Exclusivos) */
 .menu-bastidores { padding: 15px 16px; border-top: 1px solid #333; background: #0b1220; border-bottom: 1px solid #333;}
 body.light .menu-bastidores { border-color: #ccc; background: #eee; }
 .menu-bastidores h4 { color: #22d3ee; font-size: 0.85rem; margin-bottom: 10px; font-weight: bold; }
 .menu-bastidores ul { list-style: none; padding: 0; margin: 0; }
 .menu-bastidores li { color: #aaa; font-size: 0.8rem; padding: 4px 0; display: flex; align-items: center; gap: 8px; }
+body.light .menu-bastidores h4 { color: #14b8a6; }
+body.light .menu-bastidores li { color: #555; }
 
 @keyframes fadeIn { from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);} }
 @media(max-width:768px){
@@ -151,16 +137,10 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
         <span id="user-name">Entrar</span>
       </button>
       
-      <div id="drop-menu" class="dropdown-content">
-        <div class="menu-header">
-          <p id="menu-user-hello">Olá!</p>
-          <div id="xp-container" style="display: none;">
-            <div class="mini-xp-bar"><div id="menu-xp-fill" class="mini-xp-fill"></div></div>
-            <div class="level-text"><span id="menu-level">Lvl 1</span><span id="menu-xp-text">0/100 XP</span></div>
-          </div>
-        </div>
+            <div id="drop-menu" class="dropdown-content">
+        <div class="menu-header"><p id="menu-user-hello">Olá!</p></div>
         
-        <a href="perfil.html" style="color: #22d3ee; font-weight: bold;">👤 Meu Perfil (Nível & XP)</a>
+        <a href="perfil.html" style="color: #22d3ee; font-weight: bold;">👤 Editar Perfil</a>
         <a href="https://patreon.com/MidNight" target="_blank">🏅 Seja VIP </a>
         <a href="https://ko-fi.com/TEU_USER" target="_blank">☕ Apoiar </a>
         
@@ -184,26 +164,27 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
 </header>
 
 <div class="container">
+
   <div class="grid" id="game-grid">
     <div class="card" data-category="acao" data-id="alien-space">
       <div class="icon">🚀</div>
       <div class="title">Alien Space Wars</div>
       <div class="desc">Shooter espacial clássico com naves e explosões.</div>
-      <a href="./games/alien-space-wars/" class="btn game-link">Jogar (+10 XP)</a>
+      <a href="./games/alien-space-wars/" class="btn">Jogar</a>
     </div>
 
     <div class="card" data-category="terror" data-id="fnaf-watch">
       <div class="icon">👁️</div>
       <div class="title">FNAF Night Watch</div>
       <div class="desc">Sobreviva à noite monitorando câmeras e portas.</div>
-      <a href="./games/fnaf-night-watch/" class="btn game-link">Jogar (+10 XP)</a>
+      <a href="./games/fnaf-night-watch/" class="btn">Jogar</a>
     </div>
 
     <div class="card" data-category="terror" data-id="fazenda-velho">
       <div class="icon">🚜</div>
       <div class="title">Fazenda Velho Moço</div>
       <div class="desc">Tente sobreviver à criatura que aparece à noite.</div>
-      <a href="./games/novo-experimento/" class="btn game-link">Jogar (+10 XP)</a>
+      <a href="./games/novo-experimento/" class="btn">Jogar</a>
     </div>
 
     <div class="card futuro-jogo" data-category="futuro" data-id="manutencao">
@@ -220,7 +201,7 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyALp8QDfjyjGQDfaJuVjEEv_mBhnylHUj8",
@@ -236,7 +217,7 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
   const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
-  // Elementos
+  // Define all elements
   const toggle = document.getElementById('toggle-theme');
   const searchInput = document.getElementById('search-input');
   const categoryButtons = document.querySelectorAll('.category-btn');
@@ -246,13 +227,7 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
   const userPhotoImg = document.getElementById('user-photo');
   const dropMenu = document.getElementById('drop-menu');
   const btnLogout = document.getElementById('btn-logout');
-  const menuUserHello = document.getElementById('menu-user-hello');
-  
-  // Elementos de XP
-  const xpContainer = document.getElementById('xp-container');
-  const menuXpFill = document.getElementById('menu-xp-fill');
-  const menuLevel = document.getElementById('menu-level');
-  const menuXpText = document.getElementById('menu-xp-text');
+  const menuUserHello = document.getElementById('menu-user-hello'); // NEW ID
 
   let currentCategory = 'all';
   let searchTerm = '';
@@ -286,21 +261,25 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
     filterGames();
   });
 
+  // --- LÓGICA DE LOGIN COM DROPDOWN ---
   btnLogin.addEventListener('click', async (event) => {
-    event.stopPropagation();
+    event.stopPropagation(); // Evita fechar o menu na hora
     if (!auth.currentUser) {
       await signInWithPopup(auth, provider);
     } else {
+      // Se já está logado, abre o menu dropdown
       dropMenu.classList.toggle('show');
     }
   });
 
+  // Fechar o menu ao clicar fora dele
   window.addEventListener('click', (e) => {
     if (!btnLogin.contains(e.target) && !dropMenu.contains(e.target)) {
       dropMenu.classList.remove('show');
     }
   });
 
+  // Botão de Sair dentro do menu
   btnLogout.addEventListener('click', () => {
     if(confirm("Deseja sair da conta?")) {
       signOut(auth);
@@ -308,77 +287,34 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
     }
   });
 
-  function calcularNivel(xp) {
-    const nivel = Math.floor(xp / 100) + 1;
-    const xpAtualNivel = xp % 100;
-    const porcentagem = (xpAtualNivel / 100) * 100;
-    return { nivel, xpAtualNivel, porcentagem };
-  }
-
-  onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, async (user) => {
     if (user) {
+      userPhotoImg.src = user.photoURL;
+      userPhotoImg.style.display = "block";
+      
+      // Busca o Nickname no Firestore para exibir no Hub
       const userRef = doc(db, "usuarios", user.uid);
       const docSnap = await getDoc(userRef);
       
-      let nomeExibicao = user.displayName.split(' ')[0];
-      let fotoExibicao = user.photoURL;
-      let userXp = 0;
-
-      if (docSnap.exists()) {
-        const dados = docSnap.data();
-        if (dados.nickname) nomeExibicao = dados.nickname;
-        if (dados.avatar) fotoExibicao = dados.avatar; // Pega avatar do perfil!
-        if (dados.xp) userXp = dados.xp; // Carrega XP
-        
-        if (dados.isVip) {
-          userNameSpan.classList.add('vip-name');
-          menuUserHello.innerHTML = "Olá, " + nomeExibicao + " 💎";
-        } else {
-          menuUserHello.textContent = "Olá, " + nomeExibicao + "!";
-        }
-      } else {
-        menuUserHello.textContent = "Olá, " + nomeExibicao + "!";
+      let nomeExibicao = user.displayName.split(' ')[0]; // Padrão: Primeiro nome do Google
+      
+      if (docSnap.exists() && docSnap.data().nickname) {
+        nomeExibicao = docSnap.data().nickname; // Se tiver apelido salvo, usa ele
       }
 
-      userPhotoImg.src = fotoExibicao;
-      userPhotoImg.style.display = "block";
       userNameSpan.textContent = nomeExibicao;
-
-      // Mostra XP no menu
-      xpContainer.style.display = "block";
-      const stats = calcularNivel(userXp);
-      menuLevel.textContent = `Lvl ${stats.nivel}`;
-      menuXpText.textContent = `${stats.xpAtualNivel}/100 XP`;
-      menuXpFill.style.width = `${stats.porcentagem}%`;
+      menuUserHello.textContent = "Olá, " + nomeExibicao + "!";
       
       await baixarFavoritosNuvem();
     } else {
       userNameSpan.textContent = "Entrar";
-      userNameSpan.classList.remove('vip-name');
       menuUserHello.textContent = "Olá!";
       userPhotoImg.style.display = "none";
-      xpContainer.style.display = "none";
     }
   });
 
-  // --- LÓGICA DE GANHAR XP AO JOGAR ---
-  const gameLinks = document.querySelectorAll('.game-link');
-  gameLinks.forEach(link => {
-    link.addEventListener('click', async (e) => {
-      if(auth.currentUser) {
-        // Salva +10 XP no banco antes de o usuário sair da página
-        const userRef = doc(db, "usuarios", auth.currentUser.uid);
-        const docSnap = await getDoc(userRef);
-        let currentXp = 0;
-        if(docSnap.exists() && docSnap.data().xp) {
-          currentXp = docSnap.data().xp;
-        }
-        await setDoc(userRef, { xp: currentXp + 10 }, { merge: true });
-      }
-    });
-  });
 
-  // --- SISTEMA DE FAVORITOS ---
+  // --- SISTEMA DE FAVORITOS E VIP ---
   cards.forEach(card => {
     const gameId = card.dataset.id;
     if(card.classList.contains('futuro-jogo')) return;
@@ -395,7 +331,7 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
 
     favBtn.addEventListener('click', async () => {
       if(!auth.currentUser) {
-        alert("Faça login para guardar seus favoritos!");
+        alert("Faz login para guardar os teus favoritos!");
         return;
       }
 
@@ -407,6 +343,7 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
         const userRef = doc(db, "usuarios", auth.currentUser.uid);
         await setDoc(userRef, { [gameId]: isFav }, { merge: true });
       }
+
       favBtn.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.3)' }, { transform: 'scale(1)' }], { duration: 200 });
     });
   });
@@ -415,8 +352,16 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
     const docSnap = await getDoc(doc(db, "usuarios", auth.currentUser.uid));
     if (docSnap.exists()) {
       const dados = docSnap.data();
+      
+      // Verifica se o usuário é VIP
+      if (dados.isVip === true) {
+        userNameSpan.classList.add('vip-name');
+        menuUserHello.innerHTML = "Olá, " + auth.currentUser.displayName.split(' ')[0] + " 💎";
+      }
+
+      // Aplica os corações
       Object.keys(dados).forEach(id => {
-        if(id !== "isVip" && id !== "nickname" && id !== "bio" && id !== "avatar" && id !== "xp") { 
+        if(id !== "isVip") { // Ignora a chave VIP para os corações
           localStorage.setItem('fav-' + id, dados[id]);
           const btn = document.querySelector(`[data-id="${id}"] .fav-btn`);
           if (btn) {
@@ -430,4 +375,3 @@ body.light .menu-bastidores { border-color: #ccc; background: #eee; }
 </script>
 </body>
 </html>
-
