@@ -144,10 +144,10 @@ body.light .menu-bastidores li { color: #555; }
       <div id="drop-menu" class="dropdown-content">
         <div class="menu-header"><p id="menu-user-hello">Olá!</p></div>
         <a href="perfil.html" style="color: #22d3ee; font-weight: bold;">👤 Editar Perfil</a>
-        <a href="https://patreon.com/MidNight" target="_blank">🏅 Seja VIP</a>
+        <a href="https://patreon.com/" target="_blank">🏅 Seja VIP</a>
         <a href="https://ko-fi.com/TEU_USER" target="_blank">☕ Apoiar</a>
         <div class="menu-bastidores">
-          <h4>Seu acesso exclusivo MidNight 🌑</h4>
+          <h4>Seu acesso exclusivo  🌑</h4>
           <ul>
             <li>🛠️ Diário de Desenvolvimento</li>
             <li>🎨 Arte Conceitual</li>
@@ -156,7 +156,7 @@ body.light .menu-bastidores li { color: #555; }
           </ul>
         </div>
         <hr style="border-color:#333; margin:0;">
-        <button id="btn-logout" class="logout-btn">🚪 Sair da Conta</button>
+        <button id="btn-logout" class="logout-btn"> Sair da Conta</button>
       </div>
     </div>
 
@@ -282,29 +282,13 @@ body.light .menu-bastidores li { color: #555; }
 
   // ── Login com Popup + tratamento de erros ────────────────────────────────────
 
-  btnLogin.addEventListener('click', async () => {
-    if (auth.currentUser) {
-      dropMenu.classList.toggle('show');
-      return;
-    }
-
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (err) {
-      // Popup bloqueado pelo navegador/mobile
-      if (err.code === 'auth/popup-blocked') {
-        showToast('⚠️ Popup bloqueado! Permita popups para este site nas configurações do navegador.');
-      }
-      // Utilizador fechou o popup — não faz nada
-      else if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
-        // silencioso
-      }
-      else {
-        console.error('Erro no login:', err.code, err.message);
-        showToast('❌ Erro ao entrar. Tenta novamente.');
-      }
-    }
-  });
+btnLogin.addEventListener('click', () => {
+  if (auth.currentUser) {
+    dropMenu.classList.toggle('show');
+    return;
+  }
+  window.location.href = 'login.html';
+});
 
   window.addEventListener('click', e => {
     if (!btnLogin.contains(e.target) && !dropMenu.contains(e.target)) {
