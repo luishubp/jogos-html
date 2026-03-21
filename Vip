@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIP — Hub Jogos</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='32' font-size='32'>🎮</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --laranja: #f97316;
+    --laranja-vivo: #fb923c;
+    --laranja-escuro: #ea580c;
+    --ouro: #f59e0b;
+    --fundo: #0a0a0a;
+    --fundo2: #111111;
+    --fundo3: #1a1a1a;
+    --borda: #2a2a2a;
+    --texto: #f1f0ef;
+    --texto-muted: #6b6b6b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Barlow', sans-serif; background: var(--fundo); color: var(--texto); min-height: 100vh; }
+
+  /* ── NAV ─────────────────────────────────────────────────────── */
+  header {
+    position: fixed; top: 0; left: 0; width: 100%;
+    background: rgba(10,10,10,0.97); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--borda); z-index: 1000;
+    height: 58px; display: flex; align-items: center; padding: 0 24px; gap: 0;
+  }
+  .logo {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 1px; color: var(--texto);
+    text-decoration: none; display: flex; align-items: center; gap: 7px;
+    flex-shrink: 0; margin-right: 32px;
+  }
+  .logo span { color: var(--laranja); }
+  .nav-links { display: flex; align-items: center; gap: 4px; flex: 1; }
+  .nav-link {
+    padding: 6px 14px; border-radius: 6px; background: none; border: none;
+    color: var(--texto-muted); font-family: 'Barlow', sans-serif;
+    font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-link:hover { color: var(--texto); }
+  .nav-link.vip-link {
+    background: var(--laranja); color: #000 !important; font-weight: 800;
+    border-radius: 99px; padding: 5px 16px;
+  }
+  .nav-link.active { color: var(--texto); text-decoration: underline; text-decoration-color: var(--laranja); text-underline-offset: 4px; }
+  .back-icon { margin-left: auto; color: var(--texto-muted); font-size: 13px; font-weight: 600; text-decoration: none; transition: color 0.2s; }
+  .back-icon:hover { color: var(--laranja); }
+
+  /* ── HERO VIP ────────────────────────────────────────────────── */
+  .vip-hero {
+    padding: 100px 24px 60px;
+    text-align: center;
+    background: radial-gradient(ellipse at top, #1a0800 0%, var(--fundo) 70%);
+    position: relative; overflow: hidden;
+  }
+  .vip-hero::before {
+    content: '👑'; position: absolute; top: 70px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 3.5rem; opacity: 0.15; pointer-events: none;
+  }
+  .vip-hero .coroa { font-size: 3rem; display: block; margin-bottom: 12px; }
+  .vip-hero h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 3rem; font-weight: 900; text-transform: uppercase;
+    letter-spacing: 2px; margin-bottom: 10px;
+  }
+  .vip-hero p { color: var(--texto-muted); font-size: 15px; margin-bottom: 24px; }
+
+  /* Card do usuário atual */
+  .user-card {
+    display: inline-flex; align-items: center; gap: 14px;
+    background: var(--fundo2); border: 1px solid var(--borda);
+    border-radius: 12px; padding: 14px 24px;
+    margin-bottom: 0;
+  }
+  .user-card img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--borda); background: var(--fundo3); }
+  .user-card-info p { font-size: 14px; font-weight: 700; }
+  .user-card-info small { font-size: 12px; color: var(--texto-muted); }
+
+  /* ── PLANOS ──────────────────────────────────────────────────── */
+  .planos-section { max-width: 1000px; margin: 0 auto; padding: 60px 24px; }
+  .planos-titulo { text-align: center; margin-bottom: 40px; }
+  .planos-titulo h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2.2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .planos-titulo p { color: var(--texto-muted); font-size: 14px; margin-bottom: 16px; }
+
+  .btn-chave {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 20px; border-radius: 99px;
+    border: 1px solid var(--borda); background: transparent;
+    color: var(--texto-muted); font-family: 'Barlow', sans-serif;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-chave:hover { border-color: var(--laranja); color: var(--texto); }
+
+  .planos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px; align-items: start;
+  }
+
+  .plano-card {
+    background: var(--fundo2); border: 1px solid var(--borda);
+    border-radius: 16px; padding: 28px; position: relative;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .plano-card:hover { border-color: var(--laranja); box-shadow: 0 8px 32px rgba(249,115,22,0.1); }
+
+  /* Card destaque */
+  .plano-card.destaque {
+    border-color: var(--laranja);
+    background: linear-gradient(180deg, #1a0800, var(--fundo2));
+    box-shadow: 0 8px 32px rgba(249,115,22,0.2);
+  }
+
+  .badge-mais-vendido {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--laranja); color: #000;
+    font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;
+    padding: 4px 14px; border-radius: 99px; white-space: nowrap;
+  }
+
+  .plano-nome {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.4rem; font-weight: 900; text-transform: uppercase;
+    margin-bottom: 8px; letter-spacing: 0.5px;
+  }
+  .plano-card.destaque .plano-nome { color: var(--laranja); }
+
+  .plano-preco {
+    display: flex; align-items: baseline; gap: 6px;
+    margin-bottom: 14px;
+  }
+  .plano-preco strong {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2.4rem; font-weight: 900; color: var(--texto);
+    line-height: 1;
+  }
+  .plano-preco span { color: var(--texto-muted); font-size: 13px; }
+
+  .badge-bonus {
+    display: inline-block; background: rgba(34,197,94,0.15);
+    border: 1px solid rgba(34,197,94,0.3); color: #4ade80;
+    font-size: 11px; font-weight: 700; padding: 3px 10px;
+    border-radius: 4px; margin-bottom: 10px;
+  }
+
+  .vip-pill {
+    display: inline-block; background: var(--laranja); color: #000;
+    font-size: 11px; font-weight: 800; padding: 3px 12px;
+    border-radius: 99px; margin-bottom: 16px; text-transform: uppercase;
+  }
+
+  .plano-divider { height: 1px; background: var(--borda); margin: 16px 0; }
+
+  .plano-beneficios { list-style: none; margin-bottom: 24px; }
+  .plano-beneficios li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 13px; padding: 5px 0; color: var(--texto-muted);
+  }
+  .plano-beneficios li .check { color: var(--laranja); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  .btn-comprar {
+    width: 100%; padding: 13px;
+    border-radius: 10px; border: none; cursor: pointer;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;
+    transition: opacity 0.2s, transform 0.1s;
+    text-decoration: none; display: block; text-align: center;
+  }
+  .btn-comprar:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-comprar.outline {
+    background: transparent; color: var(--laranja);
+    border: 2px solid var(--laranja);
+  }
+  .btn-comprar.filled {
+    background: linear-gradient(90deg, var(--laranja-escuro), var(--laranja-vivo));
+    color: #000; box-shadow: 0 4px 16px rgba(249,115,22,0.35);
+  }
+
+  /* ── FOOTER ──────────────────────────────────────────────────── */
+  footer {
+    text-align: center; padding: 24px; font-size: 12px;
+    color: var(--texto-muted); border-top: 1px solid var(--borda);
+  }
+
+  /* ── TOAST ───────────────────────────────────────────────────── */
+  #toast {
+    position: fixed; bottom: 30px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--fundo3); border: 1px solid var(--laranja);
+    color: var(--texto); padding: 12px 24px; border-radius: 8px;
+    font-size: 13px; font-weight: 700; z-index: 9999; opacity: 0;
+    transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media(max-width: 600px) {
+    .vip-hero h1 { font-size: 2rem; }
+    .planos-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html">🎮 Hub <span>Jogos</span></a>
+  <nav class="nav-links">
+    <a href="index.html"      class="nav-link">Home</a>
+    <a href="comunidade.html" class="nav-link">Comunidade</a>
+    <a href="vip.html"        class="nav-link vip-link active">VIP</a>
+    <a href="loja.html"       class="nav-link">Loja</a>
+  </nav>
+  <a href="index.html" class="back-icon">← Voltar</a>
+</header>
+
+<!-- Hero -->
+<div class="vip-hero">
+  <div class="user-card">
+    <img id="user-avatar" src="" alt="Avatar">
+    <div class="user-card-info">
+      <p id="user-nome">Visitante</p>
+      <small id="user-status">Sem VIP ativo</small>
+    </div>
+  </div>
+</div>
+
+<!-- Planos -->
+<div class="planos-section">
+  <div class="planos-titulo">
+    <h2>Escolha seu Plano VIP</h2>
+    <p>Desbloqueie recursos exclusivos e aproveite ao máximo</p>
+    <button class="btn-chave">🔑 Tenho uma chave VIP</button>
+  </div>
+
+  <div class="planos-grid">
+
+    <!-- Semanal -->
+    <div class="plano-card">
+      <div class="plano-nome">VIP Semanal</div>
+      <div class="plano-preco">
+        <strong>R$ 5,00</strong><span>/7 dias</span>
+      </div>
+      <div class="vip-pill">VIP</div>
+      <div class="plano-divider"></div>
+      <ul class="plano-beneficios">
+        <li><span class="check">✓</span> Acesso a jogos exclusivos</li>
+        <li><span class="check">✓</span> Sem anúncios</li>
+        <li><span class="check">✓</span> Acesso antecipado aos jogos</li>
+        <li><span class="check">✓</span> Gift de foto</li>
+        <li><span class="check">✓</span> Acesso ao aplicativo</li>
+        <li><span class="check">✓</span> Tag VIP no Discord</li>
+        <li><span class="check">✓</span> Sorteios e decorações mensais</li>
+      </ul>
+      <!-- Troca o href pelo teu link do Livepix -->
+      <a href="https://livepix.gg/pixj/vip-semanal" target="_blank" class="btn-comprar outline">Comprar Agora</a>
+    </div>
+
+    <!-- Mensal — DESTAQUE -->
+    <div class="plano-card destaque">
+      <div class="badge-mais-vendido">MAIS VENDIDO</div>
+      <div class="plano-nome">VIP Mensal</div>
+      <div class="plano-preco">
+        <strong>R$ 12,00</strong><span>/30 dias</span>
+      </div>
+      <div class="badge-bonus">+5 dias de bônus</div>
+      <div class="vip-pill">VIP</div>
+      <div class="plano-divider"></div>
+      <ul class="plano-beneficios">
+        <li><span class="check">✓</span> Acesso a jogos exclusivos</li>
+        <li><span class="check">✓</span> Sem anúncios</li>
+        <li><span class="check">✓</span> Acesso antecipado aos jogos</li>
+        <li><span class="check">✓</span> Gift de foto</li>
+        <li><span class="check">✓</span> Acesso ao aplicativo</li>
+        <li><span class="check">✓</span> Tag VIP no Discord</li>
+        <li><span class="check">✓</span> Sorteios e decorações mensais</li>
+      </ul>
+      <a href="https://livepix.gg/pixj/vip-mensal" target="_blank" class="btn-comprar filled">Comprar Agora</a>
+    </div>
+
+    <!-- Trimestral -->
+    <div class="plano-card">
+      <div class="plano-nome">VIP Trimestral</div>
+      <div class="plano-preco">
+        <strong>R$ 25,00</strong><span>/90 dias</span>
+      </div>
+      <div class="badge-bonus">+5 dias de bônus</div>
+      <div class="vip-pill">VIP</div>
+      <div class="plano-divider"></div>
+      <ul class="plano-beneficios">
+        <li><span class="check">✓</span> Acesso a jogos exclusivos</li>
+        <li><span class="check">✓</span> Sem anúncios</li>
+        <li><span class="check">✓</span> Acesso antecipado aos jogos</li>
+        <li><span class="check">✓</span> Gift de foto</li>
+        <li><span class="check">✓</span> Acesso ao aplicativo</li>
+        <li><span class="check">✓</span> Tag VIP no Discord</li>
+        <li><span class="check">✓</span> Sorteios e decorações mensais</li>
+      </ul>
+      <a href="https://livepix.gg/pixj/vip-trimensal" target="_blank" class="btn-comprar outline">Comprar Agora</a>
+    </div>
+
+  </div>
+</div>
+
+<footer>Feito com 🧡 para GitHub Pages + Firebase</footer>
+<div id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyALp8QDfjyjGQDfaJuVjEEv_mBhnylHUj8",
+    authDomain: "meuhubdejogos.firebaseapp.com",
+    projectId: "meuhubdejogos",
+    storageBucket: "meuhubdejogos.firebasestorage.app",
+    messagingSenderId: "485191017245",
+    appId: "1:485191017245:web:06c2ea7c5aa8f01472b7f4"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const snap = await getDoc(doc(db, "usuarios", user.uid));
+      let nome = user.displayName ? user.displayName.split(' ')[0] : 'Jogador';
+      let foto = user.photoURL || '';
+
+      if (snap.exists()) {
+        const d = snap.data();
+        if (d.nickname) nome = d.nickname;
+        if (d.avatar)   foto = d.avatar;
+        if (d.isVip) {
+          document.getElementById('user-status').textContent = '💎 VIP Ativo';
+          document.getElementById('user-status').style.color = '#f59e0b';
+        }
+      }
+
+      document.getElementById('user-nome').textContent = nome;
+      if (foto) document.getElementById('user-avatar').src = foto;
+    }
+  });
+
+  // Botão chave VIP
+  document.querySelector('.btn-chave').addEventListener('click', () => {
+    const chave = prompt('Digite sua chave VIP:');
+    if (chave) {
+      const t = document.getElementById('toast');
+      t.textContent = '⏳ Validando chave...';
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+  });
+</script>
+</body>
+</html>
