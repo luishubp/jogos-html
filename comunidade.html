@@ -271,10 +271,7 @@
           <div class="dica-icone dica-jogar">🎮</div>
           <span>+10 XP por jogar</span>
         </div>
-        <div class="xp-dica">
-          <div class="dica-icone dica-comentar">💬</div>
-          <span>+5 XP por comentário</span>
-        </div>
+
       </div>
       <div class="xp-aviso">🏆 Os 3 primeiros do ranking diário ganham VIP grátis</div>
     </div>
@@ -287,7 +284,7 @@
       <textarea id="txt-comentario" maxlength="300" placeholder="Compartilhe sua opinião sobre os jogos..."></textarea>
       <div class="form-footer">
         <span class="char-count" id="char-count">0 / 300</span>
-        <button class="btn-enviar" id="btn-enviar">Comentar → +5 XP</button>
+        <button class="btn-enviar" id="btn-enviar">Comentar</button>
       </div>
     </div>
 
@@ -423,7 +420,7 @@
       showToast('❌ Erro ao enviar. Tenta novamente.');
     }
 
-    btn.disabled = false; btn.textContent = 'Comentar → +5 XP';
+    btn.disabled = false; btn.textContent = 'Comentar';
   });
 
   // ── Carregar comentários em tempo real ─────────────────────────────────────
