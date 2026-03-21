@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrar — Hub Jogos</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --laranja: #f97316;
+    --laranja-vivo: #fb923c;
+    --laranja-escuro: #ea580c;
+    --laranja-glow: rgba(249,115,22,0.3);
+    --fundo: #0a0a0a;
+    --fundo2: #111111;
+    --fundo3: #1a1a1a;
+    --borda: #2a2a2a;
+    --texto: #f1f0ef;
+    --texto-muted: #6b6b6b;
+  }
+ 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--fundo);
+    color: var(--texto);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+ 
+  /* ── FUNDO DECORATIVO ───────────────────────────────────────── */
+  .bg-orbs {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+  }
+  .orb1 {
+    width: 400px; height: 400px;
+    background: var(--laranja-escuro);
+    top: -100px; left: -100px;
+    animation: floatOrb 8s ease-in-out infinite alternate;
+  }
+  .orb2 {
+    width: 300px; height: 300px;
+    background: var(--laranja);
+    bottom: -80px; right: -80px;
+    animation: floatOrb 10s ease-in-out infinite alternate-reverse;
+  }
+  .orb3 {
+    width: 200px; height: 200px;
+    background: var(--laranja-vivo);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: floatOrb 12s ease-in-out infinite alternate;
+  }
+ 
+  @keyframes floatOrb {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(30px, 20px) scale(1.1); }
+  }
+ 
+  /* Cards decorativos flutuantes (como na referência) */
+  .float-card {
+    position: fixed;
+    background: linear-gradient(135deg, var(--laranja-escuro), var(--laranja));
+    border-radius: 16px;
+    opacity: 0.08;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .fc1 { width: 140px; height: 140px; top: 10%; left: 5%; transform: rotate(-20deg); animation: floatCard 7s ease-in-out infinite alternate; }
+  .fc2 { width: 100px; height: 100px; top: 20%; right: 8%; transform: rotate(15deg); animation: floatCard 9s ease-in-out infinite alternate-reverse; }
+  .fc3 { width: 80px; height: 80px; bottom: 15%; left: 10%; transform: rotate(10deg); animation: floatCard 11s ease-in-out infinite alternate; }
+  .fc4 { width: 60px; height: 60px; bottom: 25%; right: 5%; transform: rotate(-25deg); animation: floatCard 6s ease-in-out infinite alternate-reverse; }
+ 
+  @keyframes floatCard {
+    from { transform: rotate(-20deg) translateY(0); }
+    to   { transform: rotate(-15deg) translateY(-20px); }
+  }
+ 
+  /* ── CARD DE LOGIN ──────────────────────────────────────────── */
+  .login-card {
+    position: relative; z-index: 1;
+    background: var(--fundo2);
+    border: 1px solid var(--borda);
+    border-radius: 20px;
+    padding: 40px 36px;
+    width: 100%; max-width: 420px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+    animation: slideUp 0.4s ease;
+  }
+ 
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+ 
+  /* Logo no topo */
+  .login-logo {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .login-logo a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--texto);
+    text-decoration: none;
+  }
+  .login-logo a span { color: var(--laranja); }
+  .login-logo p {
+    color: var(--texto-muted);
+    font-size: 14px;
+    margin-top: 6px;
+  }
+ 
+  /* ── BOTÃO GOOGLE ───────────────────────────────────────────── */
+  .btn-google {
+    width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    padding: 14px;
+    background: var(--fundo3);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    color: var(--texto);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.1s;
+    margin-bottom: 12px;
+  }
+  .btn-google:hover {
+    border-color: #4285f4;
+    background: rgba(66,133,244,0.08);
+    transform: translateY(-1px);
+  }
+  .btn-google svg { width: 20px; height: 20px; flex-shrink: 0; }
+ 
+  /* Divisor OU */
+  .divisor-ou {
+    display: flex; align-items: center; gap: 14px;
+    margin: 20px 0;
+    color: var(--texto-muted);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .divisor-ou::before,
+  .divisor-ou::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--borda);
+  }
+ 
+  /* ── INPUTS ─────────────────────────────────────────────────── */
+  .input-group { margin-bottom: 16px; }
+  .input-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--texto-muted);
+    margin-bottom: 7px;
+  }
+  .input-wrap {
+    position: relative;
+  }
+  .input-wrap .ico {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    pointer-events: none;
+  }
+  .input-wrap input {
+    width: 100%;
+    padding: 13px 14px 13px 44px;
+    background: var(--fundo3);
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    color: var(--texto);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .input-wrap input:focus {
+    border-color: var(--laranja);
+    box-shadow: 0 0 0 3px rgba(249,115,22,0.15);
+  }
+  .input-wrap input::placeholder { color: var(--texto-muted); }
+ 
+  /* Toggle senha */
+  .toggle-senha {
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none;
+    color: var(--texto-muted);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+    transition: color 0.2s;
+  }
+  .toggle-senha:hover { color: var(--texto); }
+ 
+  /* ── BOTÃO ENTRAR ───────────────────────────────────────────── */
+  .btn-entrar {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(90deg, var(--laranja-escuro), var(--laranja-vivo));
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(249,115,22,0.35);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: 20px;
+  }
+  .btn-entrar:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(249,115,22,0.5);
+  }
+  .btn-entrar:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+ 
+  /* Links */
+  .links-base {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--texto-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .links-base a {
+    color: var(--laranja);
+    text-decoration: none;
+    font-weight: 700;
+    transition: opacity 0.2s;
+  }
+  .links-base a:hover { opacity: 0.8; }
+ 
+  /* ── MODO REGISTRO ──────────────────────────────────────────── */
+  #campo-nome { display: none; }
+ 
+  /* ── ERRO / TOAST ───────────────────────────────────────────── */
+  .erro-msg {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #f87171;
+    margin-bottom: 16px;
+    display: none;
+    font-weight: 600;
+  }
+  .erro-msg.show { display: block; animation: shake 0.3s ease; }
+ 
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25%      { transform: translateX(-6px); }
+    75%      { transform: translateX(6px); }
+  }
+ 
+  /* Toggle modo */
+  .tab-row {
+    display: flex;
+    background: var(--fundo3);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 24px;
+    gap: 4px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 9px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-muted);
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .tab-btn.active {
+    background: var(--fundo2);
+    color: var(--laranja);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+ 
+  /* Voltar */
+  .back-link {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    color: var(--texto-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--laranja); }
+</style>
+</head>
+<body>
+ 
+<!-- Decoração de fundo -->
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+<div class="float-card fc1"></div>
+<div class="float-card fc2"></div>
+<div class="float-card fc3"></div>
+<div class="float-card fc4"></div>
+ 
+<div class="login-card">
+ 
+  <div class="login-logo">
+    <a href="index.html">🎮 Hub <span>Jogos</span></a>
+    <p>Entre na sua conta para continuar</p>
+  </div>
+ 
+  <!-- Tabs Login / Registrar -->
+  <div class="tab-row">
+    <button class="tab-btn active" id="tab-login">Entrar</button>
+    <button class="tab-btn" id="tab-reg">Registrar</button>
+  </div>
+ 
+  <!-- Botão Google -->
+  <button class="btn-google" id="btn-google">
+    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.36-8.16 2.36-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      <path fill="none" d="M0 0h48v48H0z"/>
+    </svg>
+    Entrar com Google
+  </button>
+ 
+  <!-- Divisor -->
+  <div class="divisor-ou">ou</div>
+ 
+  <!-- Mensagem de erro -->
+  <div class="erro-msg" id="erro-msg">❌ E-mail ou senha incorretos.</div>
+ 
+  <!-- Campo nome (só no registro) -->
+  <div class="input-group" id="campo-nome">
+    <label>Nome / Nickname</label>
+    <div class="input-wrap">
+      <span class="ico">👤</span>
+      <input type="text" id="inp-nome" placeholder="Como quer ser chamado?" maxlength="30">
+    </div>
+  </div>
+ 
+  <!-- E-mail -->
+  <div class="input-group">
+    <label>E-mail</label>
+    <div class="input-wrap">
+      <span class="ico">✉️</span>
+      <input type="email" id="inp-email" placeholder="seu@email.com">
+    </div>
+  </div>
+ 
+  <!-- Senha -->
+  <div class="input-group">
+    <label>Senha</label>
+    <div class="input-wrap">
+      <span class="ico">🔒</span>
+      <input type="password" id="inp-senha" placeholder="••••••••">
+      <button class="toggle-senha" id="toggle-senha" type="button">👁️</button>
+    </div>
+  </div>
+ 
+  <!-- Botão principal -->
+  <button class="btn-entrar" id="btn-entrar">→ Entrar</button>
+ 
+  <div class="links-base">
+    <span id="link-modo">Não tem uma conta? <a href="#" id="link-trocar">Registre-se</a></span>
+    <a href="#" id="link-esqueci">Esqueceu sua senha?</a>
+  </div>
+ 
+  <a href="index.html" class="back-link">← Voltar para o Hub</a>
+</div>
+ 
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import {
+    getAuth, signInWithPopup, GoogleAuthProvider,
+    signInWithEmailAndPassword, createUserWithEmailAndPassword,
+    sendPasswordResetEmail, updateProfile, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc }
+    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+ 
+  const firebaseConfig = {
+    apiKey: "AIzaSyALp8QDfjyjGQDfaJuVjEEv_mBhnylHUj8",
+    authDomain: "meuhubdejogos.firebaseapp.com",
+    projectId: "meuhubdejogos",
+    storageBucket: "meuhubdejogos.firebasestorage.app",
+    messagingSenderId: "485191017245",
+    appId: "1:485191017245:web:06c2ea7c5aa8f01472b7f4"
+  };
+ 
+  const app      = initializeApp(firebaseConfig);
+  const auth     = getAuth(app);
+  const db       = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+ 
+  let modoRegistro = false;
+ 
+  const tabLogin   = document.getElementById('tab-login');
+  const tabReg     = document.getElementById('tab-reg');
+  const campoNome  = document.getElementById('campo-nome');
+  const btnEntrar  = document.getElementById('btn-entrar');
+  const linkTrocar = document.getElementById('link-trocar');
+  const linkModo   = document.getElementById('link-modo');
+  const linkEsqueci= document.getElementById('link-esqueci');
+  const erroMsg    = document.getElementById('erro-msg');
+  const inpEmail   = document.getElementById('inp-email');
+  const inpSenha   = document.getElementById('inp-senha');
+  const inpNome    = document.getElementById('inp-nome');
+  const toggleSenha= document.getElementById('toggle-senha');
+  const btnGoogle  = document.getElementById('btn-google');
+ 
+  // Redireciona se já logado
+  onAuthStateChanged(auth, user => {
+    if (user) window.location.href = 'index.html';
+  });
+ 
+  // ── Toggle show/hide senha ────────────────────────────────────
+  toggleSenha.addEventListener('click', () => {
+    const tipo = inpSenha.type === 'password' ? 'text' : 'password';
+    inpSenha.type = tipo;
+    toggleSenha.textContent = tipo === 'password' ? '👁️' : '🙈';
+  });
+ 
+  // ── Trocar modo Login ↔ Registro ─────────────────────────────
+  function setModo(registro) {
+    modoRegistro = registro;
+    campoNome.style.display = registro ? 'block' : 'none';
+    btnEntrar.textContent = registro ? '→ Criar Conta' : '→ Entrar';
+    linkModo.innerHTML = registro
+      ? 'Já tem conta? <a href="#" id="link-trocar">Entrar</a>'
+      : 'Não tem uma conta? <a href="#" id="link-trocar">Registre-se</a>';
+    tabLogin.classList.toggle('active', !registro);
+    tabReg.classList.toggle('active', registro);
+    esconderErro();
+    document.getElementById('link-trocar').addEventListener('click', e => { e.preventDefault(); setModo(!modoRegistro); });
+  }
+ 
+  tabLogin.addEventListener('click', () => setModo(false));
+  tabReg.addEventListener('click',   () => setModo(true));
+  linkTrocar.addEventListener('click', e => { e.preventDefault(); setModo(!modoRegistro); });
+ 
+  // ── Erro ──────────────────────────────────────────────────────
+  function mostrarErro(msg) {
+    erroMsg.textContent = '❌ ' + msg;
+    erroMsg.classList.add('show');
+  }
+  function esconderErro() { erroMsg.classList.remove('show'); }
+ 
+  function traduzirErro(code) {
+    const erros = {
+      'auth/user-not-found':      'Nenhuma conta com este e-mail.',
+      'auth/wrong-password':      'Senha incorreta.',
+      'auth/invalid-email':       'E-mail inválido.',
+      'auth/email-already-in-use':'Este e-mail já está em uso.',
+      'auth/weak-password':       'A senha deve ter pelo menos 6 caracteres.',
+      'auth/too-many-requests':   'Muitas tentativas. Tenta mais tarde.',
+      'auth/invalid-credential':  'E-mail ou senha incorretos.',
+    };
+    return erros[code] || 'Algo correu mal. Tenta novamente.';
+  }
+ 
+  // ── Login / Registro com e-mail ───────────────────────────────
+  btnEntrar.addEventListener('click', async () => {
+    esconderErro();
+    const email = inpEmail.value.trim();
+    const senha = inpSenha.value;
+ 
+    if (!email || !senha) { mostrarErro('Preenche todos os campos.'); return; }
+ 
+    btnEntrar.disabled = true;
+    btnEntrar.textContent = '⏳ Aguarda...';
+ 
+    try {
+      if (modoRegistro) {
+        const nome = inpNome.value.trim() || email.split('@')[0];
+        const cred = await createUserWithEmailAndPassword(auth, email, senha);
+        await updateProfile(cred.user, { displayName: nome });
+        // Cria doc no Firestore
+        await setDoc(doc(db, "usuarios", cred.user.uid), {
+          nickname: nome,
+          bio: '',
+          xp: 0,
+          isVip: false
+        });
+      } else {
+        await signInWithEmailAndPassword(auth, email, senha);
+      }
+      window.location.href = 'index.html';
+    } catch (err) {
+      mostrarErro(traduzirErro(err.code));
+      btnEntrar.disabled = false;
+      btnEntrar.textContent = modoRegistro ? '→ Criar Conta' : '→ Entrar';
+    }
+  });
+ 
+  // Enter no input
+  [inpEmail, inpSenha, inpNome].forEach(inp => {
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') btnEntrar.click(); });
+  });
+ 
+  // ── Login com Google ──────────────────────────────────────────
+  btnGoogle.addEventListener('click', async () => {
+    try {
+      const cred = await signInWithPopup(auth, provider);
+      // Se for novo utilizador via Google, cria doc
+      const ref = doc(db, "usuarios", cred.user.uid);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) {
+        await setDoc(ref, {
+          nickname: cred.user.displayName.split(' ')[0],
+          bio: '',
+          xp: 0,
+          isVip: false
+        });
+      }
+      window.location.href = 'index.html';
+    } catch (err) {
+      if (err.code === 'auth/popup-blocked') {
+        mostrarErro('Popup bloqueado! Permite popups para este site.');
+      } else if (err.code !== 'auth/popup-closed-by-user') {
+        mostrarErro(traduzirErro(err.code));
+      }
+    }
+  });
+ 
+  // ── Esqueci a senha ───────────────────────────────────────────
+  linkEsqueci.addEventListener('click', async e => {
+    e.preventDefault();
+    const email = inpEmail.value.trim();
+    if (!email) { mostrarErro('Coloca o teu e-mail primeiro.'); return; }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      esconderErro();
+      erroMsg.style.background = 'rgba(34,197,94,0.1)';
+      erroMsg.style.borderColor = 'rgba(34,197,94,0.3)';
+      erroMsg.style.color = '#4ade80';
+      erroMsg.textContent = '✅ E-mail de recuperação enviado!';
+      erroMsg.classList.add('show');
+    } catch (err) {
+      mostrarErro(traduzirErro(err.code));
+    }
+  });
+</script>
+</body>
+</html>
