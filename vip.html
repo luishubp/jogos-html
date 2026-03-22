@@ -210,29 +210,6 @@
     .planos-grid { grid-template-columns: 1fr; }
   }
 
-  
-
-  
-  /* Fallback caso o iframe seja bloqueado */
-  .modal-fallback {
-    display: none; flex-direction: column; align-items: center;
-    justify-content: center; gap: 16px; padding: 32px; text-align: center;
-    height: 100%;
-  }
-  .modal-fallback.show { display: flex; }
-  .modal-fallback p { color: var(--texto-muted); font-size: 14px; line-height: 1.6; }
-  .btn-abrir-externo {
-    padding: 12px 28px;
-    background: linear-gradient(90deg, var(--laranja-escuro), var(--laranja-vivo));
-    color: #000; border: none; border-radius: 10px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 18px; font-weight: 900; text-transform: uppercase;
-    cursor: pointer; text-decoration: none; display: inline-block;
-    box-shadow: 0 4px 16px rgba(249,115,22,0.35);
-    transition: opacity 0.2s;
-  }
-  .btn-abrir-externo:hover { opacity: 0.9; }
-
 </style>
 </head>
 <body>
@@ -287,7 +264,7 @@
         <li><span class="check">✓</span> Sorteios e decorações mensais</li>
       </ul>
       <!-- Troca o href pelo teu link do Livepix -->
-      <a href="#" class="btn-comprar outline" data-plano="VIP Semanal" data-preco="R$ 5,00" data-link="https://livepix.gg/pixj/assinatura?plan=69be1098231423aea70446db">Comprar Agora</a>
+      <a href="https://livepix.gg/pixj/assinatura?plan=69be1098231423aea70446db" target="_blank" class="btn-comprar outline">Comprar Agora</a>
     </div>
 
     <!-- Mensal — DESTAQUE -->
@@ -308,7 +285,7 @@
         <li><span class="check">✓</span> Tag VIP no Discord</li>
         <li><span class="check">✓</span> Sorteios e decorações mensais</li>
       </ul>
-      <a href="#" class="btn-comprar outline" data-plano="VIP Mensal" data-preco="R$ 12,00" data-link="https://livepix.gg/pixj/assinatura?plan=69be0fe092f3cdcbb3007114">Comprar Agora</a>
+      <a href="https://livepix.gg/pixj/assinatura?plan=69be0fe092f3cdcbb3007114" target="_blank" class="btn-comprar outline">Comprar Agora</a>
     </div>
 
     <!-- Trimestral -->
@@ -329,7 +306,7 @@
         <li><span class="check">✓</span> Tag VIP no Discord</li>
         <li><span class="check">✓</span> Sorteios e decorações mensais</li>
       </ul>
-      <a href="#" class="btn-comprar filled" data-plano="VIP Trimestral" data-preco="R$ 25,00" data-link="https://livepix.gg/pixj/assinatura?plan=69be102ce35e478cd4013edc">Comprar Agora</a>
+      <a href="https://livepix.gg/pixj/assinatura?plan=69be102ce35e478cd4013edc" target="_blank" class="btn-comprar filled">Comprar Agora</a>
     </div>
 
   </div>
