@@ -22,200 +22,118 @@
     border-bottom: 1px solid var(--borda); z-index: 1000;
     height: 58px; display: flex; align-items: center; padding: 0 24px;
   }
-  .logo {
-    font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 900;
-    text-transform: uppercase; letter-spacing: 1px; color: var(--texto);
-    text-decoration: none; display: flex; align-items: center; gap: 7px;
-    flex-shrink: 0; margin-right: 32px;
-  }
+  .logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--texto); text-decoration: none; display: flex; align-items: center; gap: 7px; flex-shrink: 0; margin-right: 32px; }
   .logo span { color: var(--laranja); }
   .nav-links { display: flex; align-items: center; gap: 4px; flex: 1; }
-  .nav-link {
-    padding: 6px 14px; border-radius: 6px; background: none; border: none;
-    color: var(--texto-muted); font-family: 'Barlow', sans-serif;
-    font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none;
-    transition: color 0.2s;
-  }
+  .nav-link { padding: 6px 14px; border-radius: 6px; background: none; border: none; color: var(--texto-muted); font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; transition: color 0.2s; }
   .nav-link:hover { color: var(--texto); }
   .nav-link.vip-link { background: var(--laranja); color: #000 !important; font-weight: 800; border-radius: 99px; padding: 5px 16px; }
   .nav-link.active { color: var(--texto); text-decoration: underline; text-decoration-color: var(--laranja); text-underline-offset: 4px; }
   .back-icon { margin-left: auto; color: var(--texto-muted); font-size: 13px; font-weight: 600; text-decoration: none; transition: color 0.2s; }
   .back-icon:hover { color: var(--laranja); }
 
-  /* ── HERO COMUNIDADE ─────────────────────────────────────────── */
-  .hero-com {
-    padding: 90px 24px 48px;
-    text-align: center;
-    background: radial-gradient(ellipse at top, #0d0d0d 0%, var(--fundo) 70%);
-    border-bottom: 1px solid var(--borda);
-  }
-  .hero-com .icon-wrap {
-    position: relative; display: inline-block; margin-bottom: 16px;
-  }
-  .hero-com .icon-wrap .icon-main { font-size: 3.5rem; display: block; }
-  .hero-com .icon-wrap .notif-dot {
-    position: absolute; top: 4px; right: -4px;
-    width: 14px; height: 14px; background: var(--laranja);
-    border-radius: 50%; border: 2px solid var(--fundo);
-  }
-  .hero-com h1 {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 3rem; font-weight: 900; text-transform: uppercase;
-    letter-spacing: 3px; margin-bottom: 10px;
-  }
+  /* ── HERO ────────────────────────────────────────────────────── */
+  .hero-com { padding: 90px 24px 48px; text-align: center; background: radial-gradient(ellipse at top, #0d0d0d 0%, var(--fundo) 70%); border-bottom: 1px solid var(--borda); }
+  .hero-com .icon-wrap { position: relative; display: inline-block; margin-bottom: 16px; }
+  .hero-com .icon-main { font-size: 3.5rem; display: block; }
+  .hero-com .notif-dot { position: absolute; top: 4px; right: -4px; width: 14px; height: 14px; background: var(--laranja); border-radius: 50%; border: 2px solid var(--fundo); }
+  .hero-com h1 { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; }
   .hero-com p { color: var(--texto-muted); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 28px; }
 
-  /* Abas */
-  .tabs {
-    display: inline-flex; gap: 8px;
-    background: var(--fundo2); border: 1px solid var(--borda);
-    border-radius: 12px; padding: 6px;
-  }
-  .tab-btn {
-    padding: 9px 22px; border-radius: 8px; border: none;
-    background: transparent; color: var(--texto-muted);
-    font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 700;
-    cursor: pointer; transition: background 0.2s, color 0.2s;
-    display: flex; align-items: center; gap: 7px;
-  }
+  .tabs { display: inline-flex; gap: 8px; background: var(--fundo2); border: 1px solid var(--borda); border-radius: 12px; padding: 6px; }
+  .tab-btn { padding: 9px 22px; border-radius: 8px; border: none; background: transparent; color: var(--texto-muted); font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s, color 0.2s; display: flex; align-items: center; gap: 7px; }
   .tab-btn:hover { color: var(--texto); }
-  .tab-btn.active {
-    background: linear-gradient(90deg, var(--laranja-escuro), var(--laranja-vivo));
-    color: #000;
-  }
+  .tab-btn.active { background: linear-gradient(90deg, var(--laranja-escuro), var(--laranja-vivo)); color: #000; }
 
   /* ── CONTAINER ───────────────────────────────────────────────── */
   .container { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
 
   /* ── PAINEL XP ───────────────────────────────────────────────── */
-  .xp-painel {
-    background: var(--fundo2); border: 1px solid var(--borda);
-    border-radius: 14px; padding: 20px 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 16px; margin-bottom: 28px;
-  }
-  .xp-esquerda {}
+  .xp-painel { background: var(--fundo2); border: 1px solid var(--borda); border-radius: 14px; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 28px; }
   .xp-esquerda small { font-size: 11px; color: var(--texto-muted); text-transform: uppercase; letter-spacing: 0.8px; display: flex; align-items: center; gap: 5px; }
   .xp-numero { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 900; color: var(--laranja); line-height: 1; }
   .xp-numero span { font-size: 1.2rem; color: var(--texto-muted); }
-  .xp-direita { text-align: right; }
   .xp-direita small { font-size: 10px; color: var(--texto-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: block; }
   .xp-dicas { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
-  .xp-dica {
-    display: flex; align-items: center; gap: 6px;
-    background: var(--fundo3); border: 1px solid var(--borda);
-    border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 700;
-  }
+  .xp-dica { display: flex; align-items: center; gap: 6px; background: var(--fundo3); border: 1px solid var(--borda); border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 700; }
   .xp-dica .dica-icone { width: 20px; height: 20px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; }
   .dica-jogar { background: var(--laranja); color: #000; }
-  .dica-comentar { background: #4b5563; color: #fff; }
   .xp-aviso { margin-top: 8px; font-size: 11px; color: var(--texto-muted); display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
 
-  /* ── CONTEÚDO DAS ABAS ───────────────────────────────────────── */
+  /* ── ABAS ────────────────────────────────────────────────────── */
   .tab-content { display: none; }
   .tab-content.active { display: block; animation: fadeIn 0.25s ease; }
-
   @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
   /* ── COMENTÁRIOS ─────────────────────────────────────────────── */
-  .comentario-form {
-    background: var(--fundo2); border: 1px solid var(--borda);
-    border-radius: 12px; padding: 20px; margin-bottom: 24px;
-  }
-  .comentario-form textarea {
-    width: 100%; background: var(--fundo3); border: 1px solid var(--borda);
-    border-radius: 8px; color: var(--texto); font-family: 'Barlow', sans-serif;
-    font-size: 14px; padding: 12px 14px; outline: none; resize: none;
-    min-height: 80px; transition: border-color 0.2s;
-  }
+  .comentario-form { background: var(--fundo2); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+  .comentario-form textarea { width: 100%; background: var(--fundo3); border: 1px solid var(--borda); border-radius: 8px; color: var(--texto); font-family: 'Barlow', sans-serif; font-size: 14px; padding: 12px 14px; outline: none; resize: none; min-height: 80px; transition: border-color 0.2s; }
   .comentario-form textarea:focus { border-color: var(--laranja); }
   .comentario-form textarea::placeholder { color: var(--texto-muted); }
   .form-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; flex-wrap: wrap; gap: 8px; }
   .char-count { font-size: 11px; color: var(--texto-muted); }
-  .btn-enviar {
-    padding: 9px 22px;
-    background: linear-gradient(90deg, var(--laranja-escuro), var(--laranja-vivo));
-    color: #000; border: none; border-radius: 8px;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 900;
-    text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer;
-    transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(249,115,22,0.3);
-  }
+  .btn-enviar { padding: 9px 22px; background: linear-gradient(90deg, var(--laranja-escuro), var(--laranja-vivo)); color: #000; border: none; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(249,115,22,0.3); }
   .btn-enviar:hover { opacity: 0.9; }
   .btn-enviar:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  /* Lista de comentários */
   .comentarios-lista { display: flex; flex-direction: column; gap: 14px; }
-  .comentario-item {
-    background: var(--fundo2); border: 1px solid var(--borda);
-    border-radius: 10px; padding: 16px;
-    display: flex; gap: 12px;
-    transition: border-color 0.2s;
-  }
+
+  .comentario-item { background: var(--fundo2); border: 1px solid var(--borda); border-radius: 10px; padding: 16px; display: flex; gap: 12px; transition: border-color 0.2s; }
   .comentario-item:hover { border-color: #3a3a3a; }
-  .com-avatar {
-    width: 38px; height: 38px; border-radius: 50%; object-fit: cover;
-    background: var(--fundo3); border: 2px solid var(--borda); flex-shrink: 0;
-  }
+  .com-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; background: var(--fundo3); border: 2px solid var(--borda); flex-shrink: 0; }
   .com-corpo { flex: 1; min-width: 0; }
   .com-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
   .com-nome { font-size: 13px; font-weight: 700; }
   .com-vip { background: var(--ouro); color: #000; font-size: 9px; font-weight: 800; padding: 1px 7px; border-radius: 99px; text-transform: uppercase; }
   .com-data { font-size: 11px; color: var(--texto-muted); margin-left: auto; }
   .com-texto { font-size: 13px; color: var(--texto-muted); line-height: 1.5; word-break: break-word; }
-  .com-jogo { margin-top: 6px; font-size: 11px; color: var(--texto-muted); }
-  .com-jogo span { color: var(--laranja); font-weight: 700; }
+
+  /* ── RODAPÉ DO COMENTÁRIO (curtida + deletar) ────────────────── */
+  .com-footer { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .btn-curtir {
+    display: flex; align-items: center; gap: 5px;
+    background: none; border: 1px solid var(--borda);
+    border-radius: 99px; padding: 4px 12px;
+    color: var(--texto-muted); font-family: 'Barlow', sans-serif;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-curtir:hover { border-color: #ef4444; color: #ef4444; }
+  .btn-curtir.curtido { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.08); }
+  .btn-curtir .heart { font-size: 13px; }
+
+  .btn-deletar {
+    background: none; border: none; color: var(--texto-muted);
+    font-size: 12px; cursor: pointer; padding: 4px 8px;
+    border-radius: 6px; transition: color 0.2s, background 0.2s;
+    display: none;
+  }
+  .btn-deletar:hover { color: #ef4444; background: rgba(239,68,68,0.08); }
+  .btn-deletar.visivel { display: block; }
 
   .vazio-msg { text-align: center; color: var(--texto-muted); font-size: 14px; padding: 40px 0; }
 
   /* ── RANKING ─────────────────────────────────────────────────── */
-  .ranking-header {
-    display: grid; grid-template-columns: 48px 1fr 80px;
-    padding: 0 16px 12px; gap: 12px;
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.8px; color: var(--texto-muted);
-    border-bottom: 1px solid var(--borda); margin-bottom: 12px;
-  }
+  .ranking-header { display: grid; grid-template-columns: 48px 1fr 80px; padding: 0 16px 12px; gap: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--texto-muted); border-bottom: 1px solid var(--borda); margin-bottom: 12px; }
   .ranking-lista { display: flex; flex-direction: column; gap: 8px; }
-  .ranking-item {
-    background: var(--fundo2); border: 1px solid var(--borda);
-    border-radius: 10px; padding: 14px 16px;
-    display: grid; grid-template-columns: 48px 1fr 80px;
-    align-items: center; gap: 12px;
-    transition: border-color 0.2s;
-  }
+  .ranking-item { background: var(--fundo2); border: 1px solid var(--borda); border-radius: 10px; padding: 14px 16px; display: grid; grid-template-columns: 48px 1fr 80px; align-items: center; gap: 12px; transition: border-color 0.2s; }
   .ranking-item:hover { border-color: #3a3a3a; }
   .ranking-item.top1 { border-color: #fbbf24; background: linear-gradient(90deg, rgba(251,191,36,0.05), var(--fundo2)); }
   .ranking-item.top2 { border-color: #9ca3af; background: linear-gradient(90deg, rgba(156,163,175,0.05), var(--fundo2)); }
   .ranking-item.top3 { border-color: #92400e; background: linear-gradient(90deg, rgba(146,64,14,0.05), var(--fundo2)); }
-
-  .rank-pos {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1.4rem; font-weight: 900; text-align: center; color: var(--texto-muted);
-  }
-  .top1 .rank-pos { color: #fbbf24; }
-  .top2 .rank-pos { color: #9ca3af; }
-  .top3 .rank-pos { color: #92400e; }
-
+  .rank-pos { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 900; text-align: center; color: var(--texto-muted); }
+  .top1 .rank-pos { color: #fbbf24; } .top2 .rank-pos { color: #9ca3af; } .top3 .rank-pos { color: #92400e; }
   .rank-user { display: flex; align-items: center; gap: 10px; min-width: 0; }
   .rank-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: var(--fundo3); flex-shrink: 0; }
   .rank-nome { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .rank-vip { background: var(--ouro); color: #000; font-size: 9px; font-weight: 800; padding: 1px 7px; border-radius: 99px; text-transform: uppercase; margin-left: 6px; }
-
   .rank-xp { font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 900; color: var(--laranja); text-align: right; }
   .rank-xp small { font-size: 11px; color: var(--texto-muted); font-weight: 400; display: block; }
 
-  /* ── FOOTER ──────────────────────────────────────────────────── */
   footer { text-align: center; padding: 24px; font-size: 12px; color: var(--texto-muted); border-top: 1px solid var(--borda); margin-top: 20px; }
 
   /* ── TOAST ───────────────────────────────────────────────────── */
-  #toast {
-    position: fixed; bottom: 30px; left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--fundo3); border: 1px solid var(--laranja);
-    color: var(--texto); padding: 12px 24px; border-radius: 8px;
-    font-size: 13px; font-weight: 700; z-index: 9999; opacity: 0;
-    transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap;
-  }
+  #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--fundo3); border: 1px solid var(--laranja); color: var(--texto); padding: 12px 24px; border-radius: 8px; font-size: 13px; font-weight: 700; z-index: 9999; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap; }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   @media(max-width: 600px) {
@@ -224,7 +142,6 @@
     .xp-painel { flex-direction: column; }
     .xp-direita { text-align: left; }
     .xp-dicas { justify-content: flex-start; }
-    .xp-aviso { justify-content: flex-start; }
   }
 </style>
 </head>
@@ -241,7 +158,6 @@
   <a href="index.html" class="back-icon">← Voltar</a>
 </header>
 
-<!-- Hero -->
 <div class="hero-com">
   <div class="icon-wrap">
     <span class="icon-main">👥</span>
@@ -249,7 +165,6 @@
   </div>
   <h1>Comunidade</h1>
   <p>Comente nos jogos · Confira o ranking dos melhores</p>
-
   <div class="tabs">
     <button class="tab-btn active" data-tab="comentarios">💬 Últimos Comentários</button>
     <button class="tab-btn" data-tab="ranking">🏆 Classificação</button>
@@ -271,42 +186,35 @@
           <div class="dica-icone dica-jogar">🎮</div>
           <span>+10 XP por jogar</span>
         </div>
-
       </div>
       <div class="xp-aviso">🏆 Os 3 primeiros do ranking diário ganham VIP grátis</div>
     </div>
   </div>
 
-  <!-- Aba: Comentários -->
+  <!-- Aba Comentários -->
   <div class="tab-content active" id="tab-comentarios">
-
     <div class="comentario-form">
       <textarea id="txt-comentario" maxlength="300" placeholder="Compartilhe sua opinião sobre os jogos..."></textarea>
       <div class="form-footer">
         <span class="char-count" id="char-count">0 / 300</span>
-        <button class="btn-enviar" id="btn-enviar">Comentar</button>
+        <button class="btn-enviar" id="btn-enviar" disabled>Comentar</button>
       </div>
     </div>
-
     <div class="comentarios-lista" id="lista-comentarios">
       <div class="vazio-msg">⏳ Carregando comentários...</div>
     </div>
-
   </div>
 
-  <!-- Aba: Ranking -->
+  <!-- Aba Ranking -->
   <div class="tab-content" id="tab-ranking">
-
     <div class="ranking-header">
       <span style="text-align:center;">#</span>
       <span>Jogador</span>
       <span style="text-align:right;">XP</span>
     </div>
-
     <div class="ranking-lista" id="lista-ranking">
       <div class="vazio-msg">⏳ Carregando ranking...</div>
     </div>
-
   </div>
 
 </div>
@@ -318,8 +226,9 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import {
-    getFirestore, doc, getDoc, setDoc, addDoc, collection,
-    query, orderBy, limit, onSnapshot, serverTimestamp, updateDoc, increment
+    getFirestore, doc, getDoc, setDoc, addDoc, deleteDoc,
+    collection, query, orderBy, limit, onSnapshot,
+    serverTimestamp, updateDoc, increment, arrayUnion, arrayRemove
   } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -345,6 +254,11 @@
     setTimeout(() => t.classList.remove('show'), ms);
   }
 
+  // ── Escape HTML ───────────────────────────────────────────────────────────
+  function escapeHTML(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
   // ── Abas ──────────────────────────────────────────────────────────────────
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -355,14 +269,12 @@
     });
   });
 
-  // ── Contador de caracteres ─────────────────────────────────────────────────
+  // ── Contador chars ────────────────────────────────────────────────────────
   const txt = document.getElementById('txt-comentario');
   const charCount = document.getElementById('char-count');
-  txt.addEventListener('input', () => {
-    charCount.textContent = `${txt.value.length} / 300`;
-  });
+  txt.addEventListener('input', () => { charCount.textContent = `${txt.value.length} / 300`; });
 
-  // ── Auth ───────────────────────────────────────────────────────────────────
+  // ── Auth ──────────────────────────────────────────────────────────────────
   onAuthStateChanged(auth, async (user) => {
     usuarioAtual = user;
     if (user) {
@@ -378,7 +290,7 @@
     }
   });
 
-  // ── Enviar comentário ──────────────────────────────────────────────────────
+  // ── Enviar comentário ─────────────────────────────────────────────────────
   document.getElementById('btn-enviar').addEventListener('click', async () => {
     if (!usuarioAtual) { showToast('🔒 Faça login para comentar!'); return; }
     const texto = txt.value.trim();
@@ -392,38 +304,77 @@
       const avatar = dadosUsuario.avatar   || usuarioAtual.photoURL || '';
       const isVip  = dadosUsuario.isVip    || false;
 
-      // Salva comentário
       await addDoc(collection(db, "comentarios"), {
         uid: usuarioAtual.uid, nome, avatar, isVip,
-        texto, createdAt: serverTimestamp()
+        texto, curtidas: 0, curtidoPor: [],
+        createdAt: serverTimestamp()
       });
 
-      // Dá +5 XP anti-spam: cooldown de 5 min por comentário
+      // XP por comentário — cooldown de 5 min, silencioso
       const agora = Date.now();
-      const ultimoComentario = dadosUsuario.ultimoComentario || 0;
-      if (agora - ultimoComentario > 5 * 60 * 1000) {
+      const ultimo = dadosUsuario.ultimoComentario || 0;
+      if (agora - ultimo > 5 * 60 * 1000) {
         await updateDoc(doc(db, "usuarios", usuarioAtual.uid), {
-          xp: increment(5),
-          ultimoComentario: agora
+          xp: increment(5), ultimoComentario: agora
         });
         dadosUsuario.xp = (dadosUsuario.xp || 0) + 5;
         dadosUsuario.ultimoComentario = agora;
         document.getElementById('xp-numero').innerHTML = `${dadosUsuario.xp} <span>XP</span>`;
-        showToast('💬 Comentário enviado! +5 XP 🎉');
-      } else {
-        showToast('💬 Comentário enviado!');
       }
 
+      showToast('💬 Comentário enviado!');
       txt.value = ''; charCount.textContent = '0 / 300';
     } catch (err) {
       console.error(err);
-      showToast('❌ Erro ao enviar. Tenta novamente.');
+      showToast('❌ Erro ao enviar. Tente novamente.');
     }
-
     btn.disabled = false; btn.textContent = 'Comentar';
   });
 
-  // ── Carregar comentários em tempo real ─────────────────────────────────────
+  // ── Curtir comentário ─────────────────────────────────────────────────────
+  async function curtir(comentId, uidDono, nomeDono, jaCorreu) {
+    if (!usuarioAtual) { showToast('🔒 Faça login para curtir!'); return; }
+    if (usuarioAtual.uid === uidDono) { showToast('😅 Você não pode curtir o próprio comentário!'); return; }
+
+    const ref = doc(db, "comentarios", comentId);
+    if (jaCorreu) {
+      // Remove curtida
+      await updateDoc(ref, {
+        curtidas: increment(-1),
+        curtidoPor: arrayRemove(usuarioAtual.uid)
+      });
+    } else {
+      // Adiciona curtida
+      await updateDoc(ref, {
+        curtidas: increment(1),
+        curtidoPor: arrayUnion(usuarioAtual.uid)
+      });
+
+      // Notificação para o dono do comentário (só se não for ele mesmo)
+      const nomeQueCurtiu = dadosUsuario.nickname || usuarioAtual.displayName?.split(' ')[0] || 'Alguém';
+      await addDoc(collection(db, "notificacoes", uidDono, "lista"), {
+        tipo: "curtida",
+        de: nomeQueCurtiu,
+        avatarDe: dadosUsuario.avatar || usuarioAtual.photoURL || '',
+        mensagem: `${nomeQueCurtiu} curtiu seu comentário`,
+        lida: false,
+        createdAt: serverTimestamp()
+      });
+    }
+  }
+
+  // ── Deletar comentário ────────────────────────────────────────────────────
+  async function deletar(comentId) {
+    if (!confirm('Deletar este comentário?')) return;
+    try {
+      await deleteDoc(doc(db, "comentarios", comentId));
+      showToast('🗑️ Comentário deletado.');
+    } catch (err) {
+      showToast('❌ Erro ao deletar.');
+    }
+  }
+
+  // ── Renderizar comentários em tempo real ──────────────────────────────────
   const qComentarios = query(
     collection(db, "comentarios"),
     orderBy("createdAt", "desc"),
@@ -439,7 +390,14 @@
     lista.innerHTML = '';
     snap.forEach(docSnap => {
       const d = docSnap.data();
-      const data = d.createdAt ? new Date(d.createdAt.seconds * 1000).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'agora';
+      const id = docSnap.id;
+      const data = d.createdAt
+        ? new Date(d.createdAt.seconds * 1000).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+        : 'agora';
+
+      const jaCurtiu = usuarioAtual && (d.curtidoPor || []).includes(usuarioAtual.uid);
+      const eDono    = usuarioAtual && usuarioAtual.uid === d.uid;
+
       const item = document.createElement('div');
       item.className = 'comentario-item';
       item.innerHTML = `
@@ -451,18 +409,34 @@
             <span class="com-data">${data}</span>
           </div>
           <div class="com-texto">${escapeHTML(d.texto)}</div>
+          <div class="com-footer">
+            <button class="btn-curtir ${jaCurtiu ? 'curtido' : ''}" data-id="${id}" data-dono="${d.uid}" data-nome="${d.nome}" data-curtiu="${jaCurtiu}">
+              <span class="heart">${jaCurtiu ? '❤️' : '🤍'}</span>
+              <span>${d.curtidas || 0}</span>
+            </button>
+            <button class="btn-deletar ${eDono ? 'visivel' : ''}" data-id="${id}">🗑️ Deletar</button>
+          </div>
         </div>`;
+
+      // Evento curtir
+      item.querySelector('.btn-curtir').addEventListener('click', (e) => {
+        const btn = e.currentTarget;
+        curtir(btn.dataset.id, btn.dataset.dono, btn.dataset.nome, btn.dataset.curtiu === 'true');
+      });
+
+      // Evento deletar
+      if (eDono) {
+        item.querySelector('.btn-deletar').addEventListener('click', (e) => {
+          deletar(e.currentTarget.dataset.id);
+        });
+      }
+
       lista.appendChild(item);
     });
   });
 
-  // ── Carregar ranking ───────────────────────────────────────────────────────
-  const qRanking = query(
-    collection(db, "usuarios"),
-    orderBy("xp", "desc"),
-    limit(20)
-  );
-
+  // ── Ranking ───────────────────────────────────────────────────────────────
+  const qRanking = query(collection(db, "usuarios"), orderBy("xp", "desc"), limit(20));
   onSnapshot(qRanking, (snap) => {
     const lista = document.getElementById('lista-ranking');
     if (snap.empty) { lista.innerHTML = "<div class='vazio-msg'>Nenhum jogador ainda.</div>"; return; }
@@ -471,7 +445,7 @@
     let pos = 1;
     snap.forEach(docSnap => {
       const d = docSnap.data();
-      if (!d.nickname && !d.xp) return; // pula docs vazios
+      if (!d.xp && !d.nickname) return;
       const classe = pos <= 3 ? `top${pos}` : '';
       const item = document.createElement('div');
       item.className = `ranking-item ${classe}`;
@@ -487,11 +461,6 @@
       pos++;
     });
   });
-
-  // ── Segurança: escape HTML ─────────────────────────────────────────────────
-  function escapeHTML(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
 </script>
 </body>
 </html>
