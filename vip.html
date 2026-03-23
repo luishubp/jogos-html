@@ -22,7 +22,6 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Barlow', sans-serif; background: var(--fundo); color: var(--texto); min-height: 100vh; }
 
-  /* ── NAV ─────────────────────────────────────────────────────── */
   header {
     position: fixed; top: 0; left: 0; width: 100%;
     background: rgba(10,10,10,0.97); backdrop-filter: blur(14px);
@@ -44,27 +43,20 @@
     transition: color 0.2s;
   }
   .nav-link:hover { color: var(--texto); }
-  .nav-link.vip-link {
-    background: var(--laranja); color: #000 !important; font-weight: 800;
-    border-radius: 99px; padding: 5px 16px;
-  }
+  .nav-link.vip-link { background: var(--laranja); color: #000 !important; font-weight: 800; border-radius: 99px; padding: 5px 16px; }
   .nav-link.active { color: var(--texto); text-decoration: underline; text-decoration-color: var(--laranja); text-underline-offset: 4px; }
   .back-icon { margin-left: auto; color: var(--texto-muted); font-size: 13px; font-weight: 600; text-decoration: none; transition: color 0.2s; }
   .back-icon:hover { color: var(--laranja); }
 
-  /* ── HERO VIP ────────────────────────────────────────────────── */
   .vip-hero {
-    padding: 100px 24px 60px;
-    text-align: center;
+    padding: 100px 24px 60px; text-align: center;
     background: radial-gradient(ellipse at top, #1a0800 0%, var(--fundo) 70%);
     position: relative; overflow: hidden;
   }
   .vip-hero::before {
     content: '👑'; position: absolute; top: 70px; left: 50%;
-    transform: translateX(-50%);
-    font-size: 3.5rem; opacity: 0.15; pointer-events: none;
+    transform: translateX(-50%); font-size: 3.5rem; opacity: 0.15; pointer-events: none;
   }
-  .vip-hero .coroa { font-size: 3rem; display: block; margin-bottom: 12px; }
   .vip-hero h1 {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 3rem; font-weight: 900; text-transform: uppercase;
@@ -72,24 +64,20 @@
   }
   .vip-hero p { color: var(--texto-muted); font-size: 15px; margin-bottom: 24px; }
 
-  /* Card do usuário atual */
   .user-card {
     display: inline-flex; align-items: center; gap: 14px;
     background: var(--fundo2); border: 1px solid var(--borda);
     border-radius: 12px; padding: 14px 24px;
-    margin-bottom: 0;
   }
   .user-card img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--borda); background: var(--fundo3); }
   .user-card-info p { font-size: 14px; font-weight: 700; }
   .user-card-info small { font-size: 12px; color: var(--texto-muted); }
 
-  /* ── PLANOS ──────────────────────────────────────────────────── */
   .planos-section { max-width: 1000px; margin: 0 auto; padding: 60px 24px; }
   .planos-titulo { text-align: center; margin-bottom: 40px; }
   .planos-titulo h2 {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 2.2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;
-    margin-bottom: 8px;
+    font-size: 2.2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
   }
   .planos-titulo p { color: var(--texto-muted); font-size: 14px; margin-bottom: 16px; }
 
@@ -115,19 +103,10 @@
     transition: border-color 0.2s, box-shadow 0.2s;
   }
   .plano-card:hover { border-color: var(--laranja); box-shadow: 0 8px 32px rgba(249,115,22,0.1); }
-
-  /* Card destaque */
   .plano-card.destaque {
     border-color: var(--laranja);
     background: linear-gradient(180deg, #1a0800, var(--fundo2));
     box-shadow: 0 8px 32px rgba(249,115,22,0.2);
-  }
-
-  .badge-mais-vendido {
-    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-    background: var(--laranja); color: #000;
-    font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;
-    padding: 4px 14px; border-radius: 99px; white-space: nowrap;
   }
 
   .plano-nome {
@@ -137,14 +116,10 @@
   }
   .plano-card.destaque .plano-nome { color: var(--laranja); }
 
-  .plano-preco {
-    display: flex; align-items: baseline; gap: 6px;
-    margin-bottom: 14px;
-  }
+  .plano-preco { display: flex; align-items: baseline; gap: 6px; margin-bottom: 14px; }
   .plano-preco strong {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 2.4rem; font-weight: 900; color: var(--texto);
-    line-height: 1;
+    font-size: 2.4rem; font-weight: 900; color: var(--texto); line-height: 1;
   }
   .plano-preco span { color: var(--texto-muted); font-size: 13px; }
 
@@ -171,30 +146,21 @@
   .plano-beneficios li .check { color: var(--laranja); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
 
   .btn-comprar {
-    width: 100%; padding: 13px;
-    border-radius: 10px; border: none; cursor: pointer;
+    width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer;
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;
     transition: opacity 0.2s, transform 0.1s;
     text-decoration: none; display: block; text-align: center;
   }
   .btn-comprar:hover { opacity: 0.9; transform: translateY(-1px); }
-  .btn-comprar.outline {
-    background: transparent; color: var(--laranja);
-    border: 2px solid var(--laranja);
-  }
+  .btn-comprar.outline { background: transparent; color: var(--laranja); border: 2px solid var(--laranja); }
   .btn-comprar.filled {
     background: linear-gradient(90deg, var(--laranja-escuro), var(--laranja-vivo));
     color: #000; box-shadow: 0 4px 16px rgba(249,115,22,0.35);
   }
 
-  /* ── FOOTER ──────────────────────────────────────────────────── */
-  footer {
-    text-align: center; padding: 24px; font-size: 12px;
-    color: var(--texto-muted); border-top: 1px solid var(--borda);
-  }
+  footer { text-align: center; padding: 24px; font-size: 12px; color: var(--texto-muted); border-top: 1px solid var(--borda); }
 
-  /* ── TOAST ───────────────────────────────────────────────────── */
   #toast {
     position: fixed; bottom: 30px; left: 50%;
     transform: translateX(-50%) translateY(20px);
@@ -209,7 +175,6 @@
     .vip-hero h1 { font-size: 2rem; }
     .planos-grid { grid-template-columns: 1fr; }
   }
-
 </style>
 </head>
 <body>
@@ -225,7 +190,6 @@
   <a href="index.html" class="back-icon">← Voltar</a>
 </header>
 
-<!-- Hero -->
 <div class="vip-hero">
   <div class="user-card">
     <img id="user-avatar" src="" alt="Avatar">
@@ -236,7 +200,6 @@
   </div>
 </div>
 
-<!-- Planos -->
 <div class="planos-section">
   <div class="planos-titulo">
     <h2>Escolha seu Plano VIP</h2>
@@ -249,9 +212,7 @@
     <!-- Semanal -->
     <div class="plano-card">
       <div class="plano-nome">VIP Semanal</div>
-      <div class="plano-preco">
-        <strong>R$ 5,00</strong><span>/7 dias</span>
-      </div>
+      <div class="plano-preco"><strong>R$ 5,00</strong><span>/7 dias</span></div>
       <div class="vip-pill">VIP</div>
       <div class="plano-divider"></div>
       <ul class="plano-beneficios">
@@ -263,16 +224,13 @@
         <li><span class="check">✓</span> Tag VIP no Discord</li>
         <li><span class="check">✓</span> Sorteios e decorações mensais</li>
       </ul>
-      <!-- Troca o href pelo teu link do Livepix -->
-      <a href="https://livepix.gg/pixj/assinatura?plan=69be1098231423aea70446db" target="_blank" class="btn-comprar outline">Comprar Agora</a>
+      <a id="btn-semanal" href="login.html" target="_blank" class="btn-comprar outline">Comprar Agora</a>
     </div>
 
-    <!-- Mensal — DESTAQUE -->
+    <!-- Mensal -->
     <div class="plano-card">
       <div class="plano-nome">VIP Mensal</div>
-      <div class="plano-preco">
-        <strong>R$ 12,00</strong><span>/30 dias</span>
-      </div>
+      <div class="plano-preco"><strong>R$ 12,00</strong><span>/30 dias</span></div>
       <div class="badge-bonus">+5 dias de bônus</div>
       <div class="vip-pill">VIP</div>
       <div class="plano-divider"></div>
@@ -285,15 +243,13 @@
         <li><span class="check">✓</span> Tag VIP no Discord</li>
         <li><span class="check">✓</span> Sorteios e decorações mensais</li>
       </ul>
-      <a href="https://livepix.gg/pixj/assinatura?plan=69be0fe092f3cdcbb3007114" target="_blank" class="btn-comprar outline">Comprar Agora</a>
+      <a id="btn-mensal" href="login.html" target="_blank" class="btn-comprar outline">Comprar Agora</a>
     </div>
 
     <!-- Trimestral -->
     <div class="plano-card destaque">
       <div class="plano-nome">VIP Trimestral</div>
-      <div class="plano-preco">
-        <strong>R$ 25,00</strong><span>/90 dias</span>
-      </div>
+      <div class="plano-preco"><strong>R$ 25,00</strong><span>/90 dias</span></div>
       <div class="badge-bonus">+5 dias de bônus</div>
       <div class="vip-pill">VIP</div>
       <div class="plano-divider"></div>
@@ -306,7 +262,7 @@
         <li><span class="check">✓</span> Tag VIP no Discord</li>
         <li><span class="check">✓</span> Sorteios e decorações mensais</li>
       </ul>
-      <a href="https://livepix.gg/pixj/assinatura?plan=69be102ce35e478cd4013edc" target="_blank" class="btn-comprar filled">Comprar Agora</a>
+      <a id="btn-trimestral" href="login.html" target="_blank" class="btn-comprar filled">Comprar Agora</a>
     </div>
 
   </div>
@@ -333,6 +289,21 @@
   const auth = getAuth(app);
   const db   = getFirestore(app);
 
+  // Links base de cada plano
+  const PLANOS = {
+    semanal:    'https://livepix.gg/pixj/assinatura?plan=69be1098231423aea70446db',
+    mensal:     'https://livepix.gg/pixj/assinatura?plan=69be0fe092f3cdcbb3007114',
+    trimestral: 'https://livepix.gg/pixj/assinatura?plan=69be102ce35e478cd4013edc'
+  };
+
+  // Injeta o username do usuário logado em todos os botões
+  function atualizarLinks(username) {
+    const user = encodeURIComponent(username);
+    document.getElementById('btn-semanal').href    = `${PLANOS.semanal}&username=${user}`;
+    document.getElementById('btn-mensal').href     = `${PLANOS.mensal}&username=${user}`;
+    document.getElementById('btn-trimestral').href = `${PLANOS.trimestral}&username=${user}`;
+  }
+
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const snap = await getDoc(doc(db, "usuarios", user.uid));
@@ -351,6 +322,15 @@
 
       document.getElementById('user-nome').textContent = nome;
       if (foto) document.getElementById('user-avatar').src = foto;
+
+      // Injeta o username nos links do Livepix
+      atualizarLinks(nome);
+
+    } else {
+      // Não logado — botões redirecionam para login
+      document.getElementById('btn-semanal').href    = 'login.html';
+      document.getElementById('btn-mensal').href     = 'login.html';
+      document.getElementById('btn-trimestral').href = 'login.html';
     }
   });
 
@@ -364,14 +344,6 @@
       setTimeout(() => t.classList.remove('show'), 3000);
     }
   });
-
-
-
-
 </script>
-
-
-
-
 </body>
 </html>
