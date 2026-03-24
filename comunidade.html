@@ -15,13 +15,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Barlow', sans-serif; background: var(--fundo); color: var(--texto); min-height: 100vh; }
 
-  /* ── NAV ─────────────────────────────────────────────────────── */
-  header {
-    position: fixed; top: 0; left: 0; width: 100%;
-    background: rgba(10,10,10,0.97); backdrop-filter: blur(14px);
-    border-bottom: 1px solid var(--borda); z-index: 1000;
-    height: 58px; display: flex; align-items: center; padding: 0 24px;
-  }
+  header { position: fixed; top: 0; left: 0; width: 100%; background: rgba(10,10,10,0.97); backdrop-filter: blur(14px); border-bottom: 1px solid var(--borda); z-index: 1000; height: 58px; display: flex; align-items: center; padding: 0 24px; }
   .logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--texto); text-decoration: none; display: flex; align-items: center; gap: 7px; flex-shrink: 0; margin-right: 32px; }
   .logo span { color: var(--laranja); }
   .nav-links { display: flex; align-items: center; gap: 4px; flex: 1; }
@@ -32,7 +26,6 @@
   .back-icon { margin-left: auto; color: var(--texto-muted); font-size: 13px; font-weight: 600; text-decoration: none; transition: color 0.2s; }
   .back-icon:hover { color: var(--laranja); }
 
-  /* ── HERO ────────────────────────────────────────────────────── */
   .hero-com { padding: 90px 24px 48px; text-align: center; background: radial-gradient(ellipse at top, #0d0d0d 0%, var(--fundo) 70%); border-bottom: 1px solid var(--borda); }
   .hero-com .icon-wrap { position: relative; display: inline-block; margin-bottom: 16px; }
   .hero-com .icon-main { font-size: 3.5rem; display: block; }
@@ -45,10 +38,8 @@
   .tab-btn:hover { color: var(--texto); }
   .tab-btn.active { background: linear-gradient(90deg, var(--laranja-escuro), var(--laranja-vivo)); color: #000; }
 
-  /* ── CONTAINER ───────────────────────────────────────────────── */
   .container { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
 
-  /* ── PAINEL XP ───────────────────────────────────────────────── */
   .xp-painel { background: var(--fundo2); border: 1px solid var(--borda); border-radius: 14px; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 28px; }
   .xp-esquerda small { font-size: 11px; color: var(--texto-muted); text-transform: uppercase; letter-spacing: 0.8px; display: flex; align-items: center; gap: 5px; }
   .xp-numero { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 900; color: var(--laranja); line-height: 1; }
@@ -56,30 +47,31 @@
   .xp-direita small { font-size: 10px; color: var(--texto-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: block; }
   .xp-dicas { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
   .xp-dica { display: flex; align-items: center; gap: 6px; background: var(--fundo3); border: 1px solid var(--borda); border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 700; }
-  .xp-dica .dica-icone { width: 20px; height: 20px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+  .dica-icone { width: 20px; height: 20px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; }
   .dica-jogar { background: var(--laranja); color: #000; }
   .xp-aviso { margin-top: 8px; font-size: 11px; color: var(--texto-muted); display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
 
-  /* ── ABAS ────────────────────────────────────────────────────── */
   .tab-content { display: none; }
   .tab-content.active { display: block; animation: fadeIn 0.25s ease; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
-  /* ── COMENTÁRIOS ─────────────────────────────────────────────── */
+  /* Formulário */
   .comentario-form { background: var(--fundo2); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
   .comentario-form textarea { width: 100%; background: var(--fundo3); border: 1px solid var(--borda); border-radius: 8px; color: var(--texto); font-family: 'Barlow', sans-serif; font-size: 14px; padding: 12px 14px; outline: none; resize: none; min-height: 80px; transition: border-color 0.2s; }
   .comentario-form textarea:focus { border-color: var(--laranja); }
   .comentario-form textarea::placeholder { color: var(--texto-muted); }
   .form-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; flex-wrap: wrap; gap: 8px; }
   .char-count { font-size: 11px; color: var(--texto-muted); }
-  .btn-enviar { padding: 9px 22px; background: linear-gradient(90deg, var(--laranja-escuro), var(--laranja-vivo)); color: #000; border: none; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(249,115,22,0.3); }
+  .btn-enviar { padding: 9px 22px; background: linear-gradient(90deg, var(--laranja-escuro), var(--laranja-vivo)); color: #000; border: none; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(249,115,22,0.3); }
   .btn-enviar:hover { opacity: 0.9; }
   .btn-enviar:disabled { opacity: 0.4; cursor: not-allowed; }
 
   .comentarios-lista { display: flex; flex-direction: column; gap: 14px; }
 
-  .comentario-item { background: var(--fundo2); border: 1px solid var(--borda); border-radius: 10px; padding: 16px; display: flex; gap: 12px; transition: border-color 0.2s; }
+  /* Comentário */
+  .comentario-item { background: var(--fundo2); border: 1px solid var(--borda); border-radius: 10px; padding: 16px; transition: border-color 0.2s; }
   .comentario-item:hover { border-color: #3a3a3a; }
+  .com-main { display: flex; gap: 12px; }
   .com-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; background: var(--fundo3); border: 2px solid var(--borda); flex-shrink: 0; }
   .com-corpo { flex: 1; min-width: 0; }
   .com-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
@@ -88,36 +80,45 @@
   .com-data { font-size: 11px; color: var(--texto-muted); margin-left: auto; }
   .com-texto { font-size: 13px; color: var(--texto-muted); line-height: 1.5; word-break: break-word; }
 
-  /* ── RODAPÉ DO COMENTÁRIO (curtida + deletar) ────────────────── */
-  .com-footer { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-  .btn-curtir {
-    display: flex; align-items: center; gap: 5px;
-    background: none; border: 1px solid var(--borda);
-    border-radius: 99px; padding: 4px 12px;
-    color: var(--texto-muted); font-family: 'Barlow', sans-serif;
-    font-size: 12px; font-weight: 700; cursor: pointer;
-    transition: all 0.2s;
-  }
+  /* Rodapé do comentário */
+  .com-footer { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .btn-curtir { display: flex; align-items: center; gap: 5px; background: none; border: 1px solid var(--borda); border-radius: 99px; padding: 4px 12px; color: var(--texto-muted); font-family: 'Barlow', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
   .btn-curtir:hover { border-color: #ef4444; color: #ef4444; }
   .btn-curtir.curtido { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.08); }
-  .btn-curtir .heart { font-size: 13px; }
-
-  .btn-deletar {
-    background: none; border: none; color: var(--texto-muted);
-    font-size: 12px; cursor: pointer; padding: 4px 8px;
-    border-radius: 6px; transition: color 0.2s, background 0.2s;
-    display: none;
-  }
+  .btn-responder { display: flex; align-items: center; gap: 5px; background: none; border: 1px solid var(--borda); border-radius: 99px; padding: 4px 12px; color: var(--texto-muted); font-family: 'Barlow', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .btn-responder:hover { border-color: var(--laranja); color: var(--laranja); }
+  .btn-deletar { background: none; border: none; color: var(--texto-muted); font-size: 12px; cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: color 0.2s, background 0.2s; display: none; font-family: 'Barlow', sans-serif; font-weight: 700; }
   .btn-deletar:hover { color: #ef4444; background: rgba(239,68,68,0.08); }
   .btn-deletar.visivel { display: block; }
 
+  /* Box de resposta */
+  .resposta-box { display: none; margin-top: 12px; padding: 12px; background: var(--fundo3); border-radius: 8px; border: 1px solid var(--borda); }
+  .resposta-box.show { display: block; }
+  .resposta-box textarea { width: 100%; background: var(--fundo2); border: 1px solid var(--borda); border-radius: 6px; color: var(--texto); font-family: 'Barlow', sans-serif; font-size: 13px; padding: 10px 12px; outline: none; resize: none; min-height: 60px; transition: border-color 0.2s; }
+  .resposta-box textarea:focus { border-color: var(--laranja); }
+  .resposta-box textarea::placeholder { color: var(--texto-muted); }
+  .resposta-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; gap: 8px; }
+  .btn-enviar-resposta { padding: 7px 18px; background: linear-gradient(90deg, var(--laranja-escuro), var(--laranja-vivo)); color: #000; border: none; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
+  .btn-enviar-resposta:hover { opacity: 0.9; }
+  .btn-cancelar-resposta { padding: 7px 14px; background: none; border: 1px solid var(--borda); border-radius: 6px; color: var(--texto-muted); font-family: 'Barlow', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; transition: border-color 0.2s; }
+  .btn-cancelar-resposta:hover { border-color: var(--laranja); color: var(--texto); }
+
+  /* Respostas */
+  .respostas-lista { margin-top: 12px; padding-left: 20px; border-left: 2px solid var(--borda); display: flex; flex-direction: column; gap: 10px; }
+  .resposta-item { display: flex; gap: 10px; }
+  .resposta-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: var(--fundo3); border: 2px solid var(--borda); flex-shrink: 0; }
+  .resposta-corpo { flex: 1; min-width: 0; }
+  .resposta-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; flex-wrap: wrap; }
+  .resposta-nome { font-size: 12px; font-weight: 700; }
+  .resposta-data { font-size: 10px; color: var(--texto-muted); margin-left: auto; }
+  .resposta-texto { font-size: 12px; color: var(--texto-muted); line-height: 1.4; word-break: break-word; }
+
   .vazio-msg { text-align: center; color: var(--texto-muted); font-size: 14px; padding: 40px 0; }
 
-  /* ── RANKING ─────────────────────────────────────────────────── */
+  /* Ranking */
   .ranking-header { display: grid; grid-template-columns: 48px 1fr 80px; padding: 0 16px 12px; gap: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--texto-muted); border-bottom: 1px solid var(--borda); margin-bottom: 12px; }
   .ranking-lista { display: flex; flex-direction: column; gap: 8px; }
-  .ranking-item { background: var(--fundo2); border: 1px solid var(--borda); border-radius: 10px; padding: 14px 16px; display: grid; grid-template-columns: 48px 1fr 80px; align-items: center; gap: 12px; transition: border-color 0.2s; }
-  .ranking-item:hover { border-color: #3a3a3a; }
+  .ranking-item { background: var(--fundo2); border: 1px solid var(--borda); border-radius: 10px; padding: 14px 16px; display: grid; grid-template-columns: 48px 1fr 80px; align-items: center; gap: 12px; }
   .ranking-item.top1 { border-color: #fbbf24; background: linear-gradient(90deg, rgba(251,191,36,0.05), var(--fundo2)); }
   .ranking-item.top2 { border-color: #9ca3af; background: linear-gradient(90deg, rgba(156,163,175,0.05), var(--fundo2)); }
   .ranking-item.top3 { border-color: #92400e; background: linear-gradient(90deg, rgba(146,64,14,0.05), var(--fundo2)); }
@@ -132,7 +133,6 @@
 
   footer { text-align: center; padding: 24px; font-size: 12px; color: var(--texto-muted); border-top: 1px solid var(--borda); margin-top: 20px; }
 
-  /* ── TOAST ───────────────────────────────────────────────────── */
   #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--fundo3); border: 1px solid var(--laranja); color: var(--texto); padding: 12px 24px; border-radius: 8px; font-size: 13px; font-weight: 700; z-index: 9999; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap; }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -173,7 +173,6 @@
 
 <div class="container">
 
-  <!-- Painel XP -->
   <div class="xp-painel">
     <div class="xp-esquerda">
       <small>⚡ Seu XP acumulado</small>
@@ -247,19 +246,17 @@
   let usuarioAtual = null;
   let dadosUsuario = {};
 
-  // ── Toast ─────────────────────────────────────────────────────────────────
   function showToast(msg, ms = 3000) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), ms);
   }
 
-  // ── Escape HTML ───────────────────────────────────────────────────────────
   function escapeHTML(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // ── Abas ──────────────────────────────────────────────────────────────────
+  // Abas
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -269,12 +266,12 @@
     });
   });
 
-  // ── Contador chars ────────────────────────────────────────────────────────
+  // Chars
   const txt = document.getElementById('txt-comentario');
   const charCount = document.getElementById('char-count');
   txt.addEventListener('input', () => { charCount.textContent = `${txt.value.length} / 300`; });
 
-  // ── Auth ──────────────────────────────────────────────────────────────────
+  // Auth
   onAuthStateChanged(auth, async (user) => {
     usuarioAtual = user;
     if (user) {
@@ -290,7 +287,7 @@
     }
   });
 
-  // ── Enviar comentário ─────────────────────────────────────────────────────
+  // Enviar comentário
   document.getElementById('btn-enviar').addEventListener('click', async () => {
     if (!usuarioAtual) { showToast('🔒 Faça login para comentar!'); return; }
     const texto = txt.value.trim();
@@ -310,7 +307,7 @@
         createdAt: serverTimestamp()
       });
 
-      // XP por comentário — cooldown de 5 min, silencioso
+      // XP silencioso com cooldown
       const agora = Date.now();
       const ultimo = dadosUsuario.ultimoComentario || 0;
       if (agora - ultimo > 5 * 60 * 1000) {
@@ -331,111 +328,179 @@
     btn.disabled = false; btn.textContent = 'Comentar';
   });
 
-  // ── Curtir comentário ─────────────────────────────────────────────────────
-  async function curtir(comentId, uidDono, nomeDono, jaCorreu) {
+  // Curtir
+  async function curtir(comentId, uidDono, nomeDono, jaCurtiu) {
     if (!usuarioAtual) { showToast('🔒 Faça login para curtir!'); return; }
     if (usuarioAtual.uid === uidDono) { showToast('😅 Você não pode curtir o próprio comentário!'); return; }
-
     const ref = doc(db, "comentarios", comentId);
-    if (jaCorreu) {
-      // Remove curtida
-      await updateDoc(ref, {
-        curtidas: increment(-1),
-        curtidoPor: arrayRemove(usuarioAtual.uid)
-      });
+    if (jaCurtiu) {
+      await updateDoc(ref, { curtidas: increment(-1), curtidoPor: arrayRemove(usuarioAtual.uid) });
     } else {
-      // Adiciona curtida
-      await updateDoc(ref, {
-        curtidas: increment(1),
-        curtidoPor: arrayUnion(usuarioAtual.uid)
-      });
-
-      // Notificação para o dono do comentário (só se não for ele mesmo)
+      await updateDoc(ref, { curtidas: increment(1), curtidoPor: arrayUnion(usuarioAtual.uid) });
       const nomeQueCurtiu = dadosUsuario.nickname || usuarioAtual.displayName?.split(' ')[0] || 'Alguém';
       await addDoc(collection(db, "notificacoes", uidDono, "lista"), {
-        tipo: "curtida",
-        de: nomeQueCurtiu,
+        tipo: "curtida", de: nomeQueCurtiu,
         avatarDe: dadosUsuario.avatar || usuarioAtual.photoURL || '',
         mensagem: `${nomeQueCurtiu} curtiu seu comentário`,
-        lida: false,
-        createdAt: serverTimestamp()
+        lida: false, createdAt: serverTimestamp()
       });
     }
   }
 
-  // ── Deletar comentário ────────────────────────────────────────────────────
+  // Deletar comentário
   async function deletar(comentId) {
     if (!confirm('Deletar este comentário?')) return;
     try {
       await deleteDoc(doc(db, "comentarios", comentId));
       showToast('🗑️ Comentário deletado.');
-    } catch (err) {
-      showToast('❌ Erro ao deletar.');
+    } catch { showToast('❌ Erro ao deletar.'); }
+  }
+
+  // Enviar resposta
+  async function enviarResposta(comentId, uidDono, nomeAutor, texto) {
+    if (!usuarioAtual || !texto.trim()) return;
+    const nome   = dadosUsuario.nickname || usuarioAtual.displayName?.split(' ')[0] || 'Jogador';
+    const avatar = dadosUsuario.avatar   || usuarioAtual.photoURL || '';
+    const isVip  = dadosUsuario.isVip    || false;
+
+    await addDoc(collection(db, "comentarios", comentId, "respostas"), {
+      uid: usuarioAtual.uid, nome, avatar, isVip,
+      texto: texto.trim(), createdAt: serverTimestamp()
+    });
+
+    // Notifica o dono do comentário (se não for ele mesmo respondendo)
+    if (usuarioAtual.uid !== uidDono) {
+      await addDoc(collection(db, "notificacoes", uidDono, "lista"), {
+        tipo: "resposta", de: nome,
+        avatarDe: avatar,
+        mensagem: `${nome} respondeu seu comentário`,
+        lida: false, createdAt: serverTimestamp()
+      });
     }
   }
 
-  // ── Renderizar comentários em tempo real ──────────────────────────────────
-  const qComentarios = query(
-    collection(db, "comentarios"),
-    orderBy("createdAt", "desc"),
-    limit(30)
-  );
+  // Renderizar comentários
+  const qComentarios = query(collection(db, "comentarios"), orderBy("createdAt", "desc"), limit(30));
 
   onSnapshot(qComentarios, (snap) => {
     const lista = document.getElementById('lista-comentarios');
-    if (snap.empty) {
-      lista.innerHTML = "<div class='vazio-msg'>Nenhum comentário ainda. Seja o primeiro! 🎮</div>";
-      return;
-    }
+    if (snap.empty) { lista.innerHTML = "<div class='vazio-msg'>Nenhum comentário ainda. Seja o primeiro! 🎮</div>"; return; }
     lista.innerHTML = '';
-    snap.forEach(docSnap => {
-      const d = docSnap.data();
-      const id = docSnap.id;
-      const data = d.createdAt
-        ? new Date(d.createdAt.seconds * 1000).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
-        : 'agora';
 
+    snap.forEach(docSnap => {
+      const d  = docSnap.data();
+      const id = docSnap.id;
+      const data = d.createdAt ? new Date(d.createdAt.seconds * 1000).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'agora';
       const jaCurtiu = usuarioAtual && (d.curtidoPor || []).includes(usuarioAtual.uid);
       const eDono    = usuarioAtual && usuarioAtual.uid === d.uid;
 
       const item = document.createElement('div');
       item.className = 'comentario-item';
       item.innerHTML = `
-        <img class="com-avatar" src="${d.avatar || ''}" onerror="this.style.display='none'" alt="">
-        <div class="com-corpo">
-          <div class="com-header">
-            <span class="com-nome">${d.nome || 'Jogador'}</span>
-            ${d.isVip ? '<span class="com-vip">💎 VIP</span>' : ''}
-            <span class="com-data">${data}</span>
+        <div class="com-main">
+          <img class="com-avatar" src="${d.avatar || ''}" onerror="this.style.display='none'" alt="">
+          <div class="com-corpo">
+            <div class="com-header">
+              <span class="com-nome">${d.nome || 'Jogador'}</span>
+              ${d.isVip ? '<span class="com-vip">💎 VIP</span>' : ''}
+              <span class="com-data">${data}</span>
+            </div>
+            <div class="com-texto">${escapeHTML(d.texto)}</div>
+            <div class="com-footer">
+              <button class="btn-curtir ${jaCurtiu ? 'curtido' : ''}" data-id="${id}" data-dono="${d.uid}" data-curtiu="${jaCurtiu}">
+                ${jaCurtiu ? '❤️' : '🤍'} <span>${d.curtidas || 0}</span>
+              </button>
+              <button class="btn-responder" data-id="${id}">💬 Responder</button>
+              <button class="btn-deletar ${eDono ? 'visivel' : ''}" data-id="${id}">🗑️ Deletar</button>
+            </div>
           </div>
-          <div class="com-texto">${escapeHTML(d.texto)}</div>
-          <div class="com-footer">
-            <button class="btn-curtir ${jaCurtiu ? 'curtido' : ''}" data-id="${id}" data-dono="${d.uid}" data-nome="${d.nome}" data-curtiu="${jaCurtiu}">
-              <span class="heart">${jaCurtiu ? '❤️' : '🤍'}</span>
-              <span>${d.curtidas || 0}</span>
-            </button>
-            <button class="btn-deletar ${eDono ? 'visivel' : ''}" data-id="${id}">🗑️ Deletar</button>
+        </div>
+        <!-- Box de resposta -->
+        <div class="resposta-box" id="resposta-box-${id}">
+          <textarea placeholder="Escreva uma resposta..." maxlength="200"></textarea>
+          <div class="resposta-footer">
+            <span style="font-size:11px;color:var(--texto-muted);">0 / 200</span>
+            <div style="display:flex;gap:8px;">
+              <button class="btn-cancelar-resposta">Cancelar</button>
+              <button class="btn-enviar-resposta">Responder</button>
+            </div>
           </div>
-        </div>`;
+        </div>
+        <!-- Lista de respostas -->
+        <div class="respostas-lista" id="respostas-${id}"></div>`;
 
-      // Evento curtir
+      // Curtir
       item.querySelector('.btn-curtir').addEventListener('click', (e) => {
         const btn = e.currentTarget;
-        curtir(btn.dataset.id, btn.dataset.dono, btn.dataset.nome, btn.dataset.curtiu === 'true');
+        curtir(btn.dataset.id, btn.dataset.dono, d.nome, btn.dataset.curtiu === 'true');
       });
 
-      // Evento deletar
+      // Deletar
       if (eDono) {
-        item.querySelector('.btn-deletar').addEventListener('click', (e) => {
-          deletar(e.currentTarget.dataset.id);
-        });
+        item.querySelector('.btn-deletar').addEventListener('click', () => deletar(id));
       }
 
+      // Abrir box de resposta
+      item.querySelector('.btn-responder').addEventListener('click', () => {
+        if (!usuarioAtual) { showToast('🔒 Faça login para responder!'); return; }
+        const box = item.querySelector('.resposta-box');
+        box.classList.toggle('show');
+        if (box.classList.contains('show')) box.querySelector('textarea').focus();
+      });
+
+      // Cancelar resposta
+      item.querySelector('.btn-cancelar-resposta').addEventListener('click', () => {
+        const box = item.querySelector('.resposta-box');
+        box.classList.remove('show');
+        box.querySelector('textarea').value = '';
+      });
+
+      // Contador de chars da resposta
+      const txResposta = item.querySelector('.resposta-box textarea');
+      const charResposta = item.querySelector('.resposta-footer span');
+      txResposta.addEventListener('input', () => { charResposta.textContent = `${txResposta.value.length} / 200`; });
+
+      // Enviar resposta
+      item.querySelector('.btn-enviar-resposta').addEventListener('click', async () => {
+        const texto = txResposta.value.trim();
+        if (!texto) return;
+        await enviarResposta(id, d.uid, d.nome, texto);
+        txResposta.value = '';
+        charResposta.textContent = '0 / 200';
+        item.querySelector('.resposta-box').classList.remove('show');
+        showToast('💬 Resposta enviada!');
+      });
+
       lista.appendChild(item);
+
+      // Carrega respostas em tempo real
+      const qRespostas = query(collection(db, "comentarios", id, "respostas"), orderBy("createdAt", "asc"), limit(10));
+      onSnapshot(qRespostas, (rSnap) => {
+        const rLista = document.getElementById(`respostas-${id}`);
+        if (!rLista) return;
+        rLista.innerHTML = '';
+        rSnap.forEach(rDoc => {
+          const r = rDoc.data();
+          const rData = r.createdAt ? new Date(r.createdAt.seconds * 1000).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'agora';
+          const rItem = document.createElement('div');
+          rItem.className = 'resposta-item';
+          rItem.innerHTML = `
+            <img class="resposta-avatar" src="${r.avatar || ''}" onerror="this.style.display='none'" alt="">
+            <div class="resposta-corpo">
+              <div class="resposta-header">
+                <span class="resposta-nome">${r.nome || 'Jogador'}</span>
+                ${r.isVip ? '<span class="com-vip">💎</span>' : ''}
+                <span class="resposta-data">${rData}</span>
+              </div>
+              <div class="resposta-texto">${escapeHTML(r.texto)}</div>
+            </div>`;
+          rLista.appendChild(rItem);
+        });
+      });
     });
   });
 
-  // ── Ranking ───────────────────────────────────────────────────────────────
+  // Ranking
   const qRanking = query(collection(db, "usuarios"), orderBy("xp", "desc"), limit(20));
   onSnapshot(qRanking, (snap) => {
     const lista = document.getElementById('lista-ranking');
