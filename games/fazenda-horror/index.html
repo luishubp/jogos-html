@@ -511,3 +511,242 @@ const SCENES = [
     tree_hide: {
       text: `Você sobe numa paineira alta. A criatura passa por baixo sem olhar para cima.\n\nVocê fica lá até as 04:00. Começa a clarear.`,
       choices: [
+        { text: "Descer quando o dia amanhecer e ir embora", next: "escape_victory", sanCost: 10, fearAdd: -5 },
+      ]
+    },
+    hold_door: {
+      text: `Ela puxa. Você segura. Os músculos queimam. A madeira racha.\n\nEntão para. Você ouve ela se afastar.\n\nVocê não solta o trinco por mais uma hora.`,
+      choices: [
+        { text: "Esperar até as luzes do amanhecer para sair", next: "wait_dawn", sanCost: 5, fearAdd: 5 },
+      ]
+    },
+    push_through: {
+      text: `Você empurra com tudo e corre. Ela te agarra pelo ombro. A dor é intensa.\n\nVocê arranca e corre. Ela grita — um som impossível. Mas não te segue para fora da casa.`,
+      choices: [
+        { text: "Correr pela estrada sem parar", next: "run_survive", sanCost: -20, fearAdd: 15 },
+      ]
+    },
+    block_back: {
+      text: `Você bloqueia fundos e frente. A casa está selada.\n\nAo olhar pela janela dianteira, conta: <em>sete figuras</em> imóveis nos campos. Esperando.`,
+      choices: [
+        { text: "Ir para o centro da casa, longe de janelas, e esperar", next: "wait_dawn", sanCost: 0, fearAdd: 10 },
+      ]
+    },
+    escape_basement: {
+      text: `Você tranca o porão. A porta de ferro treme por horas.\n\nVocê se senta encostado na parede e espera.`,
+      choices: [
+        { text: "Aguardar o amanhecer no andar de baixo", next: "wait_dawn", sanCost: 0, fearAdd: 5 },
+      ]
+    },
+    run_death: {
+      text: `Você abre a porta. Ela está lá.\n\n<em>Fim.</em>`,
+      death: true,
+      choices: []
+    },
+  },
+  // Hour 4 – 02:00
+  {
+    location: "02:00 — você ainda está de pé",
+    church_safe: {
+      text: `A igrejinha cheira a madeira velha e cera. Você se tranca.\n\nNão há nada aqui. Apenas bancos, um crucifixo — de cabeça para baixo — e uma bíblia aberta no Gênesis.\n\nAlguém riscou todas as palavras "luz".`,
+      choices: [
+        { text: "Rezar e aguardar o amanhecer", next: "pray_dawn", sanCost: 10, fearAdd: -10 },
+      ]
+    },
+    find_exit: {
+      text: `Você desce as escadas e encontra uma janela lateral que não estava trancada. O quintal do lado está vazio.\n\nÉ sua melhor chance.`,
+      choices: [
+        { text: "Sair pela janela e ir em direção à estrada", next: "run_survive", sanCost: 0, fearAdd: 10 },
+        { text: "Voltar e pegar mais suprimentos antes de fugir", next: "wait_dawn", sanCost: -5, fearAdd: 10 },
+      ]
+    },
+    wait_dawn: {
+      text: `Você aguarda.\n\nAs horas passam como chicotadas. Sons vêm e vão. A casa estrala. Uma vez, você ouve alguém cantarolando fora — melodia infantil, desafinada.\n\nMas nada entra. Você sobrevive ao pior.`,
+      choices: [
+        { text: "Continuar esperando até clarear de vez", next: "final_dawn", sanCost: 10, fearAdd: -10 },
+      ]
+    },
+    freeze_roof: {
+      text: `Você vira pedra. A criatura fica olhando para cima por um minuto eterno.\n\nDepois caminha para longe.\n\nVocê espera mais duas horas no telhado, congelado de frio e medo.`,
+      choices: [
+        { text: "Descer quando ela sumir e tentar a estrada", next: "run_survive", sanCost: 0, fearAdd: 10 },
+      ]
+    },
+    hay_jump: {
+      text: `Você salta. A queda é dura, mas a palha amortece. Você rola e corre.\n\nA criatura grita atrás de si — ela não gosta de barulho alto.\n\nVocê corre pela estrada até os pulmões explodirem.`,
+      choices: [
+        { text: "Continuar correndo até ver luz de civilization", next: "escape_victory", sanCost: -15, fearAdd: 10 },
+      ]
+    },
+    pray_dawn: {
+      text: `Você reza. Não sabe bem a quê. Mas reza.\n\nOs sussurros diminuem. A escuridão fora da janela vai ficando azul-chumbo.\n\nAmanheceu.`,
+      choices: [
+        { text: "Sair quando o sol estiver no horizonte", next: "final_dawn", sanCost: 15, fearAdd: -15 },
+      ]
+    },
+    follow_whispers: {
+      text: `Você segue os sussurros pelo corredor.\n\nEles levam ao espelho do banheiro.\n\nSeu reflexo no espelho não move os lábios quando você abre os seus. <em>É o reflexo que sussurra.</em>\n\nEntão ele coloca a mão no vidro por dentro.`,
+      death: true,
+      choices: []
+    },
+    open_wardrobe_death: {
+      text: `Você abre.\n\nA última coisa que você vê são os olhos do teto do sótão — dentro do seu guarda-roupa, esperando a noite toda.\n\n<em>Fim.</em>`,
+      death: true,
+      choices: []
+    },
+    dark_safe: {
+      text: `A lanterna cai no chão longe. O quarto mergulha no escuro total.\n\nOs sussurros param. A coisa que controlava a lanterna não consegue te encontrar sem luz.\n\nVocê sorri. Aprendeu algo importante essa noite.`,
+      choices: [
+        { text: "Permanecer no escuro até o amanhecer natural", next: "final_dawn", sanCost: 10, fearAdd: -5 },
+      ]
+    },
+    listen_pattern: {
+      text: `Você escuta. Os sons formam um padrão. São coordenadas. GPS.\n\nO seu endereço de casa.\n\nEla <em>já esteve lá antes.</em>`,
+      choices: [
+        { text: "Sair correndo dessa casa agora mesmo", next: "run_survive", sanCost: -20, fearAdd: 25 },
+      ]
+    },
+    escape_victory: {
+      text: `O caminhoneiro para, abre a porta, olha para você.\n\n— "Outro da fazenda Velho Moço?" — ele pergunta, sem surpresa.\n\nVocê não pergunta o que ele quis dizer. Só entra.\n\nO sol nasce ao longe enquanto a fazenda some no espelho retrovisor.`,
+      choices: [
+        { text: "O fim — você sobreviveu", next: "WIN", sanCost: 0, fearAdd: 0 },
+      ]
+    },
+    final_dawn: {
+      text: `A luz do sol entra pela janela trincada como uma misericórdia.\n\nOs campos voltam a ser apenas campos. O celeiro, apenas madeira velha.\n\nVocê abre a porta principal. O ar frio da manhã nunca foi tão bom.\n\nVocê caminha pela estrada de terra. Não olha para trás.`,
+      choices: [
+        { text: "Ir embora e nunca mais voltar", next: "WIN", sanCost: 0, fearAdd: 0 },
+      ]
+    },
+  }
+];
+
+// ── FLATTEN SCENES ──────────────────────────────────────────────────────────
+
+function buildSceneMap() {
+  const map = {};
+  SCENES.forEach(hour => {
+    Object.entries(hour).forEach(([key, val]) => {
+      if (key === "location" || key === "text" || key === "choices") return;
+      if (typeof val === "object" && val.text) {
+        map[key] = { ...val, location: hour.location };
+      }
+    });
+    if (hour.text && hour.choices) {
+      map["start"] = { text: hour.text, choices: hour.choices, location: hour.location };
+    }
+  });
+  return map;
+}
+
+const SCENE_MAP = buildSceneMap();
+
+// Add manually the first scene
+SCENE_MAP["start"] = {
+  location: "Quarto principal — fazenda Velho Moço",
+  text: `Você se trancou no quarto do andar de cima. Pela janela rachada, os campos escuros se estendem até o horizonte. A lua está encoberta. Seu caminhão quebrou a três quilômetros daqui e você não tem sinal.\n\nDe repente, <em>algo bate na porta do celeiro</em>. Uma vez. Duas. Então silêncio absoluto.\n\nVocê tem poucas horas até o amanhecer. Precisa sobreviver.`,
+  choices: [
+    { text: "Explorar a casa em busca de armas ou ferramentas", next: "search_house", sanCost: 0, fearAdd: 5 },
+    { text: "Trancar janelas e reforçar a porta com a cômoda", next: "barricade", sanCost: 0, fearAdd: 0, item: "Porta Reforçada" },
+    { text: "Observar o celeiro pela janela para ver o que fez aquele barulho", next: "watch_barn", sanCost: -10, fearAdd: 15 },
+  ]
+};
+
+// ── COMPONENT ───────────────────────────────────────────────────────────────
+
+function App() {
+  const [phase, setPhase] = useState("title"); // title | game | win | dead
+  const [sceneKey, setSceneKey] = useState("start");
+  const [sanity, setSanity] = useState(100);
+  const [fear, setFear] = useState(0);
+  const [hour, setHour] = useState(0);
+  const [inventory, setInventory] = useState([]);
+  const [log, setLog] = useState([]);
+  const [bloodFlash, setBloodFlash] = useState(false);
+  const [typeText, setTypeText] = useState("");
+  const [typing, setTyping] = useState(false);
+  const logRef = useRef(null);
+
+  const scene = SCENE_MAP[sceneKey] || SCENE_MAP["start"];
+
+  function typewrite(text, cb) {
+    setTyping(true);
+    setTypeText("");
+    let i = 0;
+    const interval = setInterval(() => {
+      setTypeText(text.slice(0, i + 1));
+      i++;
+      if (i >= text.length) {
+        clearInterval(interval);
+        setTyping(false);
+        cb && cb();
+      }
+    }, 18);
+    return () => clearInterval(interval);
+  }
+
+  useEffect(() => {
+    if (phase === "game" && scene) {
+      const plain = scene.text.replace(/<[^>]+>/g, "");
+      typewrite(plain);
+    }
+  }, [sceneKey, phase]);
+
+  function handleChoice(choice) {
+    if (typing) return;
+
+    const newSan = Math.max(0, Math.min(100, sanity + (choice.sanCost || 0)));
+    const newFear = Math.min(100, fear + (choice.fearAdd || 0));
+    const newHour = hour + 1;
+
+    setSanity(newSan);
+    setFear(newFear);
+    setHour(newHour);
+
+    const items = [...inventory];
+    if (choice.item) items.push(choice.item);
+    if (choice.item2) items.push(choice.item2);
+    setInventory(items);
+
+    const nextScene = SCENE_MAP[choice.next];
+    const entry = { text: choice.text, type: choice.fearAdd > 20 ? "bad" : choice.sanCost > 0 ? "good" : "neutral" };
+    setLog(prev => [...prev.slice(-5), entry]);
+
+    if (choice.next === "WIN") {
+      setPhase("win");
+      return;
+    }
+
+    if (!nextScene || nextScene.death) {
+      if (nextScene && nextScene.text) {
+        setSceneKey(choice.next);
+        setTimeout(() => setPhase("dead"), 3000);
+      } else {
+        setPhase("dead");
+      }
+      setBloodFlash(true);
+      setTimeout(() => setBloodFlash(false), 600);
+      return;
+    }
+
+    if (newSan <= 0 || newFear >= 100) {
+      setPhase("dead");
+      setBloodFlash(true);
+      setTimeout(() => setBloodFlash(false), 600);
+      return;
+    }
+
+    setSceneKey(choice.next);
+  }
+
+  function restart() {
+    setPhase("title");
+    setSceneKey("start");
+    setSanity(100);
+    setFear(0);
+    setHour(0);
+    setInventory([]);
+    setLog([]);
+    setTypeText("");
+    setTyping(false);
+        }
