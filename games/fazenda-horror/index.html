@@ -1,1 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Fazenda Velho Moço — Narrativa</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
 
+const style = `
+  @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #000;
+    font-family: 'Special Elite', cursive;
+    color: #c8b99a;
+  }
+
+  .game-root {
+    min-height: 100vh;
+    background: #080603;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .grain {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 100;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+    opacity: 0.35;
+  }
+
+  .vignette {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 99;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.85) 100%);
+  }
+
+  .title-screen {
+    text-align: center;
+    animation: fadeIn 2s ease;
+  }
+
+  .title-screen h1 {
+    font-family: 'Creepster', cursive;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    color: #8b1a1a;
+    text-shadow: 0 0 40px #8b1a1a88, 0 0 80px #8b1a1a44;
+    letter-spacing: 4px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .title-screen .subtitle {
+    font-size: 1rem;
+    color: #5a4a3a;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-bottom: 50px;
+  }
+
+  .flicker {
+    animation: flicker 4s infinite;
+  }
+
+  @keyframes flicker {
+    0%, 95%, 97%, 100% { opacity: 1; }
+    96% { opacity: 0.2; }
+  }
+
+  .start-btn {
+    background: none;
+    border: 1px solid #8b1a1a55;
+    color: #8b1a1a;
+    font-family: 'Special Elite', cursive;
+    font-size: 1.1rem;
+    letter-spacing: 4px;
+    padding: 14px 40px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .start-btn:hover {
+    background: #8b1a1a22;
+    border-color: #8b1a1a;
+    box-shadow: 0 0 20px #8b1a1a44;
+    color: #cc2222;
+  }
+
+  .game-panel {
+    max-width: 720px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    animation: fadeIn 0.8s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 10px 16px;
+    border: 1px solid #3a2a1a;
+    background: #0d0904cc;
+  }
+
+  .hud-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .hud-label {
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    color: #5a4a3a;
+    text-transform: uppercase;
+  }
+
+  .hud-value {
+    font-family: 'Creepster', cursive;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+  }
+
+  .hud-value.danger { color: #cc2222; text-shadow: 0 0 10px #cc222266; }
+  .hud-value.warning { color: #cc8822; }
+  .hud-value.ok { color: #4a8a4a; }
+
+  .hour-bar {
+    flex: 1;
+    margin: 0 20px;
+  }
+
+  .hour-track {
+    height: 4px;
+    background: #1a1208;
+    border: 1px solid #3a2a1a;
+    position: relative;
+  }
+
+  .hour-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #8b1a1a, #cc4400);
+    transition: width 0.5s ease;
+    box-shadow: 0 0 8px #cc440066;
+  }
+
+  .scene-box {
+    border: 1px solid #2a1a0a;
+    background: #0a0704;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    position: relative;
+    min-height: 160px;
+  }
+
+  .scene-box::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 20px;
+    right: 20px; height: 1px;
+    background: linear-gradient(90deg, transparent, #8b1a1a55, transparent);
+  }
+
+  .scene-location {
+    font-size: 0.65rem;
+    letter-spacing: 5px;
+    color: #5a3a2a;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .scene-text {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: #c8b99a;
+    text-shadow: 0 1px 3px #00000088;
+  }
+
+  .scene-text em {
+    color: #8b1a1a;
+    font-style: normal;
+  }
+
+  .scene-text .sound {
+    color: #a0522d;
+    font-style: italic;
+  }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .choice-btn {
+    background: #0d0904;
+    border: 1px solid #2a1a0a;
+    color: #a89070;
+    font-family: 'Special Elite', cursive;
+    font-size: 0.95rem;
+    padding: 14px 20px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+  }
+
+  .choice-btn::before {
+    content: '▸';
+    margin-right: 12px;
+    color: #5a3a2a;
+    transition: color 0.25s;
+  }
+
+  .choice-btn:hover {
+    background: #1a0d04;
+    border-color: #8b1a1a55;
+    color: #e0c8a0;
+    box-shadow: inset 0 0 20px #8b1a1a11;
+  }
+
+  .choice-btn:hover::before {
+    color: #8b1a1a;
+  }
+
+  .choice-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .inventory {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    padding: 12px 16px;
+    border: 1px solid #1a1208;
+    background: #080603;
+  }
+
+  .inv-label {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: #5a4a3a;
+    text-transform: uppercase;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  .inv-item {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border: 1px solid #3a2a1a;
+    color: #8a7060;
+    background: #0d0904;
+  }
+
+  .end-screen {
+    text-align: center;
+    animation: fadeIn 1.5s ease;
+  }
+
+  .end-title {
+    font-family: 'Creepster', cursive;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    letter-spacing: 4px;
+    margin-bottom: 16px;
+  }
+
+  .end-title.survived { color: #4a8a4a; text-shadow: 0 0 30px #4a8a4a66; }
+  .end-title.dead { color: #8b1a1a; text-shadow: 0 0 30px #8b1a1a88; animation: shake 0.5s ease; }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+  }
+
+  .end-msg {
+    font-size: 1rem;
+    color: #7a6a5a;
+    line-height: 1.8;
+    max-width: 500px;
+    margin: 0 auto 32px;
+  }
+
+  .log {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-left: 2px solid #3a2a1a;
+    background: #08060388;
+  }
+
+  .log-entry {
+    font-size: 0.8rem;
+    color: #5a4a3a;
+    padding: 2px 0;
+    letter-spacing: 0.5px;
+  }
+
+  .log-entry.bad { color: #8b3a2a; }
+  .log-entry.good { color: #3a6a3a; }
+
+  @keyframes screenBlood {
+    0% { box-shadow: inset 0 0 0 0 #8b1a1a00; }
+    50% { box-shadow: inset 0 0 80px 20px #8b1a1a44; }
+    100% { box-shadow: inset 0 0 0 0 #8b1a1a00; }
+  }
+
+  .blood-flash {
+    animation: screenBlood 0.6s ease;
+  }
+`;
+
+// ── GAME DATA ──────────────────────────────────────────────────────────────
+
+const HOURS = ["22:00", "23:00", "00:00", "01:00", "02:00", "03:00", "04:00", "05:00"];
+
+const SCENES = [
+  // Hour 0 – 22:00
+  {
+    location: "Quarto principal — fazenda Velho Moço",
+    text: `Você se trancou no quarto do andar de cima. Pela janela rachada, os campos escuros se estendem até o horizonte. A lua está encoberta. Seu caminhão quebrou a três quilômetros daqui e você não tem sinal.\n\nDe repente, <em>algo bate na porta do celeiro</em>. Uma vez. Duas. Então silêncio absoluto.\n\nVocê tem poucas horas até o amanhecer. Precisa sobreviver.`,
+    choices: [
+      { text: "Explorar a casa em busca de armas ou ferramentas", next: "search_house", sanCost: 0, fearAdd: 5 },
+      { text: "Trancar janelas e reforçar a porta com a cômoda", next: "barricade", sanCost: 0, fearAdd: 0, item: "Porta Reforçada" },
+      { text: "Observar o celeiro pela janela para ver o que fez aquele barulho", next: "watch_barn", sanCost: -10, fearAdd: 15 },
+    ]
+  },
+  // Hour 1 – 23:00
+  {
+    location: "Corredor — andar de baixo",
+    search_house: {
+      text: `Você desce as escadas com cuidado. Cada tábua range como um grito abafado. Na cozinha, encontra uma <em>faca de açougueiro</em> e uma lanterna com bateria pela metade.\n\nNa parede, alguém riscou com carvão: <span class="sound">"NÃO ABRA O CELEIRO. ELE CONTA OS SEUS PASSOS."</span>\n\nVocê ouve passos lentos cruzando o teto — acima de você.`,
+      item: "Faca de Açougueiro",
+      item2: "Lanterna",
+      choices: [
+        { text: "Subir para verificar o que está andando no teto", next: "attic", sanCost: -15, fearAdd: 20 },
+        { text: "Voltar para o quarto e se esconder debaixo da cama", next: "hide_bed", sanCost: 5, fearAdd: 5 },
+        { text: "Trancar a porta da cozinha e esperar o amanhecer aqui", next: "wait_kitchen", sanCost: 0, fearAdd: 10 },
+      ]
+    },
+    barricade: {
+      text: `Você empurra a cômoda pesada contra a porta. Seu coração marcha rápido. Pela janela, você vê o celeiro — a porta está aberta.\n\nEla estava fechada há dez minutos.\n\nAlgo se move dentro do celeiro. Não é um animal. <em>Caminha ereto.</em> Para. Vira a cabeça na direção da janela. Você se agacha antes que os olhos encontrem os seus.`,
+      choices: [
+        { text: "Apagar todas as luzes do quarto e ficar imóvel no escuro", next: "lights_off", sanCost: -5, fearAdd: 15 },
+        { text: "Gritar por socorro — talvez alguém escute", next: "scream", sanCost: -20, fearAdd: 25 },
+        { text: "Procurar por uma saída nos fundos da casa", next: "back_exit", sanCost: 0, fearAdd: 10 },
+      ]
+    },
+    watch_barn: {
+      text: `Você espreia pela janela por longos minutos. O celeiro parece vazio. Então você vê: <em>uma silhueta de mais de dois metros de altura</em>, com os braços compridos demais, parada bem no centro do vão.\n\nEla não se mexe.\n\nVocê recua. Quando olha novamente, ela está na metade do caminho até a casa.\n\n<span class="sound">Cri-cri-cri.</span> Os grilos pararam de cantar.`,
+      choices: [
+        { text: "Fugir pela janela dos fundos e tentar chegar à estrada", next: "run_road", sanCost: -20, fearAdd: 30 },
+        { text: "Esconder-se no armário e esperar ela passar", next: "hide_closet", sanCost: -5, fearAdd: 20 },
+        { text: "Empunhar algo pesado e preparar uma emboscada na porta", next: "ambush", sanCost: -10, fearAdd: 15 },
+      ]
+    }
+  },
+  // Hour 2 – 00:00
+  {
+    location: "Meia-noite — o pior momento",
+    attic: {
+      text: `O sótão cheira a terra molhada e algo mais. Orgânico. Podre.\n\nNo centro, há uma cadeira velha com cordas. Recente — as cordas ainda estão tensas.\n\nEntão você vê os pés. Alguém está pendurado nas vigas, de cabeça para baixo, envolto em palha. Respira.\n\n<em>Seus olhos se abrem.</em> São completamente brancos.`,
+      death: true,
+      choices: [
+        { text: "Correr para baixo e sair da casa agora", next: "run_now", sanCost: -30, fearAdd: 40 },
+      ]
+    },
+    hide_bed: {
+      text: `Debaixo da cama, você abraça os joelhos. O quarto está silencioso.\n\nEntão a porta se abre devagar, vagarosamente, apesar da cômoda estar contra ela.\n\nVocê segura a respiração. Um par de pés descalços entra no cômodo — longos, com os tendões salientes como cipós. Param. Ficam parados por um longo, longo tempo.\n\nDepois, saem.`,
+      choices: [
+        { text: "Continuar escondido e não fazer nenhum movimento", next: "stay_hidden", sanCost: -10, fearAdd: 10 },
+        { text: "Deslizar silenciosamente para fora e tentar sair pelo telhado", next: "roof_escape", sanCost: -15, fearAdd: 20 },
+      ]
+    },
+    wait_kitchen: {
+      text: `Você se senta no chão frio da cozinha. Uma hora passa. Quase nada.\n\nEncontro um copo d'água na pia, beba, tente acalmar o coração.\n\nÀ meia-noite em ponto, todas as torneiras da casa se abrem sozinhas. A água que flui é <em>escura como barro</em>.`,
+      choices: [
+        { text: "Fechar as torneiras e verificar o porão de onde vem a água", next: "basement", sanCost: -20, fearAdd: 30 },
+        { text: "Ignorar a água e subir para o quarto principal", next: "upstairs_safe", sanCost: 0, fearAdd: 5 },
+      ]
+    },
+    lights_off: {
+      text: `No escuro total, você consegue ouvir cada som da fazenda.\n\nO roçar da palha. O rangido das tábuas do assoalho — sendo pisadas, no corredor, do lado de fora do quarto.\n\nOs passos cessam na sua porta. Uma respiração lenta e úmida vaza pelo vão embaixo da porta.\n\n<span class="sound">Três batidas. Suaves.</span> Como se fosse um convidado.`,
+      choices: [
+        { text: "Não responder e não se mover absolutamente", next: "silence_works", sanCost: -15, fearAdd: 15 },
+        { text: "Empurrar a cômoda mais forte na porta", next: "reinforce", sanCost: 0, fearAdd: 10, item: "Cômoda Reforçada" },
+      ]
+    },
+    scream: {
+      text: `Você grita por socorro.\n\nO campo devolveu o silêncio por dois segundos.\n\nDepois, <em>tudo respondeu de uma vez</em>. Uivo longo e dissonante do celeiro. Batidas nas paredes de fora. Trinco da janela girando.\n\nVocê cometeu um erro.`,
+      death: true,
+      choices: [
+        { text: "Sair correndo pela porta — última tentativa", next: "run_death", sanCost: -50, fearAdd: 50 },
+      ]
+    },
+    back_exit: {
+      text: `A porta dos fundos está destrancada — suspeito demais. Você a abre um centímetro.\n\nUm cheiro forte de amônia e feno. Na escuridão da varanda, há uma bacia de madeira com algo imerso nela. Você aponta a lanterna: são roupas. Encharcadas de sangue.\n\n<em>Tamanho de criança.</em>`,
+      choices: [
+        { text: "Fechar a porta e bloquear também os fundos", next: "block_back", sanCost: -20, fearAdd: 20, item: "Saída Bloqueada" },
+        { text: "Correr para fora de qualquer jeito", next: "run_road", sanCost: -30, fearAdd: 35 },
+      ]
+    },
+    run_road: { text: `Você salta pela janela. Cai mal no chão — joelho ralado. Se levanta. Começa a correr pela estrada de terra.\n\nA coisa no celeiro sai também. Mas não corre. <em>Ela anda.</em>\n\nE mesmo assim começa a ganhar distância.`, death: false, choices: [
+      { text: "Continuar correndo sem olhar para trás", next: "run_survive", sanCost: -25, fearAdd: 15 },
+      { text: "Subir numa árvore e se esconder entre as folhas", next: "tree_hide", sanCost: -10, fearAdd: 20 },
+    ] },
+    hide_closet: {
+      text: `Dentro do armário, no escuro, com o cheiro de naftalina e mofo, você ouve ela entrar.\n\nOs passos irregulares cruzam o quarto. Para. Você vê pela fresta: ela está <em>farejando o ar</em>.\n\nEntão coloca a mão no trinco do armário.`,
+      death: true,
+      choices: [
+        { text: "Encravar os pés na parede e segurar o trinco", next: "hold_door", sanCost: -20, fearAdd: 30 },
+      ]
+    },
+    ambush: {
+      text: `Você pega o pé de uma cadeira quebrada. Fica atrás da porta. Espera.\n\nEla entra. Você golpeia.\n\nO impacto foi real. Ela tropeça. Mas quando se vira, o lado do rosto amassado <em>volta ao lugar devagar, como argila</em>. E ri.`,
+      death: true,
+      choices: [
+        { text: "Empurrar com tudo e tentar sair pela porta", next: "push_through", sanCost: -25, fearAdd: 35 },
+      ]
+    },
+  },
+  // Hour 3 – 01:00
+  {
+    location: "01:00 — o silêncio engana",
+    run_now: {
+      text: `Você desce as escadas em pânico. A criatura do sótão caiu atrás de você.\n\nVocê corre pela sala, pela varanda, pela estrada. Ela não persegue — apenas fica parada no terraço, <em>olhando</em>.\n\nVocê corre por uma hora inteira até chegar a uma igrejinha fechada. A porta está aberta.`,
+      choices: [
+        { text: "Entrar na igreja e se trancar lá dentro", next: "church_safe", sanCost: -10, fearAdd: 5, item: "Igreja" },
+      ]
+    },
+    stay_hidden: {
+      text: `Você não se move por quarenta minutos. Seus músculos doem. Mas a criatura não voltou.\n\nAo redor de 01:00, a casa inteira treme — como se algo enorme tivesse batido no exterior.\n\nDepois: nada. Uma paz estranha. Quase tentadora.`,
+      choices: [
+        { text: "Aproveitar o silêncio para descer e procurar uma saída", next: "find_exit", sanCost: 0, fearAdd: 10 },
+        { text: "Continuar escondido até o amanhecer — não arriscar nada", next: "wait_dawn", sanCost: 10, fearAdd: 0 },
+      ]
+    },
+    roof_escape: {
+      text: `Você sobe pela janela para o telhado. O vento da madrugada é frio. Você rasteja devagar.\n\nAbaixo, a criatura dos pés longos caminha no quintal, em círculos lentos.\n\nEntão ela para. Vira o rosto para cima. <em>Sem olhos.</em> Só dois buracos negros onde deveriam estar.`,
+      choices: [
+        { text: "Congelar completamente — talvez ela não te detecte", next: "freeze_roof", sanCost: -15, fearAdd: 20 },
+        { text: "Saltar para a leira de feno do celeiro e correr", next: "hay_jump", sanCost: -20, fearAdd: 30 },
+      ]
+    },
+    basement: {
+      text: `O porão é escuro. Você usa a lanterna — bateria fraca agora.\n\nHá fileiras de potes de conserva com rótulos escritos à mão. Você lê um: <em>"Dedo — colheita de agosto."</em>\n\nAo fundo, há uma porta de ferro. Trancada por dentro.\n\nAlguém bate nela de dentro.`,
+      death: true,
+      choices: [
+        { text: "Correr para fora do porão e trancar atrás de si", next: "escape_basement", sanCost: -25, fearAdd: 35 },
+      ]
+    },
+    upstairs_safe: {
+      text: `Você volta para o quarto. Empurra a cômoda. Respira fundo.\n\nO relógio de parede marcou 01:11 e parou. A água das torneiras parou.\n\nEm compensação, começaram os sussurros. De todo lugar ao mesmo tempo. Dizendo seu nome — <em>mas você nunca disse seu nome a ninguém aqui.</em>`,
+      choices: [
+        { text: "Tapar os ouvidos e rezar até amanhecer", next: "pray_dawn", sanCost: 5, fearAdd: 5 },
+        { text: "Seguir os sussurros para descobrir de onde vêm", next: "follow_whispers", sanCost: -25, fearAdd: 35 },
+      ]
+    },
+    silence_works: {
+      text: `Os passos se afastam. A respiração embaixo da porta some.\n\nVocê espera mais uma hora sem se mover. O silêncio é completo — perturbadoramente completo.\n\nEntão sua lanterna pisca uma vez e acende sozinha, apontando para o armário do quarto.`,
+      choices: [
+        { text: "Abrir o armário", next: "open_wardrobe_death", sanCost: -20, fearAdd: 30 },
+        { text: "Atirar a lanterna para longe e ficar no escuro", next: "dark_safe", sanCost: -10, fearAdd: 10 },
+      ]
+    },
+    reinforce: {
+      text: `Você reforça tudo. Cadeira, cômoda, mesa — tudo contra a porta.\n\nEla não entra. Mas começa a <em>sussurrar pelo buraco da fechadura</em>. Palavras que não são palavras. Sons que parecem números.`,
+      choices: [
+        { text: "Obstruir o buraco da fechadura com pano e esperar", next: "wait_dawn", sanCost: 5, fearAdd: 0 },
+        { text: "Escutar os sons tentando entender o padrão", next: "listen_pattern", sanCost: -20, fearAdd: 30 },
+      ]
+    },
+    run_survive: {
+      text: `Você corre. Não olha para trás. A estrada de terra se alarga.\n\nKilômetros depois, vê as luzes de uma rodovia. Caminhões passam.\n\nVocê acena com os braços. Um para.`,
+      choices: [
+        { text: "Entrar no caminhão e pedir para ir à cidade mais próxima", next: "escape_victory", sanCost: 15, fearAdd: -10 },
+      ]
+    },
+    tree_hide: {
+      text: `Você sobe numa paineira alta. A criatura passa por baixo sem olhar para cima.\n\nVocê fica lá até as 04:00. Começa a clarear.`,
+      choices: [
