@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Fazenda Velho Moço</title>
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:#000;min-height:100vh;font-family:'Special Elite',serif;color:#c8b99a;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:#080603;}::-webkit-scrollbar-thumb{background:#3a2a1a;}
+
+/* ── GRAIN & VIGNETTE ── */
+#grain{position:fixed;inset:0;pointer-events:none;z-index:200;opacity:.3;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");}
+#vignette{position:fixed;inset:0;pointer-events:none;z-index:199;
+  background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,.88) 100%);}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;position:relative;z-index:10;
+  flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;}
+.screen.active{display:flex;}
+
+/* ── MENU PRINCIPAL ── */
+#s-menu{background:radial-gradient(ellipse at 50% 30%,#1a0a0466 0%,#060402 70%);}
+.menu-title{font-family:'Creepster',cursive;font-size:clamp(2.8rem,9vw,5.5rem);
+  color:#8b1a1a;text-shadow:0 0 40px #8b1a1a99,0 0 80px #8b1a1a44;
+  letter-spacing:5px;line-height:1.05;text-align:center;margin-bottom:6px;
+  animation:flicker 5s infinite;}
+.menu-sub{font-size:.65rem;letter-spacing:7px;color:#3a2a1a;text-transform:uppercase;
+  margin-bottom:50px;text-align:center;}
+.menu-nav{display:flex;flex-direction:column;gap:8px;width:100%;max-width:320px;}
+.mnbtn{background:#08060299;border:1px solid #2a1a0a;color:#6a5a4a;
+  font-family:'Special Elite',serif;font-size:.95rem;letter-spacing:3px;
+  padding:13px 28px;cursor:pointer;text-transform:uppercase;
+  transition:all .3s;text-align:left;position:relative;}
+.mnbtn::before{content:'▸';position:absolute;left:12px;color:#2a1a0a;transition:all .3s;}
+.mnbtn:hover{background:#1a0d0499;border-color:#8b1a1a55;color:#c8b99a;
+  padding-left:38px;box-shadow:0 0 12px #8b1a1a22;}
+.mnbtn:hover::before{color:#8b1a1a;left:16px;}
+.mnbtn:disabled{opacity:.3;cursor:default;}
+.mnbtn:disabled:hover{background:#08060299;border-color:#2a1a0a;color:#6a5a4a;padding-left:28px;}
+.mnbtn:disabled:hover::before{color:#2a1a0a;left:12px;}
+.mnbtn.highlight{border-color:#8b1a1a55;color:#8b3a2a;}
+.menu-version{position:absolute;bottom:16px;right:20px;font-size:.55rem;
+  letter-spacing:2px;color:#2a1a0a;text-transform:uppercase;}
+
+/* ── BOTÃO VOLTAR GENÉRICO ── */
+.back-btn{background:none;border:1px solid #2a1a0a;color:#3a2a1a;
+  font-family:'Special Elite',serif;font-size:.7rem;letter-spacing:3px;
+  padding:8px 20px;cursor:pointer;text-transform:uppercase;transition:all .3s;
+  margin-top:28px;}
+.back-btn:hover{border-color:#8b1a1a55;color:#8b3a2a;}
+
+/* ── CONFIGURAÇÕES ── */
+#s-config{gap:0;}
+.cfg-panel{width:100%;max-width:500px;background:#0a0704;border:1px solid #2a1a0a;padding:32px;}
+.cfg-title{font-family:'Creepster',cursive;font-size:1.8rem;color:#8b1a1a;
+  letter-spacing:3px;margin-bottom:28px;text-align:center;}
+.cfg-group{margin-bottom:24px;}
+.cfg-label{font-size:.6rem;letter-spacing:4px;color:#5a3a2a;text-transform:uppercase;
+  margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+.cfg-val{color:#8b5a2a;font-family:monospace;font-size:.85rem;}
+input[type=range]{width:100%;-webkit-appearance:none;height:3px;
+  background:linear-gradient(90deg,#8b1a1a var(--pct,50%),#1a1208 var(--pct,50%));
+  outline:none;cursor:pointer;border-radius:2px;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;
+  background:#8b3a1a;border-radius:50%;cursor:pointer;
+  box-shadow:0 0 6px #8b1a1a66;}
+.cfg-sep{border:none;border-top:1px solid #1a1208;margin:20px 0;}
+
+/* ── GALERIA ── */
+#s-gallery{justify-content:flex-start;padding-top:50px;}
+.gal-title{font-family:'Creepster',cursive;font-size:2rem;color:#8b1a1a;
+  letter-spacing:3px;margin-bottom:6px;}
+.gal-sub{font-size:.6rem;letter-spacing:4px;color:#3a2a1a;text-transform:uppercase;
+  margin-bottom:28px;}
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:10px;width:100%;max-width:700px;}
+.gal-card{background:#0a0704;border:1px solid #1a1208;padding:16px;
+  position:relative;transition:all .3s;cursor:default;}
+.gal-card.unlocked{border-color:#2a1a0a;cursor:pointer;}
+.gal-card.unlocked:hover{background:#120a04;border-color:#8b1a1a44;
+  box-shadow:0 0 10px #8b1a1a22;}
+.gal-icon{font-size:1.8rem;margin-bottom:8px;display:block;}
+.gal-name{font-size:.75rem;letter-spacing:2px;color:#5a3a2a;text-transform:uppercase;
+  margin-bottom:4px;}
+.gal-card.unlocked .gal-name{color:#8a6a4a;}
+.gal-desc{font-size:.72rem;color:#3a2a1a;line-height:1.5;}
+.gal-card.unlocked .gal-desc{color:#5a4a3a;}
+.gal-lock{position:absolute;top:10px;right:10px;font-size:.8rem;color:#2a1a0a;}
+.gal-card.unlocked .gal-lock{color:#4a8a4a;}
+.gal-count{font-size:.6rem;letter-spacing:3px;color:#3a2a1a;
+  text-transform:uppercase;margin-top:16px;}
+.gal-count span{color:#8b3a2a;}
+
+/* ── CRÉDITOS ── */
+#s-credits{gap:0;}
+.cred-box{width:100%;max-width:480px;text-align:center;}
+.cred-title{font-family:'Creepster',cursive;font-size:2.5rem;color:#8b1a1a;
+  letter-spacing:4px;margin-bottom:6px;text-shadow:0 0 30px #8b1a1a66;}
+.cred-sub{font-size:.6rem;letter-spacing:5px;color:#3a2a1a;
+  text-transform:uppercase;margin-bottom:36px;}
+.cred-section{margin-bottom:20px;}
+.cred-role{font-size:.55rem;letter-spacing:4px;color:#3a2a1a;
+  text-transform:uppercase;margin-bottom:4px;}
+.cred-name{font-size:.9rem;color:#6a5a4a;letter-spacing:1px;}
+.cred-div{border:none;border-top:1px solid #1a1208;margin:20px auto;width:60%;}
+.cred-note{font-size:.7rem;color:#2a1a0a;line-height:1.8;font-style:italic;}
+
+/* ── JOGO ── */
+#s-game{justify-content:flex-start;padding:20px;}
+.game-wrap{width:100%;max-width:720px;margin:0 auto;}
+.game-topbar{display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:12px;}
+.topbar-menu{background:none;border:1px solid #1a1208;color:#2a1a0a;
+  font-family:'Special Elite',serif;font-size:.6rem;letter-spacing:2px;
+  padding:5px 12px;cursor:pointer;text-transform:uppercase;transition:all .3s;}
+.topbar-menu:hover{border-color:#8b1a1a44;color:#5a3a2a;}
+.save-indicator{font-size:.55rem;letter-spacing:2px;color:#2a1a0a;
+  text-transform:uppercase;transition:color .5s;}
+.save-indicator.saving{color:#4a6a4a;}
+
+/* HUD */
+.hud{display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:20px;padding:10px 16px;border:1px solid #3a2a1a;background:#0d0904cc;}
+.hud-item{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.hud-label{font-size:.58rem;letter-spacing:3px;color:#5a4a3a;text-transform:uppercase;}
+.hud-value{font-family:'Creepster',cursive;font-size:1.35rem;letter-spacing:2px;}
+.hud-value.ok{color:#4a8a4a;}.hud-value.warning{color:#cc8822;}
+.hud-value.danger{color:#cc2222;text-shadow:0 0 10px #cc222266;}
+.hour-bar{flex:1;margin:0 20px;}
+.hour-track{height:3px;background:#1a1208;border:1px solid #3a2a1a;}
+.hour-fill{height:100%;background:linear-gradient(90deg,#8b1a1a,#cc4400);
+  transition:width .5s;box-shadow:0 0 6px #cc440066;}
+
+/* SCENE */
+.scene-box{border:1px solid #2a1a0a;background:#0a0704;
+  padding:26px 30px;margin-bottom:18px;position:relative;min-height:140px;}
+.scene-box::before{content:'';position:absolute;top:-1px;left:20px;right:20px;height:1px;
+  background:linear-gradient(90deg,transparent,#8b1a1a44,transparent);}
+.scene-loc{font-size:.6rem;letter-spacing:5px;color:#5a3a2a;
+  text-transform:uppercase;margin-bottom:14px;}
+.scene-text{font-size:1rem;line-height:1.85;color:#c8b99a;}
+.scene-text em{color:#8b1a1a;font-style:normal;}
+.cursor{opacity:.5;animation:blink .8s infinite;}
+@keyframes blink{0%,100%{opacity:.5;}50%{opacity:0;}}
+
+/* CHOICES */
+.choices{display:flex;flex-direction:column;gap:8px;}
+.choice-btn{background:#0d0904;border:1px solid #2a1a0a;color:#a89070;
+  font-family:'Special Elite',serif;font-size:.93rem;padding:13px 18px;
+  text-align:left;cursor:pointer;transition:all .25s;letter-spacing:.4px;line-height:1.4;}
+.choice-btn::before{content:'▸';margin-right:10px;color:#3a2a1a;transition:color .25s;}
+.choice-btn:hover{background:#1a0d04;border-color:#8b1a1a55;color:#e0c8a0;
+  box-shadow:inset 0 0 16px #8b1a1a0d;}
+.choice-btn:hover::before{color:#8b1a1a;}
+
+/* INVENTORY */
+.inventory{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;
+  padding:10px 14px;border:1px solid #1a1208;background:#080603;}
+.inv-label{font-size:.55rem;letter-spacing:3px;color:#3a2a1a;
+  text-transform:uppercase;width:100%;margin-bottom:3px;}
+.inv-item{font-size:.75rem;padding:3px 9px;border:1px solid #3a2a1a;
+  color:#7a6050;background:#0d0904;}
+
+/* LOG */
+.log-box{margin-top:12px;padding:10px 14px;border-left:2px solid #2a1a0a;
+  background:#08060388;}
+.log-entry{font-size:.75rem;color:#3a2a1a;padding:2px 0;letter-spacing:.4px;}
+.log-entry.bad{color:#6a2a1a;}.log-entry.good{color:#2a5a2a;}
+
+/* END SCREENS */
+.end-screen{text-align:center;animation:fadeUp .8s ease;}
+.end-title{font-family:'Creepster',cursive;font-size:clamp(2rem,6vw,3.5rem);
+  letter-spacing:4px;margin-bottom:14px;}
+.end-title.survived{color:#4a8a4a;text-shadow:0 0 30px #4a8a4466;}
+.end-title.dead{color:#8b1a1a;text-shadow:0 0 40px #8b1a1a88;animation:shake .4s ease;}
+.end-msg{font-size:.9rem;color:#5a4a3a;line-height:1.9;max-width:480px;margin:0 auto 28px;}
+.end-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.end-btn{background:none;border:1px solid #2a1a0a;color:#5a4a3a;
+  font-family:'Special Elite',serif;font-size:.8rem;letter-spacing:3px;
+  padding:10px 24px;cursor:pointer;text-transform:uppercase;transition:all .3s;}
+.end-btn:hover{border-color:#8b1a1a55;color:#c8b99a;background:#1a0d0444;}
+
+/* BLOOD FLASH */
+@keyframes bloodFlash{0%,100%{box-shadow:inset 0 0 0 0 transparent;}
+  50%{box-shadow:inset 0 0 80px 20px #8b1a1a44;}}
+.blood{animation:bloodFlash .6s ease;}
+
+/* ANIMATIONS */
+@keyframes flicker{0%,92%,96%,100%{opacity:1;}94%{opacity:.08;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-7px);}75%{transform:translateX(7px);}}
+@keyframes pulse{0%,100%{opacity:.6;}50%{opacity:1;}}
+
+/* PARTICLES */
+#particles{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+.particle{position:absolute;width:1px;height:1px;background:#8b1a1a;
+  border-radius:50%;animation:drift linear infinite;opacity:0;}
+@keyframes drift{0%{transform:translateY(100vh) translateX(0);opacity:0;}
+  10%{opacity:.4;}90%{opacity:.2;}100%{transform:translateY(-20px) translateX(40px);opacity:0;}}
+</style>
+</head>
+<body>
+<div id="grain"></div>
+<div id="vignette"></div>
+<div id="particles"></div>
+
+<!-- MENU PRINCIPAL -->
+<div id="s-menu" class="screen active">
+  <h1 class="menu-title">FAZENDA<br/>VELHO MOÇO</h1>
+  <p class="menu-sub">Uma noite. Suas escolhas. Sua sorte.</p>
+  <nav class="menu-nav">
+    <button class="mnbtn highlight" onclick="startNewGame()">Novo Jogo</button>
+    <button class="mnbtn" id="btn-load" onclick="loadGame()" disabled>Carregar Jogo</button>
+    <button class="mnbtn" onclick="showScreen('s-gallery')">Galeria de Finais</button>
+    <button class="mnbtn" onclick="showScreen('s-config')">Configurações</button>
+    <button class="mnbtn" onclick="showScreen('s-credits')">Créditos</button>
+    <button class="mnbtn" onclick="confirmExit()">Sair</button>
+  </nav>
+  <div class="menu-version">v1.0 — Capítulo I</div>
+</div>
+
+<!-- CONFIGURAÇÕES -->
+<div id="s-config" class="screen">
+  <div class="cfg-panel">
+    <h2 class="cfg-title">Configurações</h2>
+    <div class="cfg-group">
+      <div class="cfg-label">Velocidade do Texto <span class="cfg-val" id="v-speed">Normal</span></div>
+      <input type="range" id="r-speed" min="1" max="5" value="3"
+        oninput="updateSetting('speed',this.value)"/>
+    </div>
+    <hr class="cfg-sep"/>
+    <div class="cfg-group">
+      <div class="cfg-label">Música de Fundo <span class="cfg-val" id="v-music">60%</span></div>
+      <input type="range" id="r-music" min="0" max="100" value="60"
+        oninput="updateSetting('music',this.value)"/>
+    </div>
+    <div class="cfg-group">
+      <div class="cfg-label">Efeitos Sonoros <span class="cfg-val" id="v-sfx">80%</span></div>
+      <input type="range" id="r-sfx" min="0" max="100" value="80"
+        oninput="updateSetting('sfx',this.value)"/>
+    </div>
+    <hr class="cfg-sep"/>
+    <div class="cfg-group">
+      <div class="cfg-label">Dados Salvos</div>
+      <button class="end-btn" onclick="clearAllData()" style="font-size:.65rem;padding:7px 16px;border-color:#3a1a0a;color:#4a2a1a;">
+        Apagar todos os dados
+      </button>
+    </div>
+  </div>
+  <button class="back-btn" onclick="showScreen('s-menu')">◂ Voltar ao Menu</button>
+</div>
+
+<!-- GALERIA -->
+<div id="s-gallery" class="screen">
+  <h2 class="gal-title">Galeria de Finais</h2>
+  <p class="gal-sub">Finais descobertos nesta fazenda</p>
+  <div class="gal-grid" id="gal-grid"></div>
+  <p class="gal-count" id="gal-count"></p>
+  <button class="back-btn" onclick="showScreen('s-menu')">◂ Voltar ao Menu</button>
+</div>
+
+<!-- CRÉDITOS -->
+<div id="s-credits" class="screen">
+  <div class="cred-box">
+    <h2 class="cred-title">Fazenda<br/>Velho Moço</h2>
+    <p class="cred-sub">Capítulo I — A Primeira Noite</p>
+    <div class="cred-section">
+      <div class="cred-role">História & Design</div>
+      <div class="cred-name">Uma criação colaborativa</div>
+    </div>
+    <div class="cred-section">
+      <div class="cred-role">Desenvolvimento</div>
+      <div class="cred-name">Claude — Anthropic</div>
+    </div>
+    <div class="cred-section">
+      <div class="cred-role">Tipografia</div>
+      <div class="cred-name">Creepster & Special Elite<br/><span style="font-size:.7rem;color:#3a2a1a">Google Fonts</span></div>
+    </div>
+    <hr class="cred-div"/>
+    <p class="cred-note">
+      "A Fazenda Velho Moço existe há mais tempo<br/>
+      do que qualquer pessoa se lembra.<br/>
+      Nem todos que chegam conseguem ir embora."
+    </p>
+    <hr class="cred-div"/>
+    <div class="cred-section">
+      <div class="cred-role">Finais</div>
+      <div class="cred-name" style="font-size:.8rem;color:#4a3a2a;">
+        9 desfechos · 3 rotas principais<br/>
+        <span style="font-size:.7rem;color:#3a2a1a">Capítulo II em desenvolvimento</span>
+      </div>
+    </div>
+  </div>
+  <button class="back-btn" onclick="showScreen('s-menu')">◂ Voltar ao Menu</button>
+</div>
+
+<!-- JOGO -->
+<div id="s-game" class="screen">
+  <div class="game-wrap" id="game-wrap">
+    <div class="game-topbar">
+      <button class="topbar-menu" onclick="pauseToMenu()">☰ Menu</button>
+      <span class="save-indicator" id="save-ind">● Auto-salvo</span>
+    </div>
+    <div id="game-content"></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ════════════════════════════════════════════════════════
+// AUDIO ENGINE
+// ════════════════════════════════════════════════════════
+let audioCtx=null;
+let droneNodes=[];
+let settings={speed:3,music:60,sfx:80};
+
+function initAudio(){
+  if(audioCtx)return;
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  startDrone();
+}
+
+function startDrone(){
+  if(!audioCtx)return;
+  const freqs=[55,82.4,110,146.8];
+  droneNodes=[];
+  freqs.forEach((f,i)=>{
+    const osc=audioCtx.createOscillator();
+    const gain=audioCtx.createGain();
+    const lfo=audioCtx.createOscillator();
+    const lfoGain=audioCtx.createGain();
+    osc.type=i%2===0?'sine':'triangle';
+    osc.frequency.value=f;
+    lfo.frequency.value=0.08+i*0.03;
+    lfoGain.gain.value=f*0.006;
+    lfo.connect(lfoGain);
+    lfoGain.connect(osc.frequency);
+    gain.gain.value=0;
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();lfo.start();
+    droneNodes.push({gain});
+    const vol=(settings.music/100)*0.04*(i===0?1.5:0.7);
+    gain.gain.setTargetAtTime(vol,audioCtx.currentTime,3);
+  });
+}
+
+function updateDroneVolume(){
+  droneNodes.forEach((n,i)=>{
+    if(!audioCtx)return;
+    const vol=(settings.music/100)*0.04*(i===0?1.5:0.7);
+    n.gain.gain.setTargetAtTime(vol,audioCtx.currentTime,.5);
+  });
+}
+
+function playSFX(type){
+  if(!audioCtx||settings.sfx===0)return;
+  const v=(settings.sfx/100)*0.18;
+  const t=audioCtx.currentTime;
+  if(type==='type'){
+    const o=audioCtx.createOscillator();
+    const g=audioCtx.createGain();
+    o.type='square';o.frequency.value=800+Math.random()*400;
+    g.gain.setValueAtTime(v*0.15,t);g.gain.exponentialRampToValueAtTime(0.0001,t+0.03);
+    o.connect(g);g.connect(audioCtx.destination);
+    o.start(t);o.stop(t+0.03);
+  } else if(type==='choice'){
+    const o=audioCtx.createOscillator();
+    const g=audioCtx.createGain();
+    o.type='sine';o.frequency.value=220;
+    g.gain.setValueAtTime(v*0.4,t);g.gain.exponentialRampToValueAtTime(0.0001,t+0.15);
+    o.connect(g);g.connect(audioCtx.destination);
+    o.start(t);o.stop(t+0.15);
+  } else if(type==='death'){
+    [55,44,33].forEach((f,i)=>{
+      const o=audioCtx.createOscillator();
+      const g=audioCtx.createGain();
+      o.type='sawtooth';o.frequency.value=f;
+      g.gain.setValueAtTime(0,t+i*0.06);
+      g.gain.linearRampToValueAtTime(v*0.6,t+i*0.06+0.05);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+i*0.06+0.8);
+      o.connect(g);g.connect(audioCtx.destination);
+      o.start(t+i*0.06);o.stop(t+i*0.06+0.8);
+    });
+  } else if(type==='win'){
+    [220,277,330].forEach((f,i)=>{
+      const o=audioCtx.createOscillator();
+      const g=audioCtx.createGain();
+      o.type='sine';o.frequency.value=f;
+      g.gain.setValueAtTime(0,t+i*0.12);
+      g.gain.linearRampToValueAtTime(v*0.3,t+i*0.12+0.1);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+i*0.12+1.2);
+      o.connect(g);g.connect(audioCtx.destination);
+      o.start(t+i*0.12);o.stop(t+i*0.12+1.2);
+    });
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// PARTICLES
+// ════════════════════════════════════════════════════════
+(function spawnParticles(){
+  const c=document.getElementById('particles');
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.left=Math.random()*100+'vw';
+    p.style.animationDuration=(8+Math.random()*16)+'s';
+    p.style.animationDelay=(-Math.random()*20)+'s';
+    p.style.width=p.style.height=(Math.random()<.5?1:2)+'px';
+    p.style.opacity=Math.random()*.4;
+    c.appendChild(p);
+  }
+})();
+
+// ════════════════════════════════════════════════════════
+// SAVE SYSTEM
+// ════════════════════════════════════════════════════════
+const SAVE_KEY='fvm_save';
+const END_KEY='fvm_endings';
+const CFG_KEY='fvm_settings';
+
+function saveGame(state){
+  try{
+    localStorage.setItem(SAVE_KEY,JSON.stringify(state));
+    const ind=document.getElementById('save-ind');
+    if(ind){ind.textContent='● Salvo';ind.className='save-indicator saving';
+      setTimeout(()=>{ind.textContent='● Auto-salvo';ind.className='save-indicator';},1500);}
+  }catch(e){}
+}
+
+function getSave(){
+  try{const d=localStorage.getItem(SAVE_KEY);return d?JSON.parse(d):null;}catch(e){return null;}
+}
+
+function deleteSave(){
+  try{localStorage.removeItem(SAVE_KEY);}catch(e){}
+}
+
+function unlockEnding(id){
+  try{
+    const d=localStorage.getItem(END_KEY);
+    const arr=d?JSON.parse(d):[];
+    if(!arr.includes(id)){arr.push(id);localStorage.setItem(END_KEY,JSON.stringify(arr));}
+  }catch(e){}
+}
+
+function getUnlockedEndings(){
+  try{const d=localStorage.getItem(END_KEY);return d?JSON.parse(d):[];}catch(e){return[];}
+}
+
+function loadSettings(){
+  try{const d=localStorage.getItem(CFG_KEY);if(d)settings={...settings,...JSON.parse(d)};}catch(e){}
+  applySettings();
+}
+
+function saveSettings(){
+  try{localStorage.setItem(CFG_KEY,JSON.stringify(settings));}catch(e){}
+}
+
+function applySettings(){
+  document.getElementById('r-speed').value=settings.speed;
+  document.getElementById('r-music').value=settings.music;
+  document.getElementById('r-sfx').value=settings.sfx;
+  const sl=['Muito Lento','Lento','Normal','Rápido','Muito Rápido'];
+  document.getElementById('v-speed').textContent=sl[settings.speed-1];
+  document.getElementById('v-music').textContent=settings.music+'%';
+  document.getElementById('v-sfx').textContent=settings.sfx+'%';
+  updateRangeStyle();
+  updateDroneVolume();
+}
+
+function updateSetting(key,val){
+  val=parseInt(val);
+  settings[key]=val;
+  saveSettings();
+  applySettings();
+  if(key==='music')updateDroneVolume();
+}
+
+function updateRangeStyle(){
+  ['speed','music','sfx'].forEach(k=>{
+    const el=document.getElementById('r-'+k);
+    if(!el)return;
+    const min=parseInt(el.min),max=parseInt(el.max),val=parseInt(el.value);
+    const pct=((val-min)/(max-min)*100).toFixed(1)+'%';
+    el.style.setProperty('--pct',pct);
+  });
+}
+
+function clearAllData(){
+  if(!confirm('Apagar todo o progresso, finais e configurações?'))return;
+  localStorage.removeItem(SAVE_KEY);
+  localStorage.removeItem(END_KEY);
+  localStorage.removeItem(CFG_KEY);
+  settings={speed:3,music:60,sfx:80};
+  applySettings();
+  checkLoadBtn();
+  buildGallery();
+  alert('Dados apagados.');
+}
+
+// ════════════════════════════════════════════════════════
+// SCREENS
+// ════════════════════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='s-gallery')buildGallery();
+  if(id==='s-menu')checkLoadBtn();
+}
+
+function checkLoadBtn(){
+  const btn=document.getElementById('btn-load');
+  if(btn)btn.disabled=!getSave();
+}
+
+function pauseToMenu(){
+  showScreen('s-menu');
+}
+
+function confirmExit(){
+  if(confirm('Sair do jogo?'))window.close();
+}
+
+// ════════════════════════════════════════════════════════
+// GALLERY
+// ════════════════════════════════════════════════════════
+const ENDINGS=[
+  {id:'final_dawn',    icon:'🌅',name:'Sobreviveu ao Amanhecer',
+   desc:'Ficou no escuro até o sol nascer.',type:'win'},
+  {id:'escape_victory',icon:'🚛',name:'Fugiu pela Estrada',
+   desc:'Entrou no caminhão e não olhou para trás.',type:'win'},
+  {id:'death_attic',   icon:'🪜',name:'O Sótão',
+   desc:'Subiu onde não devia ter subido.',type:'death'},
+  {id:'death_scream',  icon:'📢',name:'O Grito',
+   desc:'Chamou atenção para si próprio.',type:'death'},
+  {id:'death_closet',  icon:'🚪',name:'O Armário',
+   desc:'Achou que estava seguro dentro.',type:'death'},
+  {id:'death_ambush',  icon:'🪑',name:'A Emboscada',
+   desc:'Tentou lutar com o que não pode ser ferido.',type:'death'},
+  {id:'death_mirror',  icon:'🪞',name:'O Espelho',
+   desc:'Seguiu os sussurros até o fim.',type:'death'},
+  {id:'death_wardrobe',icon:'🔦',name:'A Lanterna',
+   desc:'A luz te entregou quando precisava de escuridão.',type:'death'},
+  {id:'death_door',    icon:'👥',name:'A Voz',
+   desc:'Abriu a porta para si mesmo.',type:'death'},
+];
+
+function buildGallery(){
+  const unlocked=getUnlockedEndings();
+  const grid=document.getElementById('gal-grid');
+  grid.innerHTML='';
+  ENDINGS.forEach(e=>{
+    const isUnlocked=unlocked.includes(e.id);
+    const card=document.createElement('div');
+    card.className='gal-card'+(isUnlocked?' unlocked':'');
+    card.innerHTML=`
+      <span class="gal-icon">${isUnlocked?e.icon:'⬛'}</span>
+      <div class="gal-name">${isUnlocked?e.name:'???'}</div>
+      <div class="gal-desc">${isUnlocked?e.desc:'Ainda não descoberto.'}</div>
+      <span class="gal-lock">${isUnlocked?'✓':'🔒'}</span>`;
+    grid.appendChild(card);
+  });
+  const count=unlocked.length;
+  document.getElementById('gal-count').innerHTML=
+    `<span>${count}</span> de ${ENDINGS.length} finais descobertos`;
+}
+
+// ════════════════════════════════════════════════════════
+// GAME DATA
+// ════════════════════════════════════════════════════════
+const HOURS=['22:00','23:00','00:00','01:00','02:00','03:00','04:00','05:00'];
+
+const SCENE_MAP={
+start:{
+  location:'Quarto principal — Fazenda Velho Moço',
+  text:`Você se trancou no quarto do andar de cima. Pela janela rachada, os campos escuros se estendem até o horizonte. A lua está encoberta. Seu caminhão quebrou a três quilômetros daqui e você não tem sinal.\n\nDe repente, <em>algo bate na porta do celeiro</em>. Uma vez. Duas. Então silêncio absoluto.\n\nVocê tem poucas horas até o amanhecer. Precisa sobreviver.`,
+  choices:[
+    {text:'Explorar a casa em busca de armas ou ferramentas',next:'search_house',sanCost:0,fearAdd:5},
+    {text:'Trancar janelas e reforçar a porta com a cômoda',next:'barricade',sanCost:0,fearAdd:0,item:'Porta Reforçada'},
+    {text:'Observar o celeiro pela janela para ver o que fez aquele barulho',next:'watch_barn',sanCost:-10,fearAdd:15},
+  ]},
+search_house:{
+  location:'Corredor — andar de baixo',
+  text:`Você desce as escadas com cuidado. Cada tábua range como um grito abafado. Na cozinha, encontra uma <em>faca de açougueiro</em> e uma lanterna com bateria pela metade.\n\nNa parede, alguém riscou com carvão: <em>"NÃO ABRA O CELEIRO. ELE CONTA OS SEUS PASSOS."</em>\n\nVocê ouve passos lentos cruzando o teto — acima de você.`,
+  item:'Faca de Açougueiro',item2:'Lanterna',
+  choices:[
+    {text:'Subir para verificar o que está andando no teto',next:'attic',sanCost:-15,fearAdd:20},
+    {text:'Voltar para o quarto e se esconder debaixo da cama',next:'hide_bed',sanCost:5,fearAdd:5},
+    {text:'Trancar a porta da cozinha e esperar o amanhecer aqui',next:'wait_kitchen',sanCost:0,fearAdd:10},
+  ]},
+barricade:{
+  location:'Quarto principal',
+  text:`Você empurra a cômoda pesada contra a porta. Seu coração marcha rápido. Pela janela, você vê o celeiro — a porta está aberta.\n\nEla estava fechada há dez minutos.\n\nAlgo se move dentro do celeiro. Não é um animal. <em>Caminha ereto.</em> Para. Vira a cabeça na direção da janela. Você se agacha antes que os olhos encontrem os seus.`,
+  choices:[
+    {text:'Apagar todas as luzes do quarto e ficar imóvel no escuro',next:'lights_off',sanCost:-5,fearAdd:15},
+    {text:'Gritar por socorro — talvez alguém escute',next:'scream',sanCost:-20,fearAdd:25},
+    {text:'Procurar por uma saída nos fundos da casa',next:'back_exit',sanCost:0,fearAdd:10},
+  ]},
+watch_barn:{
+  location:'Janela do quarto',
+  text:`Você espreia pela janela por longos minutos. O celeiro parece vazio. Então você vê: <em>uma silhueta de mais de dois metros de altura</em>, com os braços compridos demais, parada bem no centro do vão.\n\nEla não se mexe.\n\nVocê recua. Quando olha novamente, ela está na metade do caminho até a casa.\n\n<em>Os grilos pararam de cantar.</em>`,
+  choices:[
+    {text:'Fugir pela janela dos fundos e tentar chegar à estrada',next:'run_road',sanCost:-20,fearAdd:30},
+    {text:'Esconder-se no armário e esperar ela passar',next:'hide_closet',sanCost:-5,fearAdd:20},
+    {text:'Empunhar algo pesado e preparar uma emboscada na porta',next:'ambush',sanCost:-10,fearAdd:15},
+  ]},
+attic:{
+  location:'Sótão',
+  text:`O sótão cheira a terra molhada e algo mais. Orgânico. Podre.\n\nNo centro, há uma cadeira velha com cordas. Recente — as cordas ainda estão tensas.\n\nEntão você vê os pés. Alguém está pendurado nas vigas, de cabeça para baixo, envolto em palha. Respira.\n\n<em>Seus olhos se abrem.</em> São completamente brancos.`,
+  death:true,endingId:'death_attic',
+  choices:[{text:'Correr para baixo e sair da casa agora',next:'run_now',sanCost:-30,fearAdd:40}]},
+hide_bed:{
+  location:'Debaixo da cama',
+  text:`Debaixo da cama, você abraça os joelhos. O quarto está silencioso.\n\nEntão a porta se abre devagar, apesar da cômoda estar contra ela.\n\nUm par de pés descalços entra no cômodo — longos, com os tendões salientes como cipós. Param. Ficam parados por um longo, longo tempo.\n\nDepois, saem.`,
+  choices:[
+    {text:'Continuar escondido e não fazer nenhum movimento',next:'stay_hidden',sanCost:-10,fearAdd:10},
+    {text:'Deslizar silenciosamente para fora e tentar sair pelo telhado',next:'roof_escape',sanCost:-15,fearAdd:20},
+  ]},
+wait_kitchen:{
+  location:'Cozinha',
+  text:`Você se senta no chão frio da cozinha. Uma hora passa.\n\nÀ meia-noite em ponto, todas as torneiras da casa se abrem sozinhas. A água que flui é <em>escura como barro</em>.`,
+  choices:[
+    {text:'Fechar as torneiras e verificar o porão de onde vem a água',next:'basement',sanCost:-20,fearAdd:30},
+    {text:'Ignorar a água e subir para o quarto principal',next:'upstairs_safe',sanCost:0,fearAdd:5},
+  ]},
+lights_off:{
+  location:'Quarto no escuro',
+  text:`No escuro total, você consegue ouvir cada som da fazenda.\n\nOs passos cessam na sua porta. Uma respiração lenta e úmida vaza pelo vão embaixo da porta.\n\n<em>Três batidas. Suaves.</em> Como se fosse um convidado.`,
+  choices:[
+    {text:'Não responder e não se mover absolutamente',next:'silence_works',sanCost:-15,fearAdd:15},
+    {text:'Empurrar a cômoda mais forte na porta',next:'reinforce',sanCost:0,fearAdd:10,item:'Cômoda Reforçada'},
+  ]},
+scream:{
+  location:'Quarto',
+  text:`Você grita por socorro.\n\nO campo devolveu o silêncio por dois segundos.\n\nDepois, <em>tudo respondeu de uma vez</em>. Uivo longo do celeiro. Batidas nas paredes de fora. Trinco da janela girando.\n\nVocê cometeu um erro.`,
+  death:true,endingId:'death_scream',
+  choices:[{text:'Sair correndo pela porta — última tentativa',next:'run_death',sanCost:-50,fearAdd:50}]},
+back_exit:{
+  location:'Varanda dos fundos',
+  text:`A porta dos fundos está destrancada. Você a abre um centímetro.\n\nUm cheiro forte de amônia e feno. Na escuridão da varanda, há uma bacia de madeira com algo imerso nela. Você aponta a lanterna: são roupas encharcadas de sangue.\n\n<em>Tamanho de criança.</em>`,
+  choices:[
+    {text:'Fechar a porta e bloquear também os fundos',next:'block_back',sanCost:-20,fearAdd:20,item:'Saída Bloqueada'},
+    {text:'Correr para fora de qualquer jeito',next:'run_road',sanCost:-30,fearAdd:35},
+  ]},
+run_road:{
+  location:'Estrada de terra',
+  text:`Você salta pela janela. Cai mal no chão — joelho ralado. Se levanta. Começa a correr pela estrada de terra.\n\nA coisa no celeiro sai também. Mas não corre. <em>Ela anda.</em>\n\nE mesmo assim começa a ganhar distância.`,
+  choices:[
+    {text:'Continuar correndo sem olhar para trás',next:'run_survive',sanCost:-25,fearAdd:15},
+    {text:'Subir numa árvore e se esconder entre as folhas',next:'tree_hide',sanCost:-10,fearAdd:20},
+  ]},
+hide_closet:{
+  location:'Dentro do armário',
+  text:`Dentro do armário, no escuro, você ouve ela entrar.\n\nOs passos irregulares cruzam o quarto. Para. Você vê pela fresta: ela está <em>farejando o ar</em>.\n\nEntão coloca a mão no trinco do armário.`,
+  death:true,endingId:'death_closet',
+  choices:[{text:'Encravar os pés na parede e segurar o trinco',next:'hold_door',sanCost:-20,fearAdd:30}]},
+ambush:{
+  location:'Atrás da porta',
+  text:`Você pega o pé de uma cadeira quebrada. Fica atrás da porta. Espera.\n\nEla entra. Você golpeia.\n\nO impacto foi real. Ela tropeça. Mas quando se vira, o lado do rosto amassado <em>volta ao lugar devagar, como argila</em>. E ri.`,
+  death:true,endingId:'death_ambush',
+  choices:[{text:'Empurrar com tudo e tentar sair pela porta',next:'push_through',sanCost:-25,fearAdd:35}]},
+run_now:{
+  location:'Escadas — fugindo',
+  text:`Você desce as escadas em pânico. A criatura do sótão caiu atrás de você.\n\nVocê corre pela sala, pela varanda, pela estrada. Ela não persegue — apenas fica parada no terraço, <em>olhando</em>.\n\nVocê corre por uma hora inteira até chegar a uma igrejinha fechada. A porta está aberta.`,
+  choices:[{text:'Entrar na igreja e se trancar lá dentro',next:'church_safe',sanCost:-10,fearAdd:5,item:'Igreja'}]},
+stay_hidden:{
+  location:'Debaixo da cama — esperando',
+  text:`Você não se move por quarenta minutos. Seus músculos doem. Mas a criatura não voltou.\n\nAo redor de 01:00, a casa inteira treme — como se algo enorme tivesse batido no exterior.\n\nDepois: nada. Uma paz estranha. Quase tentadora.`,
+  choices:[
+    {text:'Aproveitar o silêncio para descer e procurar uma saída',next:'find_exit',sanCost:0,fearAdd:10},
+    {text:'Continuar escondido até o amanhecer — não arriscar nada',next:'wait_dawn',sanCost:10,fearAdd:0},
+  ]},
+roof_escape:{
+  location:'Telhado',
+  text:`Você sobe para o telhado. O vento da madrugada é frio. Você rasteja devagar.\n\nAbaixo, a criatura caminha no quintal, em círculos lentos.\n\nEntão ela para. Vira o rosto para cima. <em>Sem olhos.</em> Só dois buracos negros onde deveriam estar.`,
+  choices:[
+    {text:'Congelar completamente — talvez ela não te detecte',next:'freeze_roof',sanCost:-15,fearAdd:20},
+    {text:'Saltar para a leira de feno do celeiro e correr',next:'hay_jump',sanCost:-20,fearAdd:30},
+  ]},
+basement:{
+  location:'Porão',
+  text:`O porão é escuro. Fileiras de potes de conserva com rótulos escritos à mão. Você lê um: <em>"Dedo — colheita de agosto."</em>\n\nAo fundo, há uma porta de ferro. Trancada por dentro.\n\nAlguém bate nela de dentro.`,
+  death:true,endingId:'death_attic',
+  choices:[{text:'Correr para fora do porão e trancar atrás de si',next:'upstairs_safe',sanCost:-25,fearAdd:35}]},
+upstairs_safe:{
+  location:'Quarto — de volta',
+  text:`Você volta para o quarto. Empurra a cômoda. Respira fundo.\n\nO relógio de parede marcou 01:11 e parou.\n\nComeçaram os sussurros. De todo lugar ao mesmo tempo. Dizendo seu nome — <em>mas você nunca disse seu nome a ninguém aqui.</em>`,
+  choices:[
+    {text:'Tapar os ouvidos e rezar até amanhecer',next:'pray_dawn',sanCost:5,fearAdd:5},
+    {text:'Seguir os sussurros para descobrir de onde vêm',next:'follow_whispers',sanCost:-25,fearAdd:35},
+  ]},
+silence_works:{
+  location:'Quarto no escuro',
+  text:`Os passos se afastam. A respiração embaixo da porta some.\n\nVocê espera mais uma hora sem se mover. O silêncio é completo.\n\nEntão sua lanterna pisca uma vez e acende sozinha, apontando para o armário do quarto.`,
+  choices:[
+    {text:'Abrir o armário',next:'open_wardrobe_death',sanCost:-20,fearAdd:30},
+    {text:'Atirar a lanterna para longe e ficar no escuro',next:'dark_safe',sanCost:-10,fearAdd:10},
+  ]},
+reinforce:{
+  location:'Quarto barricado',
+  text:`Você reforça tudo. Cadeira, cômoda, mesa — tudo contra a porta.\n\nEla não entra. Mas começa a <em>sussurrar pelo buraco da fechadura</em>. Palavras que não são palavras. Sons que parecem números.`,
+  choices:[
+    {text:'Obstruir o buraco da fechadura com pano e esperar',next:'wait_dawn',sanCost:5,fearAdd:0},
+    {text:'Escutar os sons tentando entender o padrão',next:'listen_pattern',sanCost:-20,fearAdd:30},
+  ]},
+run_survive:{
+  location:'Estrada — correndo',
+  text:`Você corre. Não olha para trás. A estrada de terra se alarga.\n\nKilômetros depois, vê as luzes de uma rodovia. Caminhões passam.\n\nVocê acena com os braços. Um para.`,
+  choices:[{text:'Entrar no caminhão e pedir para ir à cidade mais próxima',next:'escape_victory',sanCost:15,fearAdd:-10}]},
+tree_hide:{
+  location:'Topo de uma árvore',
+  text:`Você sobe numa paineira alta. A criatura passa por baixo sem olhar para cima.\n\nVocê fica lá até as 04:00. Começa a clarear.`,
+  choices:[{text:'Descer quando o dia amanhecer e ir embora',next:'escape_victory',sanCost:10,fearAdd:-5}]},
+hold_door:{
+  location:'Segurando o armário',
+  text:`Ela puxa. Você segura. Os músculos queimam. A madeira racha.\n\nEntão para. Você ouve ela se afastar.\n\nVocê não solta o trinco por mais uma hora.`,
+  choices:[{text:'Esperar até as luzes do amanhecer para sair',next:'wait_dawn',sanCost:5,fearAdd:5}]},
+push_through:{
+  location:'Corredor — fugindo',
+  text:`Você empurra com tudo e corre. Ela te agarra pelo ombro. A dor é intensa.\n\nVocê arranca e corre. Ela grita — um som impossível. Mas não te segue para fora da casa.`,
+  choices:[{text:'Correr pela estrada sem parar',next:'run_survive',sanCost:-20,fearAdd:15}]},
+block_back:{
+  location:'Casa selada',
+  text:`Você bloqueia fundos e frente. A casa está selada.\n\nAo olhar pela janela dianteira, conta: <em>sete figuras</em> imóveis nos campos. Esperando.`,
+  choices:[{text:'Ir para o centro da casa, longe de janelas, e esperar',next:'wait_dawn',sanCost:0,fearAdd:10}]},
+church_safe:{
+  location:'Igrejinha — ao longe',
+  text:`A igrejinha cheira a madeira velha e cera. Você se tranca.\n\nNão há nada aqui. Apenas bancos, um crucifixo — de cabeça para baixo — e uma bíblia aberta.\n\nAlguém riscou todas as palavras "luz".`,
+  choices:[{text:'Rezar e aguardar o amanhecer',next:'pray_dawn',sanCost:10,fearAdd:-10}]},
+find_exit:{
+  location:'Janela lateral',
+  text:`Você desce as escadas e encontra uma janela lateral que não estava trancada. O quintal do lado está vazio.\n\nÉ sua melhor chance.`,
+  choices:[
+    {text:'Sair pela janela e ir em direção à estrada',next:'run_survive',sanCost:0,fearAdd:10},
+    {text:'Pegar mais suprimentos antes de fugir',next:'wait_dawn',sanCost:-5,fearAdd:10},
+  ]},
+wait_dawn:{
+  location:'Esperando o amanhecer',
+  text:`Você aguarda.\n\nAs horas passam como chicotadas. Sons vêm e vão. A casa estrala. Uma vez, você ouve alguém cantarolando fora — melodia infantil, desafinada.\n\nMas nada entra. Você sobrevive ao pior.`,
+  choices:[{text:'Continuar esperando até clarear de vez',next:'final_dawn',sanCost:10,fearAdd:-10}]},
+freeze_roof:{
+  location:'Telhado — imóvel',
+  text:`Você vira pedra. A criatura fica olhando para cima por um minuto eterno.\n\nDepois caminha para longe.\n\nVocê espera mais duas horas no telhado, congelado de frio e medo.`,
+  choices:[{text:'Descer quando ela sumir e tentar a estrada',next:'run_survive',sanCost:0,fearAdd:10}]},
+hay_jump:{
+  location:'Saltando para o celeiro',
+  text:`Você salta. A queda é dura, mas a palha amortece. Você rola e corre.\n\nA criatura grita atrás de si — ela não gosta de barulho alto.\n\nVocê corre pela estrada até os pulmões explodirem.`,
+  choices:[{text:'Continuar correndo até ver luz de civilização',next:'escape_victory',sanCost:-15,fearAdd:10}]},
+pray_dawn:{
+  location:'Esperando o amanhecer',
+  text:`Você reza. Não sabe bem a quê. Mas reza.\n\nOs sussurros diminuem. A escuridão fora da janela vai ficando azul-chumbo.\n\nAmanheceu.`,
+  choices:[{text:'Sair quando o sol estiver no horizonte',next:'final_dawn',sanCost:15,fearAdd:-15}]},
+follow_whispers:{
+  location:'Banheiro',
+  text:`Você segue os sussurros pelo corredor.\n\nEles levam ao espelho do banheiro.\n\nSeu reflexo no espelho não move os lábios quando você abre os seus. <em>É o reflexo que sussurra.</em>\n\nEntão ele coloca a mão no vidro por dentro.`,
+  death:true,endingId:'death_mirror',
+  choices:[]},
+open_wardrobe_death:{
+  location:'O guarda-roupa',
+  text:`Você abre.\n\nA última coisa que você vê são os olhos do sótão — dentro do seu guarda-roupa, esperando a noite toda.\n\n<em>Fim.</em>`,
+  death:true,endingId:'death_wardrobe',
+  choices:[]},
+dark_safe:{
+  location:'Quarto no escuro total',
+  text:`A lanterna cai no chão longe. O quarto mergulha no escuro total.\n\nOs sussurros param. A coisa que controlava a lanterna não consegue te encontrar sem luz.\n\nVocê sorri. Aprendeu algo importante essa noite.`,
+  choices:[{text:'Permanecer no escuro até o amanhecer natural',next:'final_dawn',sanCost:10,fearAdd:-5}]},
+listen_pattern:{
+  location:'Quarto — ouvindo',
+  text:`Você escuta. Os sons formam um padrão. São coordenadas. GPS.\n\nO seu endereço de casa.\n\nEla <em>já esteve lá antes.</em>`,
+  choices:[{text:'Sair correndo dessa casa agora mesmo',next:'run_survive',sanCost:-20,fearAdd:25}]},
+run_death:{
+  location:'A porta',
+  text:`Você abre a porta. Ela está lá.\n\n<em>Fim.</em>`,
+  death:true,endingId:'death_scream',
+  choices:[]},
+escape_victory:{
+  location:'Rodovia — madrugada',
+  text:`O caminhoneiro para, abre a porta, olha para você.\n\n— "Outro da fazenda Velho Moço?" — ele pergunta, sem surpresa.\n\nVocê não pergunta o que ele quis dizer. Só entra.\n\nO sol nasce ao longe enquanto a fazenda some no espelho retrovisor.`,
+  winId:'escape_victory',
+  choices:[{text:'O fim — você sobreviveu',next:'WIN',sanCost:0,fearAdd:0}]},
+final_dawn:{
+  location:'Amanhecer',
+  text:`A luz do sol entra pela janela trincada como uma misericórdia.\n\nOs campos voltam a ser apenas campos. O celeiro, apenas madeira velha.\n\nVocê abre a porta principal. O ar frio da manhã nunca foi tão bom.\n\nVocê caminha pela estrada de terra. Não olha para trás.`,
+  winId:'final_dawn',
+  choices:[{text:'Ir embora e nunca mais voltar',next:'WIN',sanCost:0,fearAdd:0}]},
+};
+
+// ════════════════════════════════════════════════════════
+// GAME STATE
+// ════════════════════════════════════════════════════════
+let GS=null;
+let typeInterval=null;
+
+const SPEED_MAP={1:60,2:36,3:18,4:8,5:2};
+
+function makeState(){
+  return{sceneKey:'start',sanity:100,fear:0,hour:0,inv:[],log:[],phase:'game'};
+}
+
+function startNewGame(){
+  initAudio();
+  deleteSave();
+  GS=makeState();
+  showScreen('s-game');
+  renderGame();
+}
+
+function loadGame(){
+  initAudio();
+  const saved=getSave();
+  if(!saved){alert('Nenhum jogo salvo.');return;}
+  GS=saved;
+  showScreen('s-game');
+  renderGame();
+}
+
+// ════════════════════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════════════════════
+function renderGame(){
+  if(!GS)return;
+  const wrap=document.getElementById('game-content');
+  const scene=SCENE_MAP[GS.sceneKey]||SCENE_MAP['start'];
+
+  if(GS.phase==='dead'){renderEnd(false,scene);return;}
+  if(GS.phase==='win'){renderEnd(true,scene);return;}
+
+  const sanColor=GS.sanity>60?'ok':GS.sanity>30?'warning':'danger';
+  const fearColor=GS.fear<40?'ok':GS.fear<70?'warning':'danger';
+  const hourProgress=Math.min((GS.hour/(HOURS.length-1))*100,100);
+
+  wrap.innerHTML=`
+    <div class="hud">
+      <div class="hud-item">
+        <span class="hud-label">Sanidade</span>
+        <span class="hud-value ${sanColor}">${GS.sanity}%</span>
+      </div>
+      <div class="hour-bar">
+        <div class="hud-label" style="text-align:center;margin-bottom:5px">
+          ${HOURS[Math.min(GS.hour,HOURS.length-1)]}
+        </div>
+        <div class="hour-track">
+          <div class="hour-fill" style="width:${hourProgress}%"></div>
+        </div>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Terror</span>
+        <span class="hud-value ${fearColor}">${GS.fear}%</span>
+      </div>
+    </div>
+    <div class="scene-box">
+      <div class="scene-loc">${scene.location||''}</div>
+      <div class="scene-text" id="scene-txt"></div>
+    </div>
+    <div class="choices" id="choices-wrap" style="display:none"></div>
+    ${GS.inv.length>0?`
+    <div class="inventory">
+      <span class="inv-label">Inventário</span>
+      ${GS.inv.map(i=>`<span class="inv-item">${i}</span>`).join('')}
+    </div>`:''}
+    ${GS.log.length>0?`
+    <div class="log-box">
+      ${GS.log.slice(-5).map(e=>`<div class="log-entry ${e.type}">↳ ${e.text}</div>`).join('')}
+    </div>`:''}
+  `;
+
+  typewriteScene(scene);
+}
+
+function typewriteScene(scene){
+  const el=document.getElementById('scene-txt');
+  if(!el)return;
+  const plain=scene.text.replace(/<[^>]+>/g,'');
+  const delay=SPEED_MAP[settings.speed]||18;
+  let i=0;
+  if(typeInterval)clearInterval(typeInterval);
+  el.innerHTML='<span class="cursor">▌</span>';
+
+  typeInterval=setInterval(()=>{
+    if(i<plain.length){
+      el.innerHTML=plain.slice(0,i+1)+'<span class="cursor">▌</span>';
+      if(i%3===0)playSFX('type');
+      i++;
+    } else {
+      clearInterval(typeInterval);
+      typeInterval=null;
+      el.innerHTML=scene.text.replace(/\n/g,'<br/>');
+      showChoices(scene);
+    }
+  },delay);
+
+  // Click to skip
+  el.onclick=()=>{
+    if(typeInterval){
+      clearInterval(typeInterval);typeInterval=null;
+      el.innerHTML=scene.text.replace(/\n/g,'<br/>');
+      el.onclick=null;
+      showChoices(scene);
+    }
+  };
+  el.style.cursor='pointer';
+  el.title='Clique para pular';
+}
+
+function showChoices(scene){
+  const wrap=document.getElementById('choices-wrap');
+  if(!wrap)return;
+  wrap.style.display='flex';
+  wrap.innerHTML='';
+
+  if(!scene.choices||scene.choices.length===0){
+    // Auto end for death scenes
+    if(scene.death){
+      setTimeout(()=>{
+        if(scene.endingId)unlockEnding(scene.endingId);
+        GS.phase='dead';
+        deleteSave();
+        playSFX('death');
+        document.getElementById('game-wrap').classList.add('blood');
+        setTimeout(()=>{document.getElementById('game-wrap').classList.remove('blood');renderGame();},700);
+      },1800);
+    }
+    return;
+  }
+
+  scene.choices.forEach((c,i)=>{
+    const btn=document.createElement('button');
+    btn.className='choice-btn';
+    btn.textContent=c.text;
+    btn.onclick=()=>handleChoice(c);
+    wrap.appendChild(btn);
+  });
+}
+
+function handleChoice(choice){
+  playSFX('choice');
+  const newSan=Math.max(0,Math.min(100,GS.sanity+(choice.sanCost||0)));
+  const newFear=Math.min(100,GS.fear+(choice.fearAdd||0));
+  GS.sanity=newSan;
+  GS.fear=newFear;
+  GS.hour=Math.min(GS.hour+1,HOURS.length-1);
+  if(choice.item&&!GS.inv.includes(choice.item))GS.inv.push(choice.item);
+  if(choice.item2&&!GS.inv.includes(choice.item2))GS.inv.push(choice.item2);
+  GS.log.push({text:choice.text,type:choice.fearAdd>20?'bad':choice.sanCost>0?'good':'neutral'});
+
+  if(choice.next==='WIN'){
+    const scene=SCENE_MAP[GS.sceneKey];
+    if(scene&&scene.winId)unlockEnding(scene.winId);
+    GS.phase='win';
+    deleteSave();
+    playSFX('win');
+    renderGame();
+    return;
+  }
+
+  const nextScene=SCENE_MAP[choice.next];
+
+  if(!nextScene||nextScene.death){
+    GS.sceneKey=choice.next||GS.sceneKey;
+    if(nextScene&&nextScene.endingId)unlockEnding(nextScene.endingId);
+    playSFX('death');
+    document.getElementById('game-wrap').classList.add('blood');
+    setTimeout(()=>{
+      document.getElementById('game-wrap').classList.remove('blood');
+      if(nextScene&&nextScene.text){
+        renderGame();
+        setTimeout(()=>{GS.phase='dead';deleteSave();renderGame();},3000);
+      } else {
+        GS.phase='dead';deleteSave();renderGame();
+      }
+    },700);
+    return;
+  }
+
+  if(newSan<=0||newFear>=100){
+    unlockEnding('death_scream');
+    GS.phase='dead';
+    deleteSave();
+    playSFX('death');
+    renderGame();
+    return;
+  }
+
+  GS.sceneKey=choice.next;
+  saveGame(GS);
+  renderGame();
+}
+
+function renderEnd(survived,scene){
+  const wrap=document.getElementById('game-content');
+  if(survived){
+    wrap.innerHTML=`
+      <div class="end-screen">
+        <h2 class="end-title survived">VOCÊ SOBREVIVEU</h2>
+        <p class="end-msg">
+          O sol nasceu e você estava vivo para vê-lo.<br/>
+          Nunca volte à Fazenda Velho Moço.<br/><br/>
+          Sanidade final: ${GS.sanity}% — Terror: ${GS.fear}%<br/>
+          Itens: ${GS.inv.length>0?GS.inv.join(', '):'Nenhum'}
+        </p>
+        <div class="end-btns">
+          <button class="end-btn" onclick="startNewGame()">Jogar Novamente</button>
+          <button class="end-btn" onclick="showScreen('s-gallery')">Ver Galeria</button>
+          <button class="end-btn" onclick="showScreen('s-menu')">Menu Principal</button>
+        </div>
+      </div>`;
+  } else {
+    wrap.innerHTML=`
+      <div class="end-screen">
+        <h2 class="end-title dead">VOCÊ MORREU</h2>
+        <p class="end-msg">
+          A Fazenda Velho Moço guarda seus segredos.<br/>
+          E agora guarda você também.<br/><br/>
+          Sanidade: ${GS.sanity}% — Terror: ${GS.fear}%<br/>
+          Hora: ${HOURS[Math.min(GS.hour,HOURS.length-1)]}
+        </p>
+        <div class="end-btns">
+          <button class="end-btn" onclick="startNewGame()">Tentar Novamente</button>
+          <button class="end-btn" onclick="showScreen('s-gallery')">Ver Galeria</button>
+          <button class="end-btn" onclick="showScreen('s-menu')">Menu Principal</button>
+        </div>
+      </div>`;
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+window.addEventListener('load',()=>{
+  loadSettings();
+  checkLoadBtn();
+  buildGallery();
+});
+</script>
+</body>
+</html>
