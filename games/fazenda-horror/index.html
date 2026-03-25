@@ -750,3 +750,127 @@ function App() {
     setTypeText("");
     setTyping(false);
         }
+
+  const sanityColor = sanity > 60 ? "ok" : sanity > 30 ? "warning" : "danger";
+  const fearColor = fear < 40 ? "ok" : fear < 70 ? "warning" : "danger";
+  const hourProgress = (hour / (HOURS.length - 1)) * 100;
+
+  function renderSceneText(text) {
+    if (!text) return null;
+    return <div className="scene-text" dangerouslySetInnerHTML={{ __html: text.replace(/\n/g, "<br/>") }} />;
+  }
+
+  return (
+    <>
+      <style>{style}</style>
+      <div className={`game-root ${bloodFlash ? "blood-flash" : ""}`}>
+        <div className="grain" />
+        <div className="vignette" />
+
+        {phase === "title" && (
+          <div className="title-screen">
+            <h1 className="flicker">FAZENDA<br/>VELHO MOÇO</h1>
+            <p className="subtitle">Uma noite. Suas escolhas. Sua sorte.</p>
+            <button className="start-btn" onClick={() => setPhase("game")}>
+              Entrar na Fazenda
+            </button>
+          </div>
+        )}
+
+        {phase === "game" && scene && (
+          <div className="game-panel">
+            {/* HUD */}
+            <div className="hud">
+              <div className="hud-item">
+                <span className="hud-label">Sanidade</span>
+                <span className={`hud-value ${sanityColor}`}>{sanity}%</span>
+              </div>
+              <div className="hour-bar">
+                <div className="hud-label" style={{ textAlign: "center", marginBottom: 6 }}>
+                  {HOURS[Math.min(hour, HOURS.length - 1)]}
+                </div>
+                <div className="hour-track">
+                  <div className="hour-fill" style={{ width: `${hourProgress}%` }} />
+                </div>
+              </div>
+              <div className="hud-item">
+                <span className="hud-label">Terror</span>
+                <span className={`hud-value ${fearColor}`}>{fear}%</span>
+              </div>
+            </div>
+
+            {/* Scene */}
+            <div className="scene-box">
+              <div className="scene-location">{scene.location}</div>
+              {typing
+                ? <div className="scene-text">{typeText}<span style={{ opacity: 0.5 }}>▌</span></div>
+                : renderSceneText(scene.text)
+              }
+            </div>
+
+            {/* Choices */}
+            {!typing && (
+              <div className="choices">
+                {scene.choices && scene.choices.map((c, i) => (
+                  <button key={i} className="choice-btn" onClick={() => handleChoice(c)}>
+                    {c.text}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Inventory */}
+            {inventory.length > 0 && (
+              <div className="inventory">
+                <span className="inv-label">Inventário</span>
+                {inventory.map((item, i) => (
+                  <span key={i} className="inv-item">{item}</span>
+                ))}
+              </div>
+            )}
+
+            {/* Log */}
+            {log.length > 0 && (
+              <div className="log" ref={logRef}>
+                {log.map((entry, i) => (
+                  <div key={i} className={`log-entry ${entry.type}`}>
+                    ↳ {entry.text}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {phase === "dead" && (
+          <div className="end-screen">
+            <h2 className="end-title dead">VOCÊ MORREU</h2>
+            <p className="end-msg">
+              A Fazenda Velho Moço guarda seus segredos. E agora guarda você também.<br/>
+              Sanidade final: {sanity}% — Terror: {fear}% — Hora: {HOURS[Math.min(hour, HOURS.length - 1)]}
+            </p>
+            <button className="start-btn" onClick={restart}>Tentar Novamente</button>
+          </div>
+        )}
+
+        {phase === "win" && (
+          <div className="end-screen">
+            <h2 className="end-title survived">VOCÊ SOBREVIVEU</h2>
+            <p className="end-msg">
+              O sol nasceu e você estava vivo para vê-lo.<br/>
+              Nunca volte à Fazenda Velho Moço.<br/><br/>
+              Sanidade final: {sanity}% — Terror acumulado: {fear}%<br/>
+              Itens coletados: {inventory.length > 0 ? inventory.join(", ") : "Nenhum"}
+            </p>
+            <button className="start-btn" onClick={restart}>Jogar Novamente</button>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
