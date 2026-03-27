@@ -362,6 +362,22 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
   <button class="back-btn" onclick="showScreen('s-menu')">◂ Voltar</button>
 </div>
 
+<!-- GAME -->
+<div id="s-game" class="screen">
+  <div class="game-outer" id="game-outer">
+    <div class="topbar">
+      <button class="tb-btn" onclick="confirmAction('Você tem certeza que quer voltar para o menu principal? Todo progresso não salvo será perdido.',()=>showScreen('s-menu'))">☰ Menu</button>
+      <span class="save-ind" id="save-ind">● Auto-salvo</span>
+    </div>
+    <div id="game-content"></div>
+  </div>
+  <div class="bottom-bar">
+    <button class="bb-btn" id="bb-save" onclick="openSaves('save')">💾 Salvar</button>
+    <button class="bb-btn" id="bb-hist" onclick="openHist()">📜 Histórico</button>
+    <button class="bb-btn" id="bb-skip" onclick="toggleSkip()">⏩ Pular Texto</button>
+  </div>
+</div>
+
 <script>
 'use strict';
 // ═══════════════════════════════════════════
@@ -431,7 +447,6 @@ function sfx(type){
   }
 }
 
-
 // ═══════════════════════════════════════════
 // PIXEL ART THUMBNAILS
 // ═══════════════════════════════════════════
@@ -494,7 +509,7 @@ function drawScenePixel(canvas,sceneKey){
       ctx.fillRect(c*pw,r*ph,pw,ph);
     }
   }
-  // Draw scene icon overlay
+    // Draw scene icon overlay
   const icons={
     start:'🏚️',search_house:'🔪',barricade:'🪵',watch_barn:'👁️',
     attic:'🕸️',hide_bed:'🛏️',lights_off:'🕯️',scream:'📢',
@@ -535,7 +550,8 @@ function drawDiskIcon(canvasId,isLoad){
     ctx.beginPath();ctx.moveTo(17,8);ctx.lineTo(27,8);ctx.lineTo(22,3);ctx.closePath();ctx.fill();
     ctx.fillRect(20,8,4,8);
   }
-  }
+    }
+
 
 // ═══════════════════════════════════════════
 // SAVES
@@ -718,9 +734,10 @@ function clearAllData(){
   for(let i=1;i<=TOTAL_SLOTS;i++)localStorage.removeItem(SAVE_KEY+i);
   localStorage.removeItem(END_KEY);localStorage.removeItem(CFG_KEY);
   localStorage.removeItem(AUTO_KEY);
-  settings={speed:3,music:60,sfx:80};applySettings();checkLoadBtn();buildGallery();
+  settings={speed:3,music:60,sfx:80};applySettings();checkLoadBtn();buildGallery();buildSaveGrid();
   alert('Dados apagados.');
-  }
+}
+
 
 
 // ═══════════════════════════════════════════
@@ -785,7 +802,10 @@ function confirmAction(msg,cb){
   document.getElementById('modal-confirm').classList.add('open');
 }
 function closeConfirm(){document.getElementById('modal-confirm').classList.remove('open');}
-document.getElementById('confirm-yes').onclick=()=>{closeConfirm();if(confirmCb)confirmCb();};
+const confirmYes=document.getElementById('confirm-yes');
+if(confirmYes){
+  confirmYes.onclick=()=>{closeConfirm();if(confirmCb)confirmCb();};
+}
 
 function openHist(){
   const body=document.getElementById('hist-body');
@@ -1111,8 +1131,9 @@ function showChoices(scene){
     btn.onclick=()=>handleChoice(c);
     wrap.appendChild(btn);
   });
-}
+  }
 
+  
 function handleChoice(choice){
   sfx('click');
   // Save to history
@@ -1181,7 +1202,7 @@ function renderEnd(survived){
     </div>`;
   }
 
-// ═══════════════════════════════════════════
+  // ═══════════════════════════════════════════
 // PARTICLES
 // ═══════════════════════════════════════════
 (function(){
