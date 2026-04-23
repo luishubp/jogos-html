@@ -382,9 +382,23 @@
   // Renderizar comentários
   const qComentarios = query(collection(db, "comentarios"), orderBy("createdAt", "desc"), limit(30));
 
+  // Armazena os unsubscribers das respostas para evitar listeners duplicados
+  const replyUnsubscribers = {};
+
   onSnapshot(qComentarios, (snap) => {
     const lista = document.getElementById('lista-comentarios');
     if (snap.empty) { lista.innerHTML = "<div class='vazio-msg'>Nenhum comentário ainda. Seja o primeiro! 🎮</div>"; return; }
+
+    // Salva quais caixas de resposta estão abertas antes de re-renderizar
+    const boxesAbertas = new Set();
+    document.querySelectorAll('.resposta-box.show').forEach(box => {
+      boxesAbertas.add(box.id);
+    });
+
+    // Cancela listeners antigos de respostas
+    Object.values(replyUnsubscribers).forEach(unsub => unsub());
+    for (const key in replyUnsubscribers) delete replyUnsubscribers[key];
+
     lista.innerHTML = '';
 
     snap.forEach(docSnap => {
@@ -473,9 +487,14 @@
 
       lista.appendChild(item);
 
-      // Carrega respostas em tempo real
-      const qRespostas = query(collection(db, "comentarios", id, "respostas"), orderBy("createdAt", "asc"), limit(10));
-      onSnapshot(qRespostas, (rSnap) => {
+      // Re-abre caixas de resposta que estavam abertas antes do re-render
+      if (boxesAbertas.has(`resposta-box-${id}`)) {
+        item.querySelector('.resposta-box').classList.add('show');
+      }
+
+      // Carrega respostas em tempo real e guarda o unsubscriber
+      const qRespostas = query(collection(db, "comentarios", id, "respostas"), orderBy("createdAt", "asc"), limit(20));
+      replyUnsubscribers[id] = onSnapshot(qRespostas, (rSnap) => {
         const rLista = document.getElementById(`respostas-${id}`);
         if (!rLista) return;
         rLista.innerHTML = '';
