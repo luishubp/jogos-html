@@ -271,7 +271,18 @@
   const charCount = document.getElementById('char-count');
   txt.addEventListener('input', () => { charCount.textContent = `${txt.value.length} / 300`; });
 
-  // Auth
+  // ── Controle de listeners ────────────────────────────────────
+  let unsubscribeComments = null;
+  const replyUnsubscribers = {};
+  const localLikes = new Map();
+
+  function limparListeners() {
+    if (unsubscribeComments) { unsubscribeComments(); unsubscribeComments = null; }
+    Object.values(replyUnsubscribers).forEach(u => u());
+    for (const k in replyUnsubscribers) delete replyUnsubscribers[k];
+  }
+
+  // Auth — listener de comentários só inicia APÓS saber quem é o usuário
   onAuthStateChanged(auth, async (user) => {
     usuarioAtual = user;
     if (user) {
@@ -285,6 +296,9 @@
       document.getElementById('btn-enviar').disabled = true;
       document.getElementById('btn-enviar').textContent = 'Faça login para comentar';
     }
+    // Re-inicia listener para garantir jaCurtiu correto com usuário atual
+    limparListeners();
+    unsubscribeComments = onSnapshot(qComentarios, renderComentarios);
   });
 
   // Enviar comentário
@@ -382,22 +396,20 @@
   // Renderizar comentários
   const qComentarios = query(collection(db, "comentarios"), orderBy("createdAt", "desc"), limit(30));
 
-  // Armazena os unsubscribers das respostas para evitar listeners duplicados
-  const replyUnsubscribers = {};
-
-  onSnapshot(qComentarios, (snap) => {
+  function renderComentarios(snap) {
     const lista = document.getElementById('lista-comentarios');
     if (snap.empty) { lista.innerHTML = "<div class='vazio-msg'>Nenhum comentário ainda. Seja o primeiro! 🎮</div>"; return; }
 
-    // Salva quais caixas de resposta estão abertas antes de re-renderizar
-    const boxesAbertas = new Set();
-    document.querySelectorAll('.resposta-box.show').forEach(box => {
-      boxesAbertas.add(box.id);
+    // Salva estado das caixas abertas E conteúdo digitado antes de re-renderizar
+    const estadoBoxes = {};
+    document.querySelectorAll('.resposta-box').forEach(box => {
+      const ta = box.querySelector('textarea');
+      estadoBoxes[box.id] = { aberto: box.classList.contains('show'), texto: ta ? ta.value : '' };
     });
 
     // Cancela listeners antigos de respostas
-    Object.values(replyUnsubscribers).forEach(unsub => unsub());
-    for (const key in replyUnsubscribers) delete replyUnsubscribers[key];
+    Object.values(replyUnsubscribers).forEach(u => u());
+    for (const k in replyUnsubscribers) delete replyUnsubscribers[k];
 
     lista.innerHTML = '';
 
@@ -405,7 +417,10 @@
       const d  = docSnap.data();
       const id = docSnap.id;
       const data = d.createdAt ? new Date(d.createdAt.seconds * 1000).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'agora';
-      const jaCurtiu = usuarioAtual && (d.curtidoPor || []).includes(usuarioAtual.uid);
+      // localLikes tem prioridade — evita flicker do snapshot
+      const jaCurtiu = localLikes.has(id)
+        ? localLikes.get(id)
+        : (usuarioAtual && (d.curtidoPor || []).includes(usuarioAtual.uid));
       const eDono    = usuarioAtual && usuarioAtual.uid === d.uid;
 
       const item = document.createElement('div');
@@ -487,12 +502,19 @@
 
       lista.appendChild(item);
 
-      // Re-abre caixas de resposta que estavam abertas antes do re-render
-      if (boxesAbertas.has(`resposta-box-${id}`)) {
-        item.querySelector('.resposta-box').classList.add('show');
+      // Restaura estado da caixa de resposta (aberto + texto digitado)
+      const boxKey = `resposta-box-${id}`;
+      if (estadoBoxes[boxKey]) {
+        const box = item.querySelector('.resposta-box');
+        const ta = box.querySelector('textarea');
+        if (estadoBoxes[boxKey].aberto) box.classList.add('show');
+        if (estadoBoxes[boxKey].texto) {
+          ta.value = estadoBoxes[boxKey].texto;
+          item.querySelector('.resposta-footer span').textContent = `${ta.value.length} / 200`;
+        }
       }
 
-      // Carrega respostas em tempo real e guarda o unsubscriber
+      // Carrega respostas em tempo real — guarda unsubscriber para limpeza posterior
       const qRespostas = query(collection(db, "comentarios", id, "respostas"), orderBy("createdAt", "asc"), limit(20));
       replyUnsubscribers[id] = onSnapshot(qRespostas, (rSnap) => {
         const rLista = document.getElementById(`respostas-${id}`);
@@ -517,7 +539,7 @@
         });
       });
     });
-  });
+  }
 
   // Ranking
   const qRanking = query(collection(db, "usuarios"), orderBy("xp", "desc"), limit(20));
