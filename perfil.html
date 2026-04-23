@@ -163,6 +163,7 @@
     background: var(--fundo2); border: 1px solid var(--borda);
     border-radius: 10px; padding: 18px 12px; text-align: center;
     font-size: 13px; font-weight: 700; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    text-decoration: none; color: var(--texto); display: block; cursor: pointer;
   }
   .mini-card:hover { border-color: var(--laranja); transform: translateY(-4px); box-shadow: 0 8px 20px rgba(249,115,22,0.15); }
   .mini-card .mc-icon { font-size: 28px; margin-bottom: 8px; display: block; }
@@ -325,11 +326,11 @@
   const CAMPOS_META = new Set(['isVip','nickname','bio','avatar','banner','email','photoURL','xp','nivel']);
 
   const infoJogos = {
-    "alien-space":    { nome: "Alien Space Wars",  icon: "🚀" },
-    "fnaf-watch":     { nome: "FNAF Night Watch",   icon: "👁️" },
-    "fazenda-velho":  { nome: "Fazenda Velho Moço", icon: "🚜" },
-    "neon-defense":   { nome: "Neon Defense",       icon: "🏰" },
-    "fazenda-horror": { nome: "Fazenda Horror",     icon: "🌙" }
+    "alien-space":    { nome: "Alien Space Wars",  icon: "🚀", url: "games/alien-space-wars/" },
+    "fnaf-watch":     { nome: "FNAF Night Watch",   icon: "👁️", url: "games/fnaf-night-watch/" },
+    "fazenda-velho":  { nome: "Fazenda Velho Moço", icon: "🚜", url: "games/novo-experimento/" },
+    "neon-defense":   { nome: "Neon Defense",       icon: "🏰", url: "games/neon-defense/" },
+    "fazenda-horror": { nome: "Fazenda Horror",     icon: "🌙", url: "games/fazenda-horror/" }
   };
 
   // FIX 4: cálculo e animação de XP corrigidos
@@ -366,8 +367,9 @@
       if (CAMPOS_META.has(key)) return;
       if (dados[key] === true && infoJogos[key]) {
         total++;
-        const card = document.createElement('div');
+        const card = document.createElement('a');
         card.className = "mini-card";
+        card.href = infoJogos[key].url;
         card.innerHTML = `<span class="mc-icon">${infoJogos[key].icon}</span>${infoJogos[key].nome}`;
         container.appendChild(card);
       }
