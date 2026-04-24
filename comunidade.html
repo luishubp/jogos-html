@@ -272,17 +272,11 @@
   txt.addEventListener('input', () => { charCount.textContent = `${txt.value.length} / 300`; });
 
   // ── Controle de listeners ────────────────────────────────────
-  let unsubscribeComments = null;
   const replyUnsubscribers = {};
   const localLikes = new Map();
+  let comentariosCache = null; // guarda último snap para re-renderizar sem reiniciar listener
 
-  function limparListeners() {
-    if (unsubscribeComments) { unsubscribeComments(); unsubscribeComments = null; }
-    Object.values(replyUnsubscribers).forEach(u => u());
-    for (const k in replyUnsubscribers) delete replyUnsubscribers[k];
-  }
-
-  // Auth — listener de comentários só inicia APÓS saber quem é o usuário
+  // Auth — atualiza usuário e re-renderiza com dados corretos SEM reiniciar listeners
   onAuthStateChanged(auth, async (user) => {
     usuarioAtual = user;
     if (user) {
@@ -293,12 +287,18 @@
       }
       document.getElementById('btn-enviar').disabled = false;
     } else {
+      dadosUsuario = {};
       document.getElementById('btn-enviar').disabled = true;
       document.getElementById('btn-enviar').textContent = 'Faça login para comentar';
     }
-    // Re-inicia listener para garantir jaCurtiu correto com usuário atual
-    limparListeners();
-    unsubscribeComments = onSnapshot(qComentarios, renderComentarios);
+    // Re-renderiza com o novo usuário sem reiniciar o listener do Firestore
+    if (comentariosCache) renderComentarios(comentariosCache);
+  });
+
+  // Listener de comentários inicia uma única vez — independente do auth
+  onSnapshot(qComentarios, (snap) => {
+    comentariosCache = snap;
+    renderComentarios(snap);
   });
 
   // Enviar comentário
