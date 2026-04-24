@@ -342,23 +342,66 @@
     btn.disabled = false; btn.textContent = 'Comentar';
   });
 
-  // Curtir
+  // Curtir — com feedback visual imediato (optimistic UI)
   async function curtir(comentId, uidDono, nomeDono, jaCurtiu) {
     if (!usuarioAtual) { showToast('🔒 Faça login para curtir!'); return; }
     if (usuarioAtual.uid === uidDono) { showToast('😅 Você não pode curtir o próprio comentário!'); return; }
-    const ref = doc(db, "comentarios", comentId);
-    if (jaCurtiu) {
-      await updateDoc(ref, { curtidas: increment(-1), curtidoPor: arrayRemove(usuarioAtual.uid) });
-    } else {
-      await updateDoc(ref, { curtidas: increment(1), curtidoPor: arrayUnion(usuarioAtual.uid) });
-      const nomeQueCurtiu = dadosUsuario.nickname || usuarioAtual.displayName?.split(' ')[0] || 'Alguém';
-      await addDoc(collection(db, "notificacoes", uidDono, "lista"), {
-        tipo: "curtida", de: nomeQueCurtiu,
-        avatarDe: dadosUsuario.avatar || usuarioAtual.photoURL || '',
-        mensagem: `${nomeQueCurtiu} curtiu seu comentário`,
-        lida: false, createdAt: serverTimestamp()
-      });
+
+    const novoEstado = !jaCurtiu;
+
+    // Atualiza DOM e localLikes imediatamente (evita flicker do snapshot)
+    const btn = document.querySelector(`.btn-curtir[data-id="${comentId}"]`);
+    if (btn) {
+      const span = btn.querySelector('span');
+      const count = parseInt(span?.textContent || '0');
+      btn.dataset.curtiu = String(novoEstado);
+      if (novoEstado) {
+        btn.classList.add('curtido');
+        btn.innerHTML = `❤️ <span>${count + 1}</span>`;
+      } else {
+        btn.classList.remove('curtido');
+        btn.innerHTML = `🤍 <span>${Math.max(0, count - 1)}</span>`;
+      }
     }
+    localLikes.set(comentId, novoEstado);
+
+    // Envia pro Firebase
+    const ref = doc(db, "comentarios", comentId);
+    try {
+      if (jaCurtiu) {
+        await updateDoc(ref, { curtidas: increment(-1), curtidoPor: arrayRemove(usuarioAtual.uid) });
+      } else {
+        await updateDoc(ref, { curtidas: increment(1), curtidoPor: arrayUnion(usuarioAtual.uid) });
+        const nomeQueCurtiu = dadosUsuario.nickname || usuarioAtual.displayName?.split(' ')[0] || 'Alguém';
+        await addDoc(collection(db, "notificacoes", uidDono, "lista"), {
+          tipo: "curtida", de: nomeQueCurtiu,
+          avatarDe: dadosUsuario.avatar || usuarioAtual.photoURL || '',
+          mensagem: `${nomeQueCurtiu} curtiu seu comentário`,
+          lida: false, createdAt: serverTimestamp()
+        });
+      }
+    } catch(err) {
+      // Reverte o DOM se falhar
+      localLikes.delete(comentId);
+      if (btn) {
+        const span = btn.querySelector('span');
+        const count = parseInt(span?.textContent || '0');
+        btn.dataset.curtiu = String(jaCurtiu);
+        if (jaCurtiu) {
+          btn.classList.add('curtido');
+          btn.innerHTML = `❤️ <span>${count + 1}</span>`;
+        } else {
+          btn.classList.remove('curtido');
+          btn.innerHTML = `🤍 <span>${Math.max(0, count - 1)}</span>`;
+        }
+      }
+      showToast('❌ Erro ao curtir. Tente novamente.');
+      console.error(err);
+      return;
+    }
+
+    // Remove override local após 5s (snapshot já terá confirmado)
+    setTimeout(() => localLikes.delete(comentId), 5000);
   }
 
   // Deletar comentário
