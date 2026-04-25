@@ -1,206 +1,299 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
-    <title>Whispers in the Static - Horror</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo de Vigília - Horror</title>
     <style>
-        body { margin:0; background:#000; font-family: 'Courier New', monospace; color:#0f0; overflow:hidden; }
-        canvas { display:block; margin:0 auto; image-rendering: pixelated; }
-        #ui { position: absolute; top: 10px; left: 10px; pointer-events: none; }
-        #radio { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: #222; padding: 15px; border: 3px solid #555; border-radius: 10px; text-align: center; }
-        button, input { margin: 5px; padding: 8px; background: #111; color: #0f0; border: 2px solid #0f0; }
+        /* CSS: A Atmosfera de Horror */
+        :root {
+            --bg-color: #050505;
+            --crt-green: #2ecc71;
+            --crt-dark: #1a4f2e;
+            --danger: #e74c3c;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--crt-green);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Efeito CRT (Monitor Antigo) */
+        #game-container {
+            width: 800px;
+            height: 600px;
+            background: #0a0a0a;
+            border: 4px solid #222;
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.2);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        #monitor {
+            flex: 2;
+            border-bottom: 2px solid var(--crt-dark);
+            position: relative;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(46,204,113,0.05) 2px, rgba(46,204,113,0.05) 4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        #controls {
+            flex: 1;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .bar-container { margin-bottom: 10px; }
+        progress { width: 100%; height: 20px; accent-color: var(--crt-green); }
+        progress.danger { accent-color: var(--danger); }
+
+        button {
+            background: #111;
+            color: var(--crt-green);
+            border: 1px solid var(--crt-green);
+            padding: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+        button:hover { background: var(--crt-dark); }
+        button:active { background: var(--crt-green); color: #000; }
+        
+        button:disabled { border-color: #555; color: #555; cursor: not-allowed; }
+
+        /* Inimigo 1: Efeito do Ruído (Glitch) */
+        .glitch-active {
+            animation: glitch-anim 0.2s infinite;
+            filter: contrast(2) hue-rotate(90deg);
+        }
+
+        @keyframes glitch-anim {
+            0% { transform: translate(2px, 1px); }
+            20% { transform: translate(-2px, -2px); }
+            40% { transform: translate(1px, 2px); }
+            60% { transform: translate(-1px, -1px); }
+            80% { transform: translate(3px, 1px); }
+            100% { transform: translate(-1px, 2px); }
+        }
+
+        /* Inimigo 2: Visão Térmica */
+        .thermal-vision #monitor { background: #800000; color: #ffcccc; }
+
+        #game-over {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; color: red; display: none;
+            justify-content: center; align-items: center; font-size: 40px; z-index: 100;
+        }
     </style>
 </head>
 <body>
 
-<canvas id="game" width="1000" height="600"></canvas>
+<div id="game-container">
+    <div id="monitor">
+        <span id="camera-text">CÂMARA 01 - SALA DE SERVIDORES<br>[SISTEMA ESTÁVEL]</span>
+    </div>
 
-<div id="ui">
-    <div>Sanidade: <span id="sanity">100</span>%</div>
-    <div>Bateria: <span id="battery">100</span>%</div>
-    <div>Onda: <span id="wave">1</span></div>
-</div>
+    <div id="controls">
+        <div>
+            <div class="bar-container">ENERGIA <progress id="energia" value="100" max="100"></progress></div>
+            <div class="bar-container">SANIDADE <progress id="sanidade" value="100" max="100"></progress></div>
+            <label>SINTONIZAR RÁDIO:</label>
+            <input type="range" id="radio-sync" min="0" max="100" value="50" style="width: 100%;">
+        </div>
 
-<div id="radio">
-    <p><strong>Rádio Antigo</strong></p>
-    Frequência: <input type="range" id="dial" min="0" max="100" value="50" style="width:300px;">
-    <br>
-    <button onclick="speakRadio()">Falar no Rádio (Risco)</button>
-    <button onclick="toggleLight()">Lanterna (Gasta bateria)</button>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button onclick="trocarCamara()">MUDAR CÂMARA</button>
+            <button id="btn-thermal" onclick="toggleTermal()">LIGAR VISÃO TÉRMICA</button>
+            <button id="btn-valve" onmousedown="segurarValvula()" onmouseup="soltarValvula()" onmouseleave="soltarValvula()">SEGURAR VÁLVULA</button>
+            <button id="btn-degauss" onclick="usarDegauss()" style="display: none; border-color: red; color: red;">DEGAUSS (PURGAR SISTEMA)</button>
+        </div>
+    </div>
+
+    <div id="game-over">FIM DE TRANSMISSÃO</div>
 </div>
 
 <script>
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
-let sanity = 100;
-let battery = 100;
-let frequency = 50;
-let wave = 1;
-let hiding = false;
-let lightOn = false;
-let enemies = [];
-let gameOver = false;
-let score = 0;
+    // === ESTADO DO JOGO ===
+    const state = {
+        energia: 100,
+        sanidade: 100,
+        camaraAtual: 1,
+        visaoTermica: false,
+        valvulaSegurada: false,
+        jogoAvoar: true,
+        frequenciaRuptura: Math.floor(Math.random() * 100) // Frequência perigosa do rádio
+    };
 
-const dial = document.getElementById('dial');
+    // === INIMIGOS ===
+    const inimigos = {
+        ruido: { ativo: false, timer: 0 },
+        andarilho: { ativo: false, progressoInvasao: 0 },
+        mimetizador: { ativo: false, somFalsoTocado: false }
+    };
 
-dial.addEventListener('input', () => {
-    frequency = parseInt(dial.value);
-});
+    // Elementos DOM
+    const UI = {
+        monitor: document.getElementById('monitor'),
+        textoCam: document.getElementById('camera-text'),
+        energia: document.getElementById('energia'),
+        sanidade: document.getElementById('sanidade'),
+        container: document.getElementById('game-container'),
+        btnDegauss: document.getElementById('btn-degauss'),
+        radioSync: document.getElementById('radio-sync'),
+        btnTermal: document.getElementById('btn-thermal')
+    };
 
-function drawStatic() {
-    for (let i = 0; i < 400; i++) {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        ctx.fillStyle = `rgba(80,80,100,${Math.random()})`;
-        ctx.fillRect(x, y, 2, 2);
+    // === SISTEMA DE ÁUDIO (Web Audio API - Sem ficheiros externos) ===
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function tocarBeep(frequencia, tipo = 'sine', duracao = 0.1) {
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.type = tipo; osc.frequency.value = frequencia;
+        osc.connect(gainNode); gainNode.connect(audioCtx.destination);
+        osc.start();
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duracao);
+        setTimeout(() => osc.stop(), duracao * 1000);
     }
-}
 
-function drawRadioVisual() {
-    // Simula o rádio na tela (parte inferior)
-    ctx.fillStyle = '#333';
-    ctx.fillRect(50, 420, 300, 120);
-    ctx.fillStyle = '#222';
-    ctx.beginPath();
-    ctx.arc(200, 480, 45, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Ponteiro do dial
-    const angle = (frequency - 50) * 3;
-    ctx.strokeStyle = '#f00';
-    ctx.lineWidth = 8;
-    ctx.beginPath();
-    ctx.moveTo(200, 480);
-    ctx.lineTo(200 + Math.cos(angle * Math.PI / 180) * 40, 480 + Math.sin(angle * Math.PI / 180) * 40);
-    ctx.stroke();
-}
+    // === MECÂNICAS ===
+    function trocarCamara() {
+        if (!state.jogoAvoar) return;
+        
+        // Punição do Inimigo 3 (Mimetizador)
+        if (inimigos.mimetizador.somFalsoTocado) {
+            alterarAtributo('sanidade', -20);
+            UI.textoCam.innerHTML = "FOSTE ENGANADO.<br>ELE ESTÁ A OBSERVAR.";
+            inimigos.mimetizador.somFalsoTocado = false;
+            return;
+        }
 
-function spawnEnemy() {
-    const types = ['echo', 'copy', 'freq'];
-    const type = types[Math.floor(Math.random() * 3)];
-    enemies.push({
-        type: type,
-        x: 950,
-        y: 150 + Math.random() * 250,
-        speed: type === 'copy' ? 1.8 : 1.2,
-        threat: 30
-    });
-}
+        state.camaraAtual = state.camaraAtual === 1 ? 2 : 1;
+        atualizarEcra();
+        alterarAtributo('energia', -2);
+        tocarBeep(800, 'square', 0.05);
+    }
 
-function update() {
-    if (gameOver) return;
+    function toggleTermal() {
+        state.visaoTermica = !state.visaoTermica;
+        UI.btnTermal.innerText = state.visaoTermica ? "DESLIGAR TÉRMICA" : "LIGAR VISÃO TÉRMICA";
+        atualizarEcra();
+    }
 
-    // Sanidade cai com frequência errada ou bateria baixa
-    if (frequency < 25 || frequency > 75) sanity -= 0.18;
-    if (battery < 25) sanity -= 0.08;
-    if (lightOn) battery -= 0.25;
+    function segurarValvula() { state.valvulaSegurada = true; }
+    function soltarValvula() { state.valvulaSegurada = false; }
 
-    sanity = Math.max(0, Math.min(100, sanity));
-    battery = Math.max(0, battery);
+    function usarDegauss() {
+        if (inimigos.ruido.ativo) {
+            inimigos.ruido.ativo = false;
+            inimigos.ruido.timer = 0;
+            UI.container.classList.remove('glitch-active');
+            UI.btnDegauss.style.display = 'none';
+            alterarAtributo('energia', -15); // Custa muita energia
+            tocarBeep(200, 'sawtooth', 0.5);
+            atualizarEcra();
+        }
+    }
 
-    document.getElementById('sanity').textContent = Math.floor(sanity);
-    document.getElementById('battery').textContent = Math.floor(battery);
-    document.getElementById('wave').textContent = Math.floor(wave);
+    function alterarAtributo(attr, valor) {
+        state[attr] += valor;
+        if (state[attr] > 100) state[attr] = 100;
+        if (state[attr] < 0) state[attr] = 0;
+        UI[attr].value = state[attr];
+        
+        if (state.sanidade <= 30) UI.sanidade.classList.add('danger');
+        else UI.sanidade.classList.remove('danger');
 
-    // Spawn inimigos
-    if (Math.random() < 0.025 * wave) spawnEnemy();
+        if (state.energia <= 0 || state.sanidade <= 0) gameOver("FALHA NOS SISTEMAS VITAIS");
+    }
 
-    // Movimento dos inimigos
-    for (let i = enemies.length - 1; i >= 0; i--) {
-        const e = enemies[i];
-        e.x -= e.speed * 2.2;
-
-        if (e.x < 120) {
-            if (!hiding || e.type === 'freq') {
-                sanity -= 22;
+    function atualizarEcra() {
+        if (state.visaoTermica) {
+            UI.container.classList.add('thermal-vision');
+            if (state.camaraAtual === 2 && inimigos.andarilho.ativo) {
+                UI.textoCam.innerHTML = "CÂMARA 02 - DUTOS<br>!!! ASSINATURA DE CALOR DETETADA !!!";
+            } else {
+                UI.textoCam.innerHTML = `CÂMARA 0${state.camaraAtual} - TÉRMICA<br>Limpo.`;
             }
-            enemies.splice(i, 1);
+        } else {
+            UI.container.classList.remove('thermal-vision');
+            UI.textoCam.innerHTML = `CÂMARA 0${state.camaraAtual} - VISÃO NORMAL<br>Sem anomalias visíveis.`;
         }
     }
 
-    if (sanity <= 0) gameOver = true;
-    wave += 0.001; // aumenta dificuldade devagar
-}
+    // === GAME LOOP PRINCIPAL ===
+    setInterval(() => {
+        if (!state.jogoAvoar) return;
 
-function draw() {
-    ctx.fillStyle = '#0a0a1a';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Dreno constante
+        alterarAtributo('energia', state.visaoTermica ? -2 : -0.5);
 
-    drawStatic();
-
-    // Ambiente escuro com "sala abandonada"
-    ctx.fillStyle = '#1a1a2a';
-    ctx.fillRect(100, 100, 800, 400);
-
-    drawRadioVisual();
-
-    // Desenha inimigos com visual assustador
-    for (let e of enemies) {
-        if (e.type === 'echo') {
-            ctx.fillStyle = '#400';
-            ctx.fillRect(e.x, e.y, 55, 180);
-            ctx.fillStyle = '#f00';
-            ctx.fillRect(e.x + 15, e.y + 40, 10, 10); // olho
-        } else if (e.type === 'copy') {
-            ctx.fillStyle = '#040';
-            ctx.fillRect(e.x, e.y, 55, 180);
-            ctx.fillStyle = '#0f0';
-            ctx.fillRect(e.x + 20, e.y + 50, 15, 15); // rosto "seu"
-        } else { // freq
-            ctx.fillStyle = '#404';
-            ctx.fillRect(e.x, e.y, 55, 180);
-            ctx.fillStyle = '#f0f';
-            ctx.fillRect(e.x + 10, e.y + 30, 35, 8);
+        // Mecânica do Rádio (Sintonia perigosa)
+        const diffRádio = Math.abs(UI.radioSync.value - state.frequenciaRuptura);
+        if (diffRádio < 5) {
+            alterarAtributo('sanidade', -5);
+            tocarBeep(100 + Math.random() * 50, 'sawtooth', 0.2); // Som perturbador
         }
+
+        // Lógica Inimigo 1: O Ruído
+        if (!inimigos.ruido.ativo && Math.random() < 0.05) {
+            inimigos.ruido.ativo = true;
+            UI.container.classList.add('glitch-active');
+            UI.btnDegauss.style.display = 'block';
+            tocarBeep(50, 'square', 1);
+        }
+        if (inimigos.ruido.ativo) {
+            inimigos.ruido.timer++;
+            alterarAtributo('sanidade', -2);
+            if (inimigos.ruido.timer > 10) gameOver("O RUÍDO CONSUMIU O TEU CÓDIGO.");
+        }
+
+        // Lógica Inimigo 2: Andarilho Térmico
+        if (!inimigos.andarilho.ativo && Math.random() < 0.08) {
+            inimigos.andarilho.ativo = true;
+        }
+        if (inimigos.andarilho.ativo) {
+            if (!state.valvulaSegurada) inimigos.andarilho.progressoInvasao += 10;
+            else inimigos.andarilho.progressoInvasao -= 15; // Recua se segurar
+
+            if (inimigos.andarilho.progressoInvasao < 0) {
+                inimigos.andarilho.ativo = false; // Espantado
+                inimigos.andarilho.progressoInvasao = 0;
+                atualizarEcra();
+            }
+            if (inimigos.andarilho.progressoInvasao >= 100) gameOver("O ANDARILHO ENTROU PELOS DUTOS.");
+        }
+
+        // Lógica Inimigo 3: Mimetizador (Notificação falsa)
+        if (!inimigos.mimetizador.ativo && Math.random() < 0.04) {
+            inimigos.mimetizador.somFalsoTocado = true;
+            tocarBeep(800, 'square', 0.05); // Toca o exato mesmo som de trocar câmara
+            setTimeout(() => { inimigos.mimetizador.somFalsoTocado = false; }, 3000); // 3 segundos para ignorar
+        }
+
+    }, 1000);
+
+    function gameOver(motivo) {
+        state.jogoAvoar = false;
+        document.getElementById('game-over').style.display = 'flex';
+        document.getElementById('game-over').innerHTML = `${motivo}<br><br><button onclick="location.reload()" style="font-size:20px; padding:15px;">REINICIAR PROTOCOLO</button>`;
+        tocarBeep(40, 'sawtooth', 3);
     }
-
-    if (gameOver) {
-        ctx.fillStyle = 'rgba(150,0,0,0.9)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#ff0';
-        ctx.font = 'bold 60px Courier New';
-        ctx.fillText('GAME OVER', 280, 280);
-        ctx.font = '30px Courier New';
-        ctx.fillText('Os sussurros te consumiram...', 220, 340);
-    }
-}
-
-// Mecânicas interativas
-function speakRadio() {
-    sanity -= 12;
-    if (Math.random() < 0.45) wave += 0.8;
-    alert("Você falou... algo respondeu com sua própria voz.");
-}
-
-function toggleLight() {
-    lightOn = !lightOn;
-    if (lightOn) battery -= 5;
-}
-
-document.addEventListener('keydown', e => {
-    if (e.key === 'h' || e.key === 'H') {
-        hiding = true;
-        setTimeout(() => { hiding = false; }, 1800);
-    }
-});
-
-document.addEventListener('mousemove', () => {
-    // Pequeno efeito de sanidade ao mover mouse rápido (tensão)
-    if (Math.random() < 0.1) sanity -= 0.05;
-});
-
-// Loop do jogo
-setInterval(() => {
-    update();
-    draw();
-}, 1000 / 45);
 </script>
-
-<p style="text-align:center; color:#555; margin-top:10px;">
-    Controles: Arraste o dial do rádio • Segure tecla <strong>H</strong> para se esconder • Botões para falar e lanterna<br>
-    Mantenha a frequência entre 25-75 e a sanidade alta!
-</p>
 
 </body>
 </html>
