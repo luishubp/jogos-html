@@ -1,610 +1,206 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Eco do Porão - Jogo de Horror</title>
+    <title>Whispers in the Static - Horror</title>
     <style>
-        * {
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Courier New', 'VT323', monospace;
-            padding: 20px;
-        }
-
-        .game-wrapper {
-            background: #1a1a1a;
-            border-radius: 28px;
-            padding: 16px;
-            box-shadow: 0 0 0 3px #3a2a1a, 0 20px 40px black;
-        }
-
-        canvas {
-            display: block;
-            margin: 0 auto;
-            border-radius: 20px;
-            box-shadow: 0 0 0 2px #5e3a1e, 0 0 0 6px #0f0f0f;
-            cursor: crosshair;
-        }
-
-        .info-panel {
-            margin-top: 16px;
-            background: #0f0f0fe6;
-            backdrop-filter: blur(4px);
-            border-radius: 48px;
-            padding: 8px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            border: 1px solid #6a3a2a;
-            font-weight: bold;
-        }
-
-        .stat {
-            background: #000000aa;
-            padding: 6px 16px;
-            border-radius: 40px;
-            color: #d9c8a2;
-            font-size: 1.3rem;
-            letter-spacing: 1px;
-        }
-
-        .stat span {
-            color: #dd5544;
-            font-size: 1.4rem;
-            margin-right: 6px;
-            text-shadow: 0 0 3px red;
-        }
-
-        button {
-            background: #2c2118;
-            border: none;
-            font-family: monospace;
-            font-weight: bold;
-            font-size: 1.1rem;
-            padding: 8px 20px;
-            border-radius: 60px;
-            color: #ffd7a0;
-            cursor: pointer;
-            transition: 0.1s linear;
-            box-shadow: 0 4px 0 #3a1e0a;
-        }
-
-        button:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 #3a1e0a;
-        }
-
-        .horror-tip {
-            background: #000000aa;
-            padding: 5px 12px;
-            border-radius: 60px;
-            font-size: 0.7rem;
-            color: #bd8a5f;
-        }
-
-        @media (max-width: 780px) {
-            .stat { font-size: 1rem; padding: 4px 12px; }
-            button { padding: 6px 16px; font-size: 0.9rem; }
-        }
+        body { margin:0; background:#000; font-family: 'Courier New', monospace; color:#0f0; overflow:hidden; }
+        canvas { display:block; margin:0 auto; image-rendering: pixelated; }
+        #ui { position: absolute; top: 10px; left: 10px; pointer-events: none; }
+        #radio { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: #222; padding: 15px; border: 3px solid #555; border-radius: 10px; text-align: center; }
+        button, input { margin: 5px; padding: 8px; background: #111; color: #0f0; border: 2px solid #0f0; }
     </style>
 </head>
 <body>
-<div>
-    <div class="game-wrapper">
-        <canvas id="gameCanvas" width="800" height="560"></canvas>
-        <div class="info-panel">
-            <div class="stat"><span>🕯️</span> <span id="candlesDisplay">0</span></div>
-            <div class="stat"><span>💀</span> <span id="sanityDisplay">100</span></div>
-            <div class="stat"><span>📦</span> <span id="noiseDisplay">0</span></div>
-            <button id="resetBtn">🔄 REINICIAR</button>
-        </div>
-        <div class="horror-tip" style="margin-top: 8px; text-align: center;">
-            ⚡ Clique nas portas/armários | 🔥 Pressione [F] para usar vela (se tiver) | 👁️ Sussurrador congela seu olhar | 🔊 Barulho atrai o Caçador | 🌑 A Sombra te puxa se pisar nela
-        </div>
-    </div>
+
+<canvas id="game" width="1000" height="600"></canvas>
+
+<div id="ui">
+    <div>Sanidade: <span id="sanity">100</span>%</div>
+    <div>Bateria: <span id="battery">100</span>%</div>
+    <div>Onda: <span id="wave">1</span></div>
+</div>
+
+<div id="radio">
+    <p><strong>Rádio Antigo</strong></p>
+    Frequência: <input type="range" id="dial" min="0" max="100" value="50" style="width:300px;">
+    <br>
+    <button onclick="speakRadio()">Falar no Rádio (Risco)</button>
+    <button onclick="toggleLight()">Lanterna (Gasta bateria)</button>
 </div>
 
 <script>
-    (function() {
-        // --- CANVAS ---
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        // --- CONFIGURAÇÕES DE MAPA (grid 15x12) ---
-        const CELL_W = 54;    // 800/15 ≈53.33 arredondado
-        const GRID_W = 15;
-        const GRID_H = 10;    // 560 / 56 = 10 (usei 56 visual)
-        
-        // posição do jogador (centro da célula)
-        let player = { x: 7, y: 5, cellX: 7, cellY: 5 };
-        
-        // entidades: inimigos, portas, armarios, velas drop
-        let enemies = [];
-        let interactables = [];
-        let candlesCollected = 0;
-        let sanity = 100;
-        let noiseMeter = 0;
-        let gameOver = false;
-        let gameWin = false;
-        
-        // timers / cooldowns
-        let noiseDecayTimer = 0;
-        let sanityRegenTimer = 0;
-        let usingCandle = false;
-        let stunTimer = 0;      // se >0 fica imóvel (congelado pelo Sussurrador)
-        
-        // inventário / ações
-        let hasCandleInHand = false;   // se ativou uma vela
-        
-        // elementos UI
-        const candlesSpan = document.getElementById('candlesDisplay');
-        const sanitySpan = document.getElementById('sanityDisplay');
-        const noiseSpan = document.getElementById('noiseDisplay');
-        
-        function updateUI() {
-            candlesSpan.innerText = candlesCollected;
-            sanitySpan.innerText = Math.max(0, Math.floor(sanity));
-            noiseSpan.innerText = Math.floor(noiseMeter);
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+let sanity = 100;
+let battery = 100;
+let frequency = 50;
+let wave = 1;
+let hiding = false;
+let lightOn = false;
+let enemies = [];
+let gameOver = false;
+let score = 0;
+
+const dial = document.getElementById('dial');
+
+dial.addEventListener('input', () => {
+    frequency = parseInt(dial.value);
+});
+
+function drawStatic() {
+    for (let i = 0; i < 400; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        ctx.fillStyle = `rgba(80,80,100,${Math.random()})`;
+        ctx.fillRect(x, y, 2, 2);
+    }
+}
+
+function drawRadioVisual() {
+    // Simula o rádio na tela (parte inferior)
+    ctx.fillStyle = '#333';
+    ctx.fillRect(50, 420, 300, 120);
+    ctx.fillStyle = '#222';
+    ctx.beginPath();
+    ctx.arc(200, 480, 45, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Ponteiro do dial
+    const angle = (frequency - 50) * 3;
+    ctx.strokeStyle = '#f00';
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.moveTo(200, 480);
+    ctx.lineTo(200 + Math.cos(angle * Math.PI / 180) * 40, 480 + Math.sin(angle * Math.PI / 180) * 40);
+    ctx.stroke();
+}
+
+function spawnEnemy() {
+    const types = ['echo', 'copy', 'freq'];
+    const type = types[Math.floor(Math.random() * 3)];
+    enemies.push({
+        type: type,
+        x: 950,
+        y: 150 + Math.random() * 250,
+        speed: type === 'copy' ? 1.8 : 1.2,
+        threat: 30
+    });
+}
+
+function update() {
+    if (gameOver) return;
+
+    // Sanidade cai com frequência errada ou bateria baixa
+    if (frequency < 25 || frequency > 75) sanity -= 0.18;
+    if (battery < 25) sanity -= 0.08;
+    if (lightOn) battery -= 0.25;
+
+    sanity = Math.max(0, Math.min(100, sanity));
+    battery = Math.max(0, battery);
+
+    document.getElementById('sanity').textContent = Math.floor(sanity);
+    document.getElementById('battery').textContent = Math.floor(battery);
+    document.getElementById('wave').textContent = Math.floor(wave);
+
+    // Spawn inimigos
+    if (Math.random() < 0.025 * wave) spawnEnemy();
+
+    // Movimento dos inimigos
+    for (let i = enemies.length - 1; i >= 0; i--) {
+        const e = enemies[i];
+        e.x -= e.speed * 2.2;
+
+        if (e.x < 120) {
+            if (!hiding || e.type === 'freq') {
+                sanity -= 22;
+            }
+            enemies.splice(i, 1);
         }
-        
-        // --- DEFINIÇÃO DO MAPA (paredes, portas, armários)---
-        // 0 = chão, 1 = parede, 2 = porta (interagível), 3 = armário (esconderijo)
-        let tileMap = Array(GRID_H).fill().map(() => Array(GRID_W).fill(0));
-        
-        // gerar labirinto simples com temática de porão
-        function initMap() {
-            for(let i=0;i<GRID_H;i++) {
-                for(let j=0;j<GRID_W;j++) {
-                    if(i===0 || i===GRID_H-1 || j===0 || j===GRID_W-1) tileMap[i][j]=1;
-                    else tileMap[i][j]=0;
-                }
-            }
-            // paredes internas
-            for(let i=2; i<=7; i++) tileMap[i][4]=1;
-            for(let i=2; i<=5; i++) tileMap[i][10]=1;
-            tileMap[5][7]=1; tileMap[7][12]=1; tileMap[3][13]=1;
-            // portas (interação)
-            tileMap[2][4]=2;   // porta na parede
-            tileMap[5][10]=2;  // outra porta
-            tileMap[7][5]=2;
-            // armários (esconderijo)
-            tileMap[4][12]=3;
-            tileMap[6][8]=3;
-            tileMap[8][3]=3;
-            // garantir espaço do player
-            if(tileMap[player.y][player.x] === 1) tileMap[player.y][player.x]=0;
+    }
+
+    if (sanity <= 0) gameOver = true;
+    wave += 0.001; // aumenta dificuldade devagar
+}
+
+function draw() {
+    ctx.fillStyle = '#0a0a1a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    drawStatic();
+
+    // Ambiente escuro com "sala abandonada"
+    ctx.fillStyle = '#1a1a2a';
+    ctx.fillRect(100, 100, 800, 400);
+
+    drawRadioVisual();
+
+    // Desenha inimigos com visual assustador
+    for (let e of enemies) {
+        if (e.type === 'echo') {
+            ctx.fillStyle = '#400';
+            ctx.fillRect(e.x, e.y, 55, 180);
+            ctx.fillStyle = '#f00';
+            ctx.fillRect(e.x + 15, e.y + 40, 10, 10); // olho
+        } else if (e.type === 'copy') {
+            ctx.fillStyle = '#040';
+            ctx.fillRect(e.x, e.y, 55, 180);
+            ctx.fillStyle = '#0f0';
+            ctx.fillRect(e.x + 20, e.y + 50, 15, 15); // rosto "seu"
+        } else { // freq
+            ctx.fillStyle = '#404';
+            ctx.fillRect(e.x, e.y, 55, 180);
+            ctx.fillStyle = '#f0f';
+            ctx.fillRect(e.x + 10, e.y + 30, 35, 8);
         }
-        
-        // --- INIMIGOS ---
-        class Enemy {
-            constructor(type, x, y) {
-                this.type = type; // 'whisperer', 'noiseHunter', 'shadow'
-                this.x = x;
-                this.y = y;
-                this.lastSeenPlayer = { x: player.x, y: player.y };
-                this.patrolTimer = 0;
-            }
-            
-            update() {
-                if(stunTimer > 0 || gameOver || gameWin) return;
-                let dx = player.x - this.x;
-                let dy = player.y - this.y;
-                let dist = Math.abs(dx)+Math.abs(dy);
-                
-                // Comportamentos diferentes
-                if(this.type === 'whisperer') {
-                    // Anda devagar em direção ao player se não estiver sendo observado diretamente?
-                    // Sussurrador: se linha de visão livre (sem paredes) e distancia < 4, pode congelar jogador com olhar
-                    if(dist <= 3 && !hasWallBetween(this.x, this.y, player.x, player.y)) {
-                        // congela jogador se olhar diretamente (efeito de horror)
-                        if(sanity > 0) stunTimer = 35; 
-                    }
-                    // movimento lento
-                    if(Math.random()<0.02 && dist>1.2) {
-                        let move = this.getMoveTowardPlayer();
-                        if(!isSolidTile(this.x+move.dx, this.y+move.dy)) {
-                            this.x += move.dx;
-                            this.y += move.dy;
-                        }
-                    }
-                }
-                else if(this.type === 'noiseHunter') {
-                    // Quanto maior noiseMeter, mais rápido
-                    let speedBonus = Math.min(0.12, noiseMeter/300);
-                    if(Math.random()<0.04+speedBonus && dist>0.8) {
-                        let move = this.getMoveTowardPlayer();
-                        if(!isSolidTile(this.x+move.dx, this.y+move.dy)) {
-                            this.x += move.dx;
-                            this.y += move.dy;
-                        }
-                    }
-                }
-                else if(this.type === 'shadow') {
-                    // Sombra não se move muito, mas se o jogador pisar na mesma célula, puxa dano
-                    // movimento bem lento e flutua
-                    if(Math.random()<0.015 && dist>1.5) {
-                        let move = this.getMoveTowardPlayer();
-                        if(!isSolidTile(this.x+move.dx, this.y+move.dy)) {
-                            this.x += move.dx;
-                            this.y += move.dy;
-                        }
-                    }
-                }
-            }
-            
-            getMoveTowardPlayer() {
-                let dx = player.x - this.x;
-                let dy = player.y - this.y;
-                if(Math.abs(dx) > Math.abs(dy)) return { dx: Math.sign(dx), dy: 0 };
-                else return { dx: 0, dy: Math.sign(dy) };
-            }
-            
-            draw() {
-                let x = this.x * CELL_W + CELL_W/2;
-                let y = this.y * CELL_W + CELL_W/2;
-                ctx.save();
-                ctx.shadowBlur = 0;
-                if(this.type === 'whisperer') {
-                    ctx.fillStyle = "#4a5b6e";
-                    ctx.beginPath();
-                    ctx.ellipse(x, y-5, 12, 14, 0, 0, Math.PI*2);
-                    ctx.fill();
-                    ctx.fillStyle = "#aa9977";
-                    ctx.fillRect(x-6, y-12, 12, 8);
-                    ctx.fillStyle = "#fff6cf";
-                    ctx.font = "bold 18px monospace";
-                    ctx.fillText("👁️", x-10, y-8);
-                } else if(this.type === 'noiseHunter') {
-                    ctx.fillStyle = "#5f5b3a";
-                    ctx.beginPath();
-                    ctx.ellipse(x, y, 14, 12, 0, 0, Math.PI*2);
-                    ctx.fill();
-                    ctx.fillStyle = "#a56b2f";
-                    ctx.fillRect(x-8, y-2, 16, 6);
-                    ctx.fillStyle = "black";
-                    ctx.fillText("🔊", x-7, y+4);
-                } else if(this.type === 'shadow') {
-                    ctx.fillStyle = "#141010cc";
-                    ctx.beginPath();
-                    ctx.ellipse(x, y+3, 14, 8, 0, 0, Math.PI*2);
-                    ctx.fill();
-                    ctx.fillStyle = "#2e1e2e";
-                    ctx.fillRect(x-6, y-6, 12, 12);
-                    ctx.fillStyle = "#9966aa";
-                    ctx.fillText("🌑", x-6, y+2);
-                }
-                ctx.restore();
-            }
-            
-            attackPlayer() {
-                if(gameOver || gameWin) return;
-                let dist = Math.abs(this.x - player.x) + Math.abs(this.y - player.y);
-                if(dist === 0) {
-                    if(this.type === 'whisperer') sanity -= 18;
-                    if(this.type === 'noiseHunter') sanity -= 12;
-                    if(this.type === 'shadow') sanity -= 28;
-                    if(sanity <= 0) gameOver = true;
-                    // recuo
-                    let knockX = (player.x - this.x)*2;
-                    let knockY = (player.y - this.y)*2;
-                    if(!isSolidTile(player.x+knockX, player.y+knockY)) {
-                        player.x += knockX;
-                        player.y += knockY;
-                    }
-                    updateUI();
-                }
-            }
-        }
-        
-        function hasWallBetween(x1,y1,x2,y2) {
-            let steps = Math.max(Math.abs(x2-x1), Math.abs(y2-y1));
-            if(steps===0) return false;
-            for(let step=1; step<=steps; step++) {
-                let ix = Math.round(x1 + (x2-x1)*step/steps);
-                let iy = Math.round(y1 + (y2-y1)*step/steps);
-                if(isSolidTile(ix, iy) && !(ix===player.x && iy===player.y)) return true;
-            }
-            return false;
-        }
-        
-        function isSolidTile(col, row) {
-            if(col<0 || row<0 || col>=GRID_W || row>=GRID_H) return true;
-            let tile = tileMap[row][col];
-            return tile === 1; // parede
-        }
-        
-        // Interação com portas/armarios/walls
-        function actionInteract() {
-            if(stunTimer>0 || gameOver || gameWin) return;
-            let frontX = player.x;
-            let frontY = player.y;
-            if(tileMap[frontY][frontX] === 2) {
-                // porta: faz barulho e alterna (abre/fecha) -> remove ou alterna
-                tileMap[frontY][frontX] = 0;
-                noiseMeter += 40;
-                sanity -= 2;
-                updateUI();
-                return;
-            }
-            if(tileMap[frontY][frontX] === 3) {
-                // armário: esconder -> reduz noise mas regenera sanidade lentamente
-                gameWin = true; // vitória simples por esconder no armário? vou mudar: apenas efeito curativo e fuga eventual.
-                // regeneração
-                sanity = Math.min(100, sanity+15);
-                noiseMeter = Math.max(0, noiseMeter-65);
-                updateUI();
-                return;
-            }
-            // coletar vela no chão (drop de interação)
-            for(let i=0;i<interactables.length;i++) {
-                let it = interactables[i];
-                if(it.type === 'candle' && it.x === player.x && it.y === player.y) {
-                    candlesCollected++;
-                    interactables.splice(i,1);
-                    updateUI();
-                    break;
-                }
-            }
-        }
-        
-        // usar vela (F key)
-        function useCandle() {
-            if(gameOver || gameWin || stunTimer>0) return false;
-            if(candlesCollected > 0 && !usingCandle) {
-                usingCandle = true;
-                candlesCollected--;
-                // afasta a Sombra e reduz noise
-                for(let e of enemies) {
-                    if(e.type === 'shadow') {
-                        let dx = e.x - player.x;
-                        let dy = e.y - player.y;
-                        if(Math.abs(dx)+Math.abs(dy) < 3) {
-                            e.x = Math.min(GRID_W-2, e.x + Math.sign(dx)*2);
-                            e.y = Math.min(GRID_H-2, e.y + Math.sign(dy)*2);
-                        }
-                    }
-                }
-                noiseMeter = Math.max(0, noiseMeter-55);
-                sanity = Math.min(100, sanity+8);
-                updateUI();
-                setTimeout(()=>{ usingCandle=false; }, 400);
-                return true;
-            }
-            return false;
-        }
-        
-        // criar barulho proposital clique no chão (mecânica 5)
-        function makeNoiseAtTile(tileX, tileY) {
-            if(gameOver || gameWin || stunTimer>0) return;
-            let dist = Math.abs(player.x-tileX)+Math.abs(player.y-tileY);
-            if(dist <= 5) {
-                noiseMeter += 28;
-                updateUI();
-                for(let e of enemies) {
-                    if(e.type === 'noiseHunter' && Math.random()<0.6) {
-                        // atrai
-                        if(!isSolidTile(e.x, e.y)){}
-                    }
-                }
-            }
-        }
-        
-        // Movimento do jogador com WASD ou setas
-        function tryMove(dx, dy) {
-            if(gameOver || gameWin || stunTimer>0) return false;
-            let newX = player.x + dx;
-            let newY = player.y + dy;
-            if(isSolidTile(newX, newY)) {
-                return false;
-            }
-            player.x = newX;
-            player.y = newY;
-            noiseMeter += 7;
-            sanity -= 0.5;
-            if(noiseMeter>300) noiseMeter=300;
-            updateUI();
-            return true;
-        }
-        
-        // atualização do medo, decaimento
-        function updateWorld() {
-            if(gameOver || gameWin) return;
-            if(noiseDecayTimer <=0) {
-                noiseMeter = Math.max(0, noiseMeter-3);
-                noiseDecayTimer = 6;
-            } else noiseDecayTimer--;
-            if(sanityRegenTimer <=0 && sanity<100 && noiseMeter<20 && !stunTimer) {
-                sanity = Math.min(100, sanity+1.2);
-                sanityRegenTimer = 18;
-            } else sanityRegenTimer--;
-            if(stunTimer > 0) stunTimer--;
-            
-            for(let e of enemies) e.update();
-            for(let e of enemies) e.attackPlayer();
-            if(sanity <=0) gameOver=true;
-            // win condition por sanidade e portas abertas
-            if(candlesCollected >= 4 && sanity>60) gameWin=true;
-            updateUI();
-        }
-        
-        // --- SPAWN INIMIGOS (mecânica 3 inimigos)---
-        function spawnEnemies() {
-            enemies = [];
-            enemies.push(new Enemy('whisperer', 5, 8));
-            enemies.push(new Enemy('whisperer', 10, 2));
-            enemies.push(new Enemy('noiseHunter', 12, 6));
-            enemies.push(new Enemy('noiseHunter', 3, 3));
-            enemies.push(new Enemy('shadow', 8, 4));
-            enemies.push(new Enemy('shadow', 2, 7));
-        }
-        
-        function spawnCandles() {
-            interactables = [];
-            interactables.push({ type:'candle', x:5, y:2 });
-            interactables.push({ type:'candle', x:11, y:7 });
-            interactables.push({ type:'candle', x:8, y:8 });
-            interactables.push({ type:'candle', x:3, y:9 });
-            interactables.push({ type:'candle', x:13, y:4 });
-        }
-        
-        // --- DESENHO DO JOGO ---
-        function drawMap() {
-            for(let row=0; row<GRID_H; row++) {
-                for(let col=0; col<GRID_W; col++) {
-                    let x = col*CELL_W;
-                    let y = row*CELL_W;
-                    let tile = tileMap[row][col];
-                    if(tile===1) {
-                        ctx.fillStyle = "#291f12";
-                        ctx.fillRect(x, y, CELL_W-1, CELL_W-1);
-                        ctx.fillStyle = "#4f2a1a";
-                        ctx.fillRect(x+3, y+3, CELL_W-7, CELL_W-7);
-                    } else if(tile===2) {
-                        ctx.fillStyle = "#6b3e1e";
-                        ctx.fillRect(x, y, CELL_W-1, CELL_W-1);
-                        ctx.fillStyle = "#aa7342";
-                        ctx.fillRect(x+8, y+4, 8, CELL_W-12);
-                        ctx.fillStyle = "#d99e4c";
-                        ctx.fillText("🚪", x+18, y+30);
-                    } else if(tile===3) {
-                        ctx.fillStyle = "#3b2a1c";
-                        ctx.fillRect(x, y, CELL_W-1, CELL_W-1);
-                        ctx.fillStyle = "#8b6946";
-                        ctx.fillRect(x+8, y+8, CELL_W-20, CELL_W-20);
-                        ctx.fillStyle = "#c9ae6e";
-                        ctx.fillText("🗄️", x+18, y+32);
-                    } else {
-                        ctx.fillStyle = "#2e281c";
-                        ctx.fillRect(x, y, CELL_W-1, CELL_W-1);
-                        ctx.fillStyle = "#564a32";
-                        ctx.fillRect(x+2, y+2, CELL_W-5, CELL_W-5);
-                    }
-                }
-            }
-        }
-        
-        function drawPlayer() {
-            let x = player.x*CELL_W + CELL_W/2;
-            let y = player.y*CELL_W + CELL_W/2;
-            ctx.fillStyle = "#c9ae6e";
-            ctx.beginPath();
-            ctx.ellipse(x, y-3, 8, 10, 0, 0, Math.PI*2);
-            ctx.fill();
-            ctx.fillStyle = "#f5e6d3";
-            ctx.fillRect(x-3, y-6, 6, 6);
-            ctx.fillStyle = "black";
-            ctx.fillRect(x-2, y-7, 2, 3);
-            ctx.fillRect(x, y-7, 2, 3);
-            if(stunTimer>0) {
-                ctx.fillStyle = "#aaffffaa";
-                ctx.fillRect(x-12, y-18, 24, 6);
-            }
-        }
-        
-        function drawInteractables() {
-            for(let it of interactables) {
-                if(it.type === 'candle') {
-                    let x = it.x*CELL_W+CELL_W/2;
-                    let y = it.y*CELL_W+CELL_W/2;
-                    ctx.fillStyle = "#f5bc70";
-                    ctx.beginPath();
-                    ctx.rect(x-5, y-12, 10, 16);
-                    ctx.fill();
-                    ctx.fillStyle = "orange";
-                    ctx.fillText("🕯️", x-8, y-2);
-                }
-            }
-        }
-        
-        function drawGameMessages() {
-            if(gameOver){
-                ctx.font = "bold 34 monospace";
-                ctx.fillStyle = "#a12222";
-                ctx.shadowBlur = 0;
-                ctx.fillText("GAME OVER", canvas.width/2-110, canvas.height/2);
-            } else if(gameWin){
-                ctx.font = "bold 30 monospace";
-                ctx.fillStyle = "#acdbaa";
-                ctx.fillText("VOCÊ ESCAPOU", canvas.width/2-110, canvas.height/2);
-            }
-        }
-        
-        // --- EVENTOS DE CLICK E TECLADO---
-        canvas.addEventListener('click', (e) => {
-            if(gameOver || gameWin) return;
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width/rect.width;
-            const scaleY = canvas.height/rect.height;
-            let mouseX = (e.clientX - rect.left)*scaleX;
-            let mouseY = (e.clientY - rect.top)*scaleY;
-            let col = Math.floor(mouseX/CELL_W);
-            let row = Math.floor(mouseY/CELL_W);
-            if(col>=0 && col<GRID_W && row>=0 && row<GRID_H) {
-                // interação direta: portas etc
-                if(Math.abs(col-player.x)+Math.abs(row-player.y) <= 1) {
-                    actionInteract();
-                } else {
-                    makeNoiseAtTile(col, row);
-                }
-            }
-        });
-        
-        window.addEventListener('keydown', (e) => {
-            let key = e.key;
-            if(key === 'ArrowUp' || key === 'w') tryMove(0,-1);
-            if(key === 'ArrowDown' || key === 's') tryMove(0,1);
-            if(key === 'ArrowLeft' || key === 'a') tryMove(-1,0);
-            if(key === 'ArrowRight' || key === 'd') tryMove(1,0);
-            if(key === 'f' || key === 'F') useCandle();
-            if(key === 'e' || key === 'E') actionInteract();
-            e.preventDefault();
-        });
-        
-        document.getElementById('resetBtn').addEventListener('click', () => {
-            gameOver = false;
-            gameWin = false;
-            player = { x: 7, y: 5, cellX: 7, cellY: 5 };
-            sanity = 100;
-            noiseMeter = 0;
-            candlesCollected = 0;
-            stunTimer = 0;
-            usingCandle = false;
-            initMap();
-            spawnEnemies();
-            spawnCandles();
-            updateUI();
-        });
-        
-        // --- LOOP PRINCIPAL ---
-        function animate() {
-            updateWorld();
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            drawMap();
-            drawInteractables();
-            for(let e of enemies) e.draw();
-            drawPlayer();
-            drawGameMessages();
-            requestAnimationFrame(animate);
-        }
-        
-        initMap();
-        spawnEnemies();
-        spawnCandles();
-        updateUI();
-        animate();
-    })();
+    }
+
+    if (gameOver) {
+        ctx.fillStyle = 'rgba(150,0,0,0.9)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#ff0';
+        ctx.font = 'bold 60px Courier New';
+        ctx.fillText('GAME OVER', 280, 280);
+        ctx.font = '30px Courier New';
+        ctx.fillText('Os sussurros te consumiram...', 220, 340);
+    }
+}
+
+// Mecânicas interativas
+function speakRadio() {
+    sanity -= 12;
+    if (Math.random() < 0.45) wave += 0.8;
+    alert("Você falou... algo respondeu com sua própria voz.");
+}
+
+function toggleLight() {
+    lightOn = !lightOn;
+    if (lightOn) battery -= 5;
+}
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'h' || e.key === 'H') {
+        hiding = true;
+        setTimeout(() => { hiding = false; }, 1800);
+    }
+});
+
+document.addEventListener('mousemove', () => {
+    // Pequeno efeito de sanidade ao mover mouse rápido (tensão)
+    if (Math.random() < 0.1) sanity -= 0.05;
+});
+
+// Loop do jogo
+setInterval(() => {
+    update();
+    draw();
+}, 1000 / 45);
 </script>
+
+<p style="text-align:center; color:#555; margin-top:10px;">
+    Controles: Arraste o dial do rádio • Segure tecla <strong>H</strong> para se esconder • Botões para falar e lanterna<br>
+    Mantenha a frequência entre 25-75 e a sanidade alta!
+</p>
+
 </body>
 </html>
