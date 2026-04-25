@@ -1,156 +1,206 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>HORROR - Corredor 5</title>
-<style>
-body {
-    background: black;
-    color: white;
-    font-family: Arial;
-    text-align: center;
-}
-canvas {
-    background: #111;
-    border: 2px solid #444;
-    margin-top: 10px;
-}
-button {
-    margin: 5px;
-    padding: 10px;
-    cursor: pointer;
-}
-</style>
+    <meta charset="UTF-8">
+    <title>Whispers in the Static - Horror</title>
+    <style>
+        body { margin:0; background:#000; font-family: 'Courier New', monospace; color:#0f0; overflow:hidden; }
+        canvas { display:block; margin:0 auto; image-rendering: pixelated; }
+        #ui { position: absolute; top: 10px; left: 10px; pointer-events: none; }
+        #radio { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: #222; padding: 15px; border: 3px solid #555; border-radius: 10px; text-align: center; }
+        button, input { margin: 5px; padding: 8px; background: #111; color: #0f0; border: 2px solid #0f0; }
+    </style>
 </head>
 <body>
 
-<h1>👻 CORREDOR 5</h1>
-<p>Sanidade: <span id="sanity">100</span>% | Tensão: <span id="fear">0</span>%</p>
+<canvas id="game" width="1000" height="600"></canvas>
 
-<canvas id="game" width="600" height="300"></canvas>
+<div id="ui">
+    <div>Sanidade: <span id="sanity">100</span>%</div>
+    <div>Bateria: <span id="battery">100</span>%</div>
+    <div>Onda: <span id="wave">1</span></div>
+</div>
 
-<div>
-    <button onclick="action('olhar')">👁️ Olhar corredor</button>
-    <button onclick="action('andar')">🚶 Andar</button>
-    <button onclick="action('parar')">🧍 Parar</button>
-    <button onclick="action('respirar')">🌬️ Respirar</button>
-    <button onclick="action('luz')">🔦 Usar lanterna</button>
+<div id="radio">
+    <p><strong>Rádio Antigo</strong></p>
+    Frequência: <input type="range" id="dial" min="0" max="100" value="50" style="width:300px;">
+    <br>
+    <button onclick="speakRadio()">Falar no Rádio (Risco)</button>
+    <button onclick="toggleLight()">Lanterna (Gasta bateria)</button>
 </div>
 
 <script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
 let sanity = 100;
-let fear = 0;
-let lastAction = "";
+let battery = 100;
+let frequency = 50;
+let wave = 1;
+let hiding = false;
+let lightOn = false;
+let enemies = [];
+let gameOver = false;
+let score = 0;
 
-let entities = [
-    {type:"observer", x:100, active:false},
-    {type:"shadow", x:300, active:false},
-    {type:"echo", x:500, active:false}
-];
+const dial = document.getElementById('dial');
 
-function action(type){
-    lastAction = type;
+dial.addEventListener('input', () => {
+    frequency = parseInt(dial.value);
+});
 
-    if(type === "olhar"){
-        fear += 10;
-    }
-    if(type === "andar"){
-        fear -= 5;
-    }
-    if(type === "parar"){
-        sanity -= 2;
-    }
-    if(type === "respirar"){
-        sanity += 5;
-        fear -= 5;
-    }
-    if(type === "luz"){
-        fear += 5;
-    }
-
-    checkEcho();
-}
-
-function checkEcho(){
-    let echo = entities.find(e => e.type === "echo");
-    if(echo && lastAction === "olhar"){
-        sanity -= 10;
+function drawStatic() {
+    for (let i = 0; i < 400; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        ctx.fillStyle = `rgba(80,80,100,${Math.random()})`;
+        ctx.fillRect(x, y, 2, 2);
     }
 }
 
-function updateEntities(){
-    entities.forEach(e=>{
-        if(e.type === "shadow"){
-            e.active = Math.random() < 0.3;
-            e.x = Math.random()*600;
-        }
-        if(e.type === "observer"){
-            if(lastAction === "olhar"){
-                fear += 5;
-            }
-        }
+function drawRadioVisual() {
+    // Simula o rádio na tela (parte inferior)
+    ctx.fillStyle = '#333';
+    ctx.fillRect(50, 420, 300, 120);
+    ctx.fillStyle = '#222';
+    ctx.beginPath();
+    ctx.arc(200, 480, 45, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Ponteiro do dial
+    const angle = (frequency - 50) * 3;
+    ctx.strokeStyle = '#f00';
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.moveTo(200, 480);
+    ctx.lineTo(200 + Math.cos(angle * Math.PI / 180) * 40, 480 + Math.sin(angle * Math.PI / 180) * 40);
+    ctx.stroke();
+}
+
+function spawnEnemy() {
+    const types = ['echo', 'copy', 'freq'];
+    const type = types[Math.floor(Math.random() * 3)];
+    enemies.push({
+        type: type,
+        x: 950,
+        y: 150 + Math.random() * 250,
+        speed: type === 'copy' ? 1.8 : 1.2,
+        threat: 30
     });
 }
 
-function update(){
+function update() {
+    if (gameOver) return;
+
+    // Sanidade cai com frequência errada ou bateria baixa
+    if (frequency < 25 || frequency > 75) sanity -= 0.18;
+    if (battery < 25) sanity -= 0.08;
+    if (lightOn) battery -= 0.25;
+
     sanity = Math.max(0, Math.min(100, sanity));
-    fear = Math.max(0, Math.min(100, fear));
+    battery = Math.max(0, battery);
 
-    document.getElementById("sanity").innerText = sanity;
-    document.getElementById("fear").innerText = fear;
+    document.getElementById('sanity').textContent = Math.floor(sanity);
+    document.getElementById('battery').textContent = Math.floor(battery);
+    document.getElementById('wave').textContent = Math.floor(wave);
 
-    updateEntities();
+    // Spawn inimigos
+    if (Math.random() < 0.025 * wave) spawnEnemy();
 
-    fear += 0.2; // tensão constante
-    sanity -= fear * 0.01;
+    // Movimento dos inimigos
+    for (let i = enemies.length - 1; i >= 0; i--) {
+        const e = enemies[i];
+        e.x -= e.speed * 2.2;
 
-    if(sanity <= 0){
-        alert("Você perdeu a sanidade...");
-        location.reload();
+        if (e.x < 120) {
+            if (!hiding || e.type === 'freq') {
+                sanity -= 22;
+            }
+            enemies.splice(i, 1);
+        }
+    }
+
+    if (sanity <= 0) gameOver = true;
+    wave += 0.001; // aumenta dificuldade devagar
+}
+
+function draw() {
+    ctx.fillStyle = '#0a0a1a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    drawStatic();
+
+    // Ambiente escuro com "sala abandonada"
+    ctx.fillStyle = '#1a1a2a';
+    ctx.fillRect(100, 100, 800, 400);
+
+    drawRadioVisual();
+
+    // Desenha inimigos com visual assustador
+    for (let e of enemies) {
+        if (e.type === 'echo') {
+            ctx.fillStyle = '#400';
+            ctx.fillRect(e.x, e.y, 55, 180);
+            ctx.fillStyle = '#f00';
+            ctx.fillRect(e.x + 15, e.y + 40, 10, 10); // olho
+        } else if (e.type === 'copy') {
+            ctx.fillStyle = '#040';
+            ctx.fillRect(e.x, e.y, 55, 180);
+            ctx.fillStyle = '#0f0';
+            ctx.fillRect(e.x + 20, e.y + 50, 15, 15); // rosto "seu"
+        } else { // freq
+            ctx.fillStyle = '#404';
+            ctx.fillRect(e.x, e.y, 55, 180);
+            ctx.fillStyle = '#f0f';
+            ctx.fillRect(e.x + 10, e.y + 30, 35, 8);
+        }
+    }
+
+    if (gameOver) {
+        ctx.fillStyle = 'rgba(150,0,0,0.9)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#ff0';
+        ctx.font = 'bold 60px Courier New';
+        ctx.fillText('GAME OVER', 280, 280);
+        ctx.font = '30px Courier New';
+        ctx.fillText('Os sussurros te consumiram...', 220, 340);
     }
 }
 
-function draw(){
-    ctx.clearRect(0,0,600,300);
-
-    // corredor
-    ctx.fillStyle = "#222";
-    ctx.fillRect(0,0,600,300);
-
-    // entidades
-    entities.forEach(e=>{
-        if(e.type === "observer"){
-            ctx.fillStyle = "red";
-            ctx.fillText("👁️", e.x, 150);
-        }
-        if(e.type === "shadow" && e.active){
-            ctx.fillStyle = "purple";
-            ctx.fillText("🧍", e.x, 200);
-        }
-        if(e.type === "echo"){
-            ctx.fillStyle = "white";
-            ctx.fillText("🧠", e.x, 100);
-        }
-    });
-
-    // glitch efeito simples
-    if(fear > 70){
-        ctx.fillStyle = "rgba(255,0,0,0.1)";
-        ctx.fillRect(0,0,600,300);
-    }
+// Mecânicas interativas
+function speakRadio() {
+    sanity -= 12;
+    if (Math.random() < 0.45) wave += 0.8;
+    alert("Você falou... algo respondeu com sua própria voz.");
 }
 
-function loop(){
+function toggleLight() {
+    lightOn = !lightOn;
+    if (lightOn) battery -= 5;
+}
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'h' || e.key === 'H') {
+        hiding = true;
+        setTimeout(() => { hiding = false; }, 1800);
+    }
+});
+
+document.addEventListener('mousemove', () => {
+    // Pequeno efeito de sanidade ao mover mouse rápido (tensão)
+    if (Math.random() < 0.1) sanity -= 0.05;
+});
+
+// Loop do jogo
+setInterval(() => {
     update();
     draw();
-    requestAnimationFrame(loop);
-}
-
-loop();
+}, 1000 / 45);
 </script>
+
+<p style="text-align:center; color:#555; margin-top:10px;">
+    Controles: Arraste o dial do rádio • Segure tecla <strong>H</strong> para se esconder • Botões para falar e lanterna<br>
+    Mantenha a frequência entre 25-75 e a sanidade alta!
+</p>
 
 </body>
 </html>
