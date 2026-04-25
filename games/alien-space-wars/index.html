@@ -1,206 +1,328 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Whispers in the Static - Horror</title>
-    <style>
-        body { margin:0; background:#000; font-family: 'Courier New', monospace; color:#0f0; overflow:hidden; }
-        canvas { display:block; margin:0 auto; image-rendering: pixelated; }
-        #ui { position: absolute; top: 10px; left: 10px; pointer-events: none; }
-        #radio { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: #222; padding: 15px; border: 3px solid #555; border-radius: 10px; text-align: center; }
-        button, input { margin: 5px; padding: 8px; background: #111; color: #0f0; border: 2px solid #0f0; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sinal Perdido</title>
+<style>
+  body { margin:0; background:#000; overflow:hidden; font-family:monospace; color:#0f0; }
+  #ui { position:fixed; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.7); padding:10px; }
+  #sanidade { width:200px; height:20px; border:1px solid #0f0; margin:5px 0; }
+  #sanidade-bar { width:100%; height:100%; background:#0f0; }
+  #bateria { width:200px; height:10px; border:1px solid #ff0; margin:5px 0; }
+  #bateria-bar { width:100%; height:100%; background:#ff0; }
+  #msg { position:fixed; bottom:20px; width:100%; text-align:center; font-size:18px; text-shadow:0 0 5px #f00; }
+  #crosshair { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:20px; }
+ .glitch { animation:glitch 0.2s infinite; }
+  @keyframes glitch { 0%{opacity:1} 50%{opacity:0.3} 100%{opacity:1} }
+</style>
+<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+</script>
 </head>
 <body>
-
-<canvas id="game" width="1000" height="600"></canvas>
-
 <div id="ui">
-    <div>Sanidade: <span id="sanity">100</span>%</div>
-    <div>Bateria: <span id="battery">100</span>%</div>
-    <div>Onda: <span id="wave">1</span></div>
+  <div>TRANSMISSORES: <span id="obj">0</span>/3</div>
+  <div>SANIDADE:</div>
+  <div id="sanidade"><div id="sanidade-bar"></div></div>
+  <div>BATERIA:</div>
+  <div id="bateria"><div id="bateria-bar"></div></div>
+  <div>[E] Rádio | [F] Lanterna | [C] Esconder | [G] Distrair</div>
 </div>
+<div id="crosshair">+</div>
+<div id="msg">CLIQUE PARA COMEÇAR | WASD move | Mouse olha</div>
 
-<div id="radio">
-    <p><strong>Rádio Antigo</strong></p>
-    Frequência: <input type="range" id="dial" min="0" max="100" value="50" style="width:300px;">
-    <br>
-    <button onclick="speakRadio()">Falar no Rádio (Risco)</button>
-    <button onclick="toggleLight()">Lanterna (Gasta bateria)</button>
-</div>
+<script type="module">
+import * as THREE from 'three';
 
-<script>
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
-let sanity = 100;
-let battery = 100;
-let frequency = 50;
-let wave = 1;
-let hiding = false;
-let lightOn = false;
-let enemies = [];
-let gameOver = false;
-let score = 0;
+let scene, camera, renderer, player, lanterna, clock;
+let sanidade = 100, bateria = 100, transmissores = 0, gameOver = false;
+let lanternOn = true, escondido = false, invertido = false;
+let inimigos = [], objetos = [], distratores = [];
+const keys = {};
 
-const dial = document.getElementById('dial');
+init();
 
-dial.addEventListener('input', () => {
-    frequency = parseInt(dial.value);
-});
+function init() {
+  scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0x000000, 0, 15);
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 100);
+  camera.position.set(0, 1.6, 5);
 
-function drawStatic() {
-    for (let i = 0; i < 400; i++) {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        ctx.fillStyle = `rgba(80,80,100,${Math.random()})`;
-        ctx.fillRect(x, y, 2, 2);
+  renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  // Luz ambiente fraca
+  scene.add(new THREE.AmbientLight(0x111111));
+
+  // Lanterna
+  lanterna = new THREE.SpotLight(0xffffff, 2, 20, Math.PI/6, 0.5, 1);
+  lanterna.position.set(0, 0, 1);
+  camera.add(lanterna);
+  camera.add(lanterna.target);
+  lanterna.target.position.set(0, 0, -1);
+  scene.add(camera);
+
+  // Chão e paredes
+  const chao = new THREE.Mesh(
+    new THREE.PlaneGeometry(50,50),
+    new THREE.MeshPhongMaterial({color:0x111111})
+  );
+  chao.rotation.x = -Math.PI/2;
+  scene.add(chao);
+
+  criarMapa();
+  criarInimigos();
+
+  clock = new THREE.Clock();
+  document.addEventListener('click', () => document.body.requestPointerLock());
+  document.addEventListener('keydown', e => keys[e.code] = true);
+  document.addEventListener('keyup', e => keys[e.code] = false);
+  document.addEventListener('mousemove', onMouseMove);
+
+  animate();
+}
+
+function criarMapa() {
+  // Paredes básicas formando corredores
+  const mat = new THREE.MeshPhongMaterial({color:0x222222});
+  const paredes = [
+    [0,1.5,-10, 20,3,1], [0,1.5,10, 20,3,1],
+    [-10,1.5,0, 1,3,20], [10,1.5,0, 1,3,20],
+    [0,1.5,0, 8,3,1] // parede do meio com vão
+  ];
+  paredes.forEach(p => {
+    const parede = new THREE.Mesh(new THREE.BoxGeometry(p[3],p[4],p[5]), mat);
+    parede.position.set(p[0],p[1],p[2]);
+    scene.add(parede);
+  });
+
+  // 3 Transmissores = caixas vermelhas
+  const pos = [[-7,0.5,-7], [7,0.5,-7], [0,0.5,7]];
+  pos.forEach((p,i) => {
+    const tx = new THREE.Mesh(
+      new THREE.BoxGeometry(1,1,1),
+      new THREE.MeshPhongMaterial({color:0xff0000, emissive:0x330000})
+    );
+    tx.position.set(...p);
+    tx.userData = {tipo:'transmissor', id:i};
+    objetos.push(tx);
+    scene.add(tx);
+  });
+
+  // Armários pra esconder
+  for(let i=0; i<2; i++){
+    const arm = new THREE.Mesh(
+      new THREE.BoxGeometry(1,2,1),
+      new THREE.MeshPhongMaterial({color:0x000066})
+    );
+    arm.position.set(-8+i*16,1,-2);
+    arm.userData = {tipo:'armario'};
+    objetos.push(arm);
+    scene.add(arm);
+  }
+}
+
+function criarInimigos() {
+  // O Estático - só move com TV ligada
+  const estatico = new THREE.Mesh(
+    new THREE.BoxGeometry(0.5,1.8,0.5),
+    new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.3})
+  );
+  estatico.position.set(5,0.9,5);
+  estatico.userData = {tipo:'estatico', speed:0.02};
+  inimigos.push(estatico);
+  scene.add(estatico);
+
+  // O Rastreador - segue som
+  const rastreador = new THREE.Mesh(
+    new THREE.BoxGeometry(0.8,2,0.8),
+    new THREE.MeshPhongMaterial({color:0x330000})
+  );
+  rastreador.position.set(-5,1,-5);
+  rastreador.userData = {tipo:'rastreador', speed:0.03, alvo:null};
+  inimigos.push(rastreador);
+  scene.add(rastreador);
+}
+
+function onMouseMove(e) {
+  if (document.pointerLockElement === document.body) {
+    let sens = invertido? -0.002 : 0.002;
+    camera.rotation.y -= e.movementX * sens;
+    camera.rotation.x -= e.movementY * sens;
+    camera.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, camera.rotation.x));
+  }
+}
+
+function animate() {
+  if(gameOver) return;
+  requestAnimationFrame(animate);
+  const delta = clock.getDelta();
+
+  moverPlayer(delta);
+  atualizarMecanicas(delta);
+  moverInimigos(delta);
+  checarInteracoes();
+
+  // Lanterna pisca quando inimigo perto
+  inimigos.forEach(ini => {
+    if(ini.position.distanceTo(camera.position) < 5 && lanternOn) {
+      lanterna.intensity = Math.random() > 0.9? 0.2 : 2;
     }
+  });
+
+  renderer.render(scene, camera);
 }
 
-function drawRadioVisual() {
-    // Simula o rádio na tela (parte inferior)
-    ctx.fillStyle = '#333';
-    ctx.fillRect(50, 420, 300, 120);
-    ctx.fillStyle = '#222';
-    ctx.beginPath();
-    ctx.arc(200, 480, 45, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Ponteiro do dial
-    const angle = (frequency - 50) * 3;
-    ctx.strokeStyle = '#f00';
-    ctx.lineWidth = 8;
-    ctx.beginPath();
-    ctx.moveTo(200, 480);
-    ctx.lineTo(200 + Math.cos(angle * Math.PI / 180) * 40, 480 + Math.sin(angle * Math.PI / 180) * 40);
-    ctx.stroke();
-}
+function moverPlayer(delta) {
+  if(escondido) return;
+  const speed = 3 * delta;
+  const dir = new THREE.Vector3();
+  if(keys['KeyW']) dir.z -= 1;
+  if(keys['KeyS']) dir.z += 1;
+  if(keys['KeyA']) dir.x -= 1;
+  if(keys['KeyD']) dir.x += 1;
+  dir.normalize().applyEuler(camera.rotation);
+  camera.position.addScaledVector(dir, speed);
 
-function spawnEnemy() {
-    const types = ['echo', 'copy', 'freq'];
-    const type = types[Math.floor(Math.random() * 3)];
-    enemies.push({
-        type: type,
-        x: 950,
-        y: 150 + Math.random() * 250,
-        speed: type === 'copy' ? 1.8 : 1.2,
-        threat: 30
+  // Mecânica 3: Shift agachar
+  if(keys['ShiftLeft']) camera.position.y = 1.0;
+  else camera.position.y = 1.6;
+
+  // Mecânica 1: Lanterna [F]
+  if(keys['KeyF'] && bateria > 0) {
+    lanternOn =!lanternOn;
+    lanterna.intensity = lanternOn? 2 : 0;
+    keys['KeyF'] = false;
+  }
+
+  // Mecânica 2: Rádio [E] faz barulho e atrai rastreador
+  if(keys['KeyE']) {
+    msg('CHIADO... SINAL PRÓXIMO...');
+    inimigos.forEach(i => {
+      if(i.userData.tipo === 'rastreador') i.userData.alvo = camera.position.clone();
     });
+    keys['KeyE'] = false;
+  }
+
+  // Mecânica 3: Esconder [C]
+  if(keys['KeyC']) {
+    const pertoArmario = objetos.find(o => o.userData.tipo==='armario' && o.position.distanceTo(camera.position)<2);
+    if(pertoArmario) {
+      escondido =!escondido;
+      msg(escondido? 'ESCONDIDO' : 'SAIU');
+    }
+    keys['KeyC'] = false;
+  }
+
+  // Mecânica: Distrair [G]
+  if(keys['KeyG']) {
+    const lata = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshPhongMaterial({color:0x888888}));
+    lata.position.copy(camera.position);
+    lata.position.add(camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(2));
+    scene.add(lata);
+    distratores.push(lata);
+    inimigos.forEach(i => {
+      if(i.userData.tipo === 'rastreador') i.userData.alvo = lata.position.clone();
+    });
+    keys['KeyG'] = false;
+  }
 }
 
-function update() {
-    if (gameOver) return;
+function atualizarMecanicas(delta) {
+  // Bateria da lanterna
+  if(lanternOn && bateria > 0) {
+    bateria -= delta * 1.5;
+    if(bateria <= 0) {
+      bateria = 0;
+      lanternOn = false;
+      lanterna.intensity = 0;
+      msg('LANTERNA APAGOU');
+    }
+  }
+  document.getElementById('bateria-bar').style.width = bateria + '%';
 
-    // Sanidade cai com frequência errada ou bateria baixa
-    if (frequency < 25 || frequency > 75) sanity -= 0.18;
-    if (battery < 25) sanity -= 0.08;
-    if (lightOn) battery -= 0.25;
+  // Sanidade cai no escuro ou perto de inimigo
+  let perdeSanidade =!lanternOn? 5 : 0;
+  inimigos.forEach(i => {
+    if(i.position.distanceTo(camera.position) < 4) perdeSanidade += 10;
+  });
+  if(!escondido) sanidade -= perdeSanidade * delta;
+  if(sanidade <= 0) {
+    sanidade = 0;
+    invertido = true; // Mecânica 5: controles invertem
+    document.body.classList.add('glitch');
+    msg('VOCÊ ESTÁ LOUCO - CONTROLES INVERTIDOS');
+  }
+  if(sanidade < 30) document.body.classList.add('glitch');
+  document.getElementById('sanidade-bar').style.width = sanidade + '%';
+  if(sanidade < 100 && lanternOn && perdeSanidade === 0) sanidade += delta * 2; // recupera na luz
+}
 
-    sanity = Math.max(0, Math.min(100, sanity));
-    battery = Math.max(0, battery);
+function moverInimigos(delta) {
+  inimigos.forEach(ini => {
+    if(escondido) return;
+    const dist = ini.position.distanceTo(camera.position);
 
-    document.getElementById('sanity').textContent = Math.floor(sanity);
-    document.getElementById('battery').textContent = Math.floor(battery);
-    document.getElementById('wave').textContent = Math.floor(wave);
-
-    // Spawn inimigos
-    if (Math.random() < 0.025 * wave) spawnEnemy();
-
-    // Movimento dos inimigos
-    for (let i = enemies.length - 1; i >= 0; i--) {
-        const e = enemies[i];
-        e.x -= e.speed * 2.2;
-
-        if (e.x < 120) {
-            if (!hiding || e.type === 'freq') {
-                sanity -= 22;
-            }
-            enemies.splice(i, 1);
-        }
+    if(ini.userData.tipo === 'estatico') {
+      // Só move se player tiver lanterna ligada = "TV ligada"
+      if(lanternOn && dist < 10) {
+        ini.position.lerp(camera.position, ini.userData.speed * delta);
+      }
     }
 
-    if (sanity <= 0) gameOver = true;
-    wave += 0.001; // aumenta dificuldade devagar
-}
-
-function draw() {
-    ctx.fillStyle = '#0a0a1a';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    drawStatic();
-
-    // Ambiente escuro com "sala abandonada"
-    ctx.fillStyle = '#1a1a2a';
-    ctx.fillRect(100, 100, 800, 400);
-
-    drawRadioVisual();
-
-    // Desenha inimigos com visual assustador
-    for (let e of enemies) {
-        if (e.type === 'echo') {
-            ctx.fillStyle = '#400';
-            ctx.fillRect(e.x, e.y, 55, 180);
-            ctx.fillStyle = '#f00';
-            ctx.fillRect(e.x + 15, e.y + 40, 10, 10); // olho
-        } else if (e.type === 'copy') {
-            ctx.fillStyle = '#040';
-            ctx.fillRect(e.x, e.y, 55, 180);
-            ctx.fillStyle = '#0f0';
-            ctx.fillRect(e.x + 20, e.y + 50, 15, 15); // rosto "seu"
-        } else { // freq
-            ctx.fillStyle = '#404';
-            ctx.fillRect(e.x, e.y, 55, 180);
-            ctx.fillStyle = '#f0f';
-            ctx.fillRect(e.x + 10, e.y + 30, 35, 8);
-        }
+    if(ini.userData.tipo === 'rastreador') {
+      if(ini.userData.alvo) {
+        ini.position.lerp(ini.userData.alvo, ini.userData.speed * delta);
+        if(ini.position.distanceTo(ini.userData.alvo) < 1) ini.userData.alvo = null;
+      } else if(dist < 8) {
+        ini.position.lerp(camera.position, ini.userData.speed * delta);
+      }
     }
 
-    if (gameOver) {
-        ctx.fillStyle = 'rgba(150,0,0,0.9)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#ff0';
-        ctx.font = 'bold 60px Courier New';
-        ctx.fillText('GAME OVER', 280, 280);
-        ctx.font = '30px Courier New';
-        ctx.fillText('Os sussurros te consumiram...', 220, 340);
+    if(dist < 1) fimDeJogo('ELE TE PEGOU');
+  });
+}
+
+function checarInteracoes() {
+  objetos.forEach(obj => {
+    if(obj.position.distanceTo(camera.position) < 1.5) {
+      if(obj.userData.tipo === 'transmissor' &&!obj.userData.desligado) {
+        msg('CLIQUE PARA DESLIGAR TRANSMISSOR');
+        document.onclick = () => {
+          obj.userData.desligado = true;
+          obj.material.emissive.setHex(0x003300);
+          transmissores++;
+          document.getElementById('obj').textContent = transmissores;
+          msg('TRANSMISSOR ' + transmissores + '/3 DESLIGADO');
+          if(transmissores >= 3) fimDeJogo('VOCÊ ESCAPOU - SINAL CORTADO', true);
+        };
+      }
     }
+  });
 }
 
-// Mecânicas interativas
-function speakRadio() {
-    sanity -= 12;
-    if (Math.random() < 0.45) wave += 0.8;
-    alert("Você falou... algo respondeu com sua própria voz.");
+function msg(texto) {
+  document.getElementById('msg').textContent = texto;
+  setTimeout(() => {
+    if(!gameOver) document.getElementById('msg').textContent = '';
+  }, 2000);
 }
 
-function toggleLight() {
-    lightOn = !lightOn;
-    if (lightOn) battery -= 5;
+function fimDeJogo(texto, venceu=false) {
+  gameOver = true;
+  document.getElementById('msg').textContent = texto;
+  document.getElementById('msg').style.color = venceu? '#0f0' : '#f00';
+  document.exitPointerLock();
 }
 
-document.addEventListener('keydown', e => {
-    if (e.key === 'h' || e.key === 'H') {
-        hiding = true;
-        setTimeout(() => { hiding = false; }, 1800);
-    }
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
-document.addEventListener('mousemove', () => {
-    // Pequeno efeito de sanidade ao mover mouse rápido (tensão)
-    if (Math.random() < 0.1) sanity -= 0.05;
-});
-
-// Loop do jogo
-setInterval(() => {
-    update();
-    draw();
-}, 1000 / 45);
 </script>
-
-<p style="text-align:center; color:#555; margin-top:10px;">
-    Controles: Arraste o dial do rádio • Segure tecla <strong>H</strong> para se esconder • Botões para falar e lanterna<br>
-    Mantenha a frequência entre 25-75 e a sanidade alta!
-</p>
-
 </body>
 </html>
