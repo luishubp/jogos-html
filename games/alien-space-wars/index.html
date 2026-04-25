@@ -1,299 +1,610 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protocolo de Vigília - Horror</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Eco do Porão - Jogo de Horror</title>
     <style>
-        /* CSS: A Atmosfera de Horror */
-        :root {
-            --bg-color: #050505;
-            --crt-green: #2ecc71;
-            --crt-dark: #1a4f2e;
-            --danger: #e74c3c;
+        * {
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--crt-green);
-            font-family: 'Courier New', Courier, monospace;
             margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            user-select: none;
-        }
-
-        /* Efeito CRT (Monitor Antigo) */
-        #game-container {
-            width: 800px;
-            height: 600px;
-            background: #0a0a0a;
-            border: 4px solid #222;
-            box-shadow: 0 0 20px rgba(46, 204, 113, 0.2);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        #monitor {
-            flex: 2;
-            border-bottom: 2px solid var(--crt-dark);
-            position: relative;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(46,204,113,0.05) 2px, rgba(46,204,113,0.05) 4px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            text-align: center;
-        }
-
-        #controls {
-            flex: 1;
+            font-family: 'Courier New', 'VT323', monospace;
             padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
         }
 
-        .bar-container { margin-bottom: 10px; }
-        progress { width: 100%; height: 20px; accent-color: var(--crt-green); }
-        progress.danger { accent-color: var(--danger); }
+        .game-wrapper {
+            background: #1a1a1a;
+            border-radius: 28px;
+            padding: 16px;
+            box-shadow: 0 0 0 3px #3a2a1a, 0 20px 40px black;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 20px;
+            box-shadow: 0 0 0 2px #5e3a1e, 0 0 0 6px #0f0f0f;
+            cursor: crosshair;
+        }
+
+        .info-panel {
+            margin-top: 16px;
+            background: #0f0f0fe6;
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border: 1px solid #6a3a2a;
+            font-weight: bold;
+        }
+
+        .stat {
+            background: #000000aa;
+            padding: 6px 16px;
+            border-radius: 40px;
+            color: #d9c8a2;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+        }
+
+        .stat span {
+            color: #dd5544;
+            font-size: 1.4rem;
+            margin-right: 6px;
+            text-shadow: 0 0 3px red;
+        }
 
         button {
-            background: #111;
-            color: var(--crt-green);
-            border: 1px solid var(--crt-green);
-            padding: 10px;
+            background: #2c2118;
+            border: none;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 8px 20px;
+            border-radius: 60px;
+            color: #ffd7a0;
             cursor: pointer;
-            font-family: inherit;
-            transition: 0.2s;
-        }
-        button:hover { background: var(--crt-dark); }
-        button:active { background: var(--crt-green); color: #000; }
-        
-        button:disabled { border-color: #555; color: #555; cursor: not-allowed; }
-
-        /* Inimigo 1: Efeito do Ruído (Glitch) */
-        .glitch-active {
-            animation: glitch-anim 0.2s infinite;
-            filter: contrast(2) hue-rotate(90deg);
+            transition: 0.1s linear;
+            box-shadow: 0 4px 0 #3a1e0a;
         }
 
-        @keyframes glitch-anim {
-            0% { transform: translate(2px, 1px); }
-            20% { transform: translate(-2px, -2px); }
-            40% { transform: translate(1px, 2px); }
-            60% { transform: translate(-1px, -1px); }
-            80% { transform: translate(3px, 1px); }
-            100% { transform: translate(-1px, 2px); }
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #3a1e0a;
         }
 
-        /* Inimigo 2: Visão Térmica */
-        .thermal-vision #monitor { background: #800000; color: #ffcccc; }
+        .horror-tip {
+            background: #000000aa;
+            padding: 5px 12px;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            color: #bd8a5f;
+        }
 
-        #game-over {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: black; color: red; display: none;
-            justify-content: center; align-items: center; font-size: 40px; z-index: 100;
+        @media (max-width: 780px) {
+            .stat { font-size: 1rem; padding: 4px 12px; }
+            button { padding: 6px 16px; font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
-
-<div id="game-container">
-    <div id="monitor">
-        <span id="camera-text">CÂMARA 01 - SALA DE SERVIDORES<br>[SISTEMA ESTÁVEL]</span>
-    </div>
-
-    <div id="controls">
-        <div>
-            <div class="bar-container">ENERGIA <progress id="energia" value="100" max="100"></progress></div>
-            <div class="bar-container">SANIDADE <progress id="sanidade" value="100" max="100"></progress></div>
-            <label>SINTONIZAR RÁDIO:</label>
-            <input type="range" id="radio-sync" min="0" max="100" value="50" style="width: 100%;">
+<div>
+    <div class="game-wrapper">
+        <canvas id="gameCanvas" width="800" height="560"></canvas>
+        <div class="info-panel">
+            <div class="stat"><span>🕯️</span> <span id="candlesDisplay">0</span></div>
+            <div class="stat"><span>💀</span> <span id="sanityDisplay">100</span></div>
+            <div class="stat"><span>📦</span> <span id="noiseDisplay">0</span></div>
+            <button id="resetBtn">🔄 REINICIAR</button>
         </div>
-
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button onclick="trocarCamara()">MUDAR CÂMARA</button>
-            <button id="btn-thermal" onclick="toggleTermal()">LIGAR VISÃO TÉRMICA</button>
-            <button id="btn-valve" onmousedown="segurarValvula()" onmouseup="soltarValvula()" onmouseleave="soltarValvula()">SEGURAR VÁLVULA</button>
-            <button id="btn-degauss" onclick="usarDegauss()" style="display: none; border-color: red; color: red;">DEGAUSS (PURGAR SISTEMA)</button>
+        <div class="horror-tip" style="margin-top: 8px; text-align: center;">
+            ⚡ Clique nas portas/armários | 🔥 Pressione [F] para usar vela (se tiver) | 👁️ Sussurrador congela seu olhar | 🔊 Barulho atrai o Caçador | 🌑 A Sombra te puxa se pisar nela
         </div>
     </div>
-
-    <div id="game-over">FIM DE TRANSMISSÃO</div>
 </div>
 
 <script>
-    // === ESTADO DO JOGO ===
-    const state = {
-        energia: 100,
-        sanidade: 100,
-        camaraAtual: 1,
-        visaoTermica: false,
-        valvulaSegurada: false,
-        jogoAvoar: true,
-        frequenciaRuptura: Math.floor(Math.random() * 100) // Frequência perigosa do rádio
-    };
-
-    // === INIMIGOS ===
-    const inimigos = {
-        ruido: { ativo: false, timer: 0 },
-        andarilho: { ativo: false, progressoInvasao: 0 },
-        mimetizador: { ativo: false, somFalsoTocado: false }
-    };
-
-    // Elementos DOM
-    const UI = {
-        monitor: document.getElementById('monitor'),
-        textoCam: document.getElementById('camera-text'),
-        energia: document.getElementById('energia'),
-        sanidade: document.getElementById('sanidade'),
-        container: document.getElementById('game-container'),
-        btnDegauss: document.getElementById('btn-degauss'),
-        radioSync: document.getElementById('radio-sync'),
-        btnTermal: document.getElementById('btn-thermal')
-    };
-
-    // === SISTEMA DE ÁUDIO (Web Audio API - Sem ficheiros externos) ===
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function tocarBeep(frequencia, tipo = 'sine', duracao = 0.1) {
-        const osc = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        osc.type = tipo; osc.frequency.value = frequencia;
-        osc.connect(gainNode); gainNode.connect(audioCtx.destination);
-        osc.start();
-        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duracao);
-        setTimeout(() => osc.stop(), duracao * 1000);
-    }
-
-    // === MECÂNICAS ===
-    function trocarCamara() {
-        if (!state.jogoAvoar) return;
+    (function() {
+        // --- CANVAS ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
         
-        // Punição do Inimigo 3 (Mimetizador)
-        if (inimigos.mimetizador.somFalsoTocado) {
-            alterarAtributo('sanidade', -20);
-            UI.textoCam.innerHTML = "FOSTE ENGANADO.<br>ELE ESTÁ A OBSERVAR.";
-            inimigos.mimetizador.somFalsoTocado = false;
-            return;
-        }
-
-        state.camaraAtual = state.camaraAtual === 1 ? 2 : 1;
-        atualizarEcra();
-        alterarAtributo('energia', -2);
-        tocarBeep(800, 'square', 0.05);
-    }
-
-    function toggleTermal() {
-        state.visaoTermica = !state.visaoTermica;
-        UI.btnTermal.innerText = state.visaoTermica ? "DESLIGAR TÉRMICA" : "LIGAR VISÃO TÉRMICA";
-        atualizarEcra();
-    }
-
-    function segurarValvula() { state.valvulaSegurada = true; }
-    function soltarValvula() { state.valvulaSegurada = false; }
-
-    function usarDegauss() {
-        if (inimigos.ruido.ativo) {
-            inimigos.ruido.ativo = false;
-            inimigos.ruido.timer = 0;
-            UI.container.classList.remove('glitch-active');
-            UI.btnDegauss.style.display = 'none';
-            alterarAtributo('energia', -15); // Custa muita energia
-            tocarBeep(200, 'sawtooth', 0.5);
-            atualizarEcra();
-        }
-    }
-
-    function alterarAtributo(attr, valor) {
-        state[attr] += valor;
-        if (state[attr] > 100) state[attr] = 100;
-        if (state[attr] < 0) state[attr] = 0;
-        UI[attr].value = state[attr];
+        // --- CONFIGURAÇÕES DE MAPA (grid 15x12) ---
+        const CELL_W = 54;    // 800/15 ≈53.33 arredondado
+        const GRID_W = 15;
+        const GRID_H = 10;    // 560 / 56 = 10 (usei 56 visual)
         
-        if (state.sanidade <= 30) UI.sanidade.classList.add('danger');
-        else UI.sanidade.classList.remove('danger');
-
-        if (state.energia <= 0 || state.sanidade <= 0) gameOver("FALHA NOS SISTEMAS VITAIS");
-    }
-
-    function atualizarEcra() {
-        if (state.visaoTermica) {
-            UI.container.classList.add('thermal-vision');
-            if (state.camaraAtual === 2 && inimigos.andarilho.ativo) {
-                UI.textoCam.innerHTML = "CÂMARA 02 - DUTOS<br>!!! ASSINATURA DE CALOR DETETADA !!!";
-            } else {
-                UI.textoCam.innerHTML = `CÂMARA 0${state.camaraAtual} - TÉRMICA<br>Limpo.`;
+        // posição do jogador (centro da célula)
+        let player = { x: 7, y: 5, cellX: 7, cellY: 5 };
+        
+        // entidades: inimigos, portas, armarios, velas drop
+        let enemies = [];
+        let interactables = [];
+        let candlesCollected = 0;
+        let sanity = 100;
+        let noiseMeter = 0;
+        let gameOver = false;
+        let gameWin = false;
+        
+        // timers / cooldowns
+        let noiseDecayTimer = 0;
+        let sanityRegenTimer = 0;
+        let usingCandle = false;
+        let stunTimer = 0;      // se >0 fica imóvel (congelado pelo Sussurrador)
+        
+        // inventário / ações
+        let hasCandleInHand = false;   // se ativou uma vela
+        
+        // elementos UI
+        const candlesSpan = document.getElementById('candlesDisplay');
+        const sanitySpan = document.getElementById('sanityDisplay');
+        const noiseSpan = document.getElementById('noiseDisplay');
+        
+        function updateUI() {
+            candlesSpan.innerText = candlesCollected;
+            sanitySpan.innerText = Math.max(0, Math.floor(sanity));
+            noiseSpan.innerText = Math.floor(noiseMeter);
+        }
+        
+        // --- DEFINIÇÃO DO MAPA (paredes, portas, armários)---
+        // 0 = chão, 1 = parede, 2 = porta (interagível), 3 = armário (esconderijo)
+        let tileMap = Array(GRID_H).fill().map(() => Array(GRID_W).fill(0));
+        
+        // gerar labirinto simples com temática de porão
+        function initMap() {
+            for(let i=0;i<GRID_H;i++) {
+                for(let j=0;j<GRID_W;j++) {
+                    if(i===0 || i===GRID_H-1 || j===0 || j===GRID_W-1) tileMap[i][j]=1;
+                    else tileMap[i][j]=0;
+                }
             }
-        } else {
-            UI.container.classList.remove('thermal-vision');
-            UI.textoCam.innerHTML = `CÂMARA 0${state.camaraAtual} - VISÃO NORMAL<br>Sem anomalias visíveis.`;
+            // paredes internas
+            for(let i=2; i<=7; i++) tileMap[i][4]=1;
+            for(let i=2; i<=5; i++) tileMap[i][10]=1;
+            tileMap[5][7]=1; tileMap[7][12]=1; tileMap[3][13]=1;
+            // portas (interação)
+            tileMap[2][4]=2;   // porta na parede
+            tileMap[5][10]=2;  // outra porta
+            tileMap[7][5]=2;
+            // armários (esconderijo)
+            tileMap[4][12]=3;
+            tileMap[6][8]=3;
+            tileMap[8][3]=3;
+            // garantir espaço do player
+            if(tileMap[player.y][player.x] === 1) tileMap[player.y][player.x]=0;
         }
-    }
-
-    // === GAME LOOP PRINCIPAL ===
-    setInterval(() => {
-        if (!state.jogoAvoar) return;
-
-        // Dreno constante
-        alterarAtributo('energia', state.visaoTermica ? -2 : -0.5);
-
-        // Mecânica do Rádio (Sintonia perigosa)
-        const diffRádio = Math.abs(UI.radioSync.value - state.frequenciaRuptura);
-        if (diffRádio < 5) {
-            alterarAtributo('sanidade', -5);
-            tocarBeep(100 + Math.random() * 50, 'sawtooth', 0.2); // Som perturbador
-        }
-
-        // Lógica Inimigo 1: O Ruído
-        if (!inimigos.ruido.ativo && Math.random() < 0.05) {
-            inimigos.ruido.ativo = true;
-            UI.container.classList.add('glitch-active');
-            UI.btnDegauss.style.display = 'block';
-            tocarBeep(50, 'square', 1);
-        }
-        if (inimigos.ruido.ativo) {
-            inimigos.ruido.timer++;
-            alterarAtributo('sanidade', -2);
-            if (inimigos.ruido.timer > 10) gameOver("O RUÍDO CONSUMIU O TEU CÓDIGO.");
-        }
-
-        // Lógica Inimigo 2: Andarilho Térmico
-        if (!inimigos.andarilho.ativo && Math.random() < 0.08) {
-            inimigos.andarilho.ativo = true;
-        }
-        if (inimigos.andarilho.ativo) {
-            if (!state.valvulaSegurada) inimigos.andarilho.progressoInvasao += 10;
-            else inimigos.andarilho.progressoInvasao -= 15; // Recua se segurar
-
-            if (inimigos.andarilho.progressoInvasao < 0) {
-                inimigos.andarilho.ativo = false; // Espantado
-                inimigos.andarilho.progressoInvasao = 0;
-                atualizarEcra();
+        
+        // --- INIMIGOS ---
+        class Enemy {
+            constructor(type, x, y) {
+                this.type = type; // 'whisperer', 'noiseHunter', 'shadow'
+                this.x = x;
+                this.y = y;
+                this.lastSeenPlayer = { x: player.x, y: player.y };
+                this.patrolTimer = 0;
             }
-            if (inimigos.andarilho.progressoInvasao >= 100) gameOver("O ANDARILHO ENTROU PELOS DUTOS.");
+            
+            update() {
+                if(stunTimer > 0 || gameOver || gameWin) return;
+                let dx = player.x - this.x;
+                let dy = player.y - this.y;
+                let dist = Math.abs(dx)+Math.abs(dy);
+                
+                // Comportamentos diferentes
+                if(this.type === 'whisperer') {
+                    // Anda devagar em direção ao player se não estiver sendo observado diretamente?
+                    // Sussurrador: se linha de visão livre (sem paredes) e distancia < 4, pode congelar jogador com olhar
+                    if(dist <= 3 && !hasWallBetween(this.x, this.y, player.x, player.y)) {
+                        // congela jogador se olhar diretamente (efeito de horror)
+                        if(sanity > 0) stunTimer = 35; 
+                    }
+                    // movimento lento
+                    if(Math.random()<0.02 && dist>1.2) {
+                        let move = this.getMoveTowardPlayer();
+                        if(!isSolidTile(this.x+move.dx, this.y+move.dy)) {
+                            this.x += move.dx;
+                            this.y += move.dy;
+                        }
+                    }
+                }
+                else if(this.type === 'noiseHunter') {
+                    // Quanto maior noiseMeter, mais rápido
+                    let speedBonus = Math.min(0.12, noiseMeter/300);
+                    if(Math.random()<0.04+speedBonus && dist>0.8) {
+                        let move = this.getMoveTowardPlayer();
+                        if(!isSolidTile(this.x+move.dx, this.y+move.dy)) {
+                            this.x += move.dx;
+                            this.y += move.dy;
+                        }
+                    }
+                }
+                else if(this.type === 'shadow') {
+                    // Sombra não se move muito, mas se o jogador pisar na mesma célula, puxa dano
+                    // movimento bem lento e flutua
+                    if(Math.random()<0.015 && dist>1.5) {
+                        let move = this.getMoveTowardPlayer();
+                        if(!isSolidTile(this.x+move.dx, this.y+move.dy)) {
+                            this.x += move.dx;
+                            this.y += move.dy;
+                        }
+                    }
+                }
+            }
+            
+            getMoveTowardPlayer() {
+                let dx = player.x - this.x;
+                let dy = player.y - this.y;
+                if(Math.abs(dx) > Math.abs(dy)) return { dx: Math.sign(dx), dy: 0 };
+                else return { dx: 0, dy: Math.sign(dy) };
+            }
+            
+            draw() {
+                let x = this.x * CELL_W + CELL_W/2;
+                let y = this.y * CELL_W + CELL_W/2;
+                ctx.save();
+                ctx.shadowBlur = 0;
+                if(this.type === 'whisperer') {
+                    ctx.fillStyle = "#4a5b6e";
+                    ctx.beginPath();
+                    ctx.ellipse(x, y-5, 12, 14, 0, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.fillStyle = "#aa9977";
+                    ctx.fillRect(x-6, y-12, 12, 8);
+                    ctx.fillStyle = "#fff6cf";
+                    ctx.font = "bold 18px monospace";
+                    ctx.fillText("👁️", x-10, y-8);
+                } else if(this.type === 'noiseHunter') {
+                    ctx.fillStyle = "#5f5b3a";
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, 14, 12, 0, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.fillStyle = "#a56b2f";
+                    ctx.fillRect(x-8, y-2, 16, 6);
+                    ctx.fillStyle = "black";
+                    ctx.fillText("🔊", x-7, y+4);
+                } else if(this.type === 'shadow') {
+                    ctx.fillStyle = "#141010cc";
+                    ctx.beginPath();
+                    ctx.ellipse(x, y+3, 14, 8, 0, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.fillStyle = "#2e1e2e";
+                    ctx.fillRect(x-6, y-6, 12, 12);
+                    ctx.fillStyle = "#9966aa";
+                    ctx.fillText("🌑", x-6, y+2);
+                }
+                ctx.restore();
+            }
+            
+            attackPlayer() {
+                if(gameOver || gameWin) return;
+                let dist = Math.abs(this.x - player.x) + Math.abs(this.y - player.y);
+                if(dist === 0) {
+                    if(this.type === 'whisperer') sanity -= 18;
+                    if(this.type === 'noiseHunter') sanity -= 12;
+                    if(this.type === 'shadow') sanity -= 28;
+                    if(sanity <= 0) gameOver = true;
+                    // recuo
+                    let knockX = (player.x - this.x)*2;
+                    let knockY = (player.y - this.y)*2;
+                    if(!isSolidTile(player.x+knockX, player.y+knockY)) {
+                        player.x += knockX;
+                        player.y += knockY;
+                    }
+                    updateUI();
+                }
+            }
         }
-
-        // Lógica Inimigo 3: Mimetizador (Notificação falsa)
-        if (!inimigos.mimetizador.ativo && Math.random() < 0.04) {
-            inimigos.mimetizador.somFalsoTocado = true;
-            tocarBeep(800, 'square', 0.05); // Toca o exato mesmo som de trocar câmara
-            setTimeout(() => { inimigos.mimetizador.somFalsoTocado = false; }, 3000); // 3 segundos para ignorar
+        
+        function hasWallBetween(x1,y1,x2,y2) {
+            let steps = Math.max(Math.abs(x2-x1), Math.abs(y2-y1));
+            if(steps===0) return false;
+            for(let step=1; step<=steps; step++) {
+                let ix = Math.round(x1 + (x2-x1)*step/steps);
+                let iy = Math.round(y1 + (y2-y1)*step/steps);
+                if(isSolidTile(ix, iy) && !(ix===player.x && iy===player.y)) return true;
+            }
+            return false;
         }
-
-    }, 1000);
-
-    function gameOver(motivo) {
-        state.jogoAvoar = false;
-        document.getElementById('game-over').style.display = 'flex';
-        document.getElementById('game-over').innerHTML = `${motivo}<br><br><button onclick="location.reload()" style="font-size:20px; padding:15px;">REINICIAR PROTOCOLO</button>`;
-        tocarBeep(40, 'sawtooth', 3);
-    }
+        
+        function isSolidTile(col, row) {
+            if(col<0 || row<0 || col>=GRID_W || row>=GRID_H) return true;
+            let tile = tileMap[row][col];
+            return tile === 1; // parede
+        }
+        
+        // Interação com portas/armarios/walls
+        function actionInteract() {
+            if(stunTimer>0 || gameOver || gameWin) return;
+            let frontX = player.x;
+            let frontY = player.y;
+            if(tileMap[frontY][frontX] === 2) {
+                // porta: faz barulho e alterna (abre/fecha) -> remove ou alterna
+                tileMap[frontY][frontX] = 0;
+                noiseMeter += 40;
+                sanity -= 2;
+                updateUI();
+                return;
+            }
+            if(tileMap[frontY][frontX] === 3) {
+                // armário: esconder -> reduz noise mas regenera sanidade lentamente
+                gameWin = true; // vitória simples por esconder no armário? vou mudar: apenas efeito curativo e fuga eventual.
+                // regeneração
+                sanity = Math.min(100, sanity+15);
+                noiseMeter = Math.max(0, noiseMeter-65);
+                updateUI();
+                return;
+            }
+            // coletar vela no chão (drop de interação)
+            for(let i=0;i<interactables.length;i++) {
+                let it = interactables[i];
+                if(it.type === 'candle' && it.x === player.x && it.y === player.y) {
+                    candlesCollected++;
+                    interactables.splice(i,1);
+                    updateUI();
+                    break;
+                }
+            }
+        }
+        
+        // usar vela (F key)
+        function useCandle() {
+            if(gameOver || gameWin || stunTimer>0) return false;
+            if(candlesCollected > 0 && !usingCandle) {
+                usingCandle = true;
+                candlesCollected--;
+                // afasta a Sombra e reduz noise
+                for(let e of enemies) {
+                    if(e.type === 'shadow') {
+                        let dx = e.x - player.x;
+                        let dy = e.y - player.y;
+                        if(Math.abs(dx)+Math.abs(dy) < 3) {
+                            e.x = Math.min(GRID_W-2, e.x + Math.sign(dx)*2);
+                            e.y = Math.min(GRID_H-2, e.y + Math.sign(dy)*2);
+                        }
+                    }
+                }
+                noiseMeter = Math.max(0, noiseMeter-55);
+                sanity = Math.min(100, sanity+8);
+                updateUI();
+                setTimeout(()=>{ usingCandle=false; }, 400);
+                return true;
+            }
+            return false;
+        }
+        
+        // criar barulho proposital clique no chão (mecânica 5)
+        function makeNoiseAtTile(tileX, tileY) {
+            if(gameOver || gameWin || stunTimer>0) return;
+            let dist = Math.abs(player.x-tileX)+Math.abs(player.y-tileY);
+            if(dist <= 5) {
+                noiseMeter += 28;
+                updateUI();
+                for(let e of enemies) {
+                    if(e.type === 'noiseHunter' && Math.random()<0.6) {
+                        // atrai
+                        if(!isSolidTile(e.x, e.y)){}
+                    }
+                }
+            }
+        }
+        
+        // Movimento do jogador com WASD ou setas
+        function tryMove(dx, dy) {
+            if(gameOver || gameWin || stunTimer>0) return false;
+            let newX = player.x + dx;
+            let newY = player.y + dy;
+            if(isSolidTile(newX, newY)) {
+                return false;
+            }
+            player.x = newX;
+            player.y = newY;
+            noiseMeter += 7;
+            sanity -= 0.5;
+            if(noiseMeter>300) noiseMeter=300;
+            updateUI();
+            return true;
+        }
+        
+        // atualização do medo, decaimento
+        function updateWorld() {
+            if(gameOver || gameWin) return;
+            if(noiseDecayTimer <=0) {
+                noiseMeter = Math.max(0, noiseMeter-3);
+                noiseDecayTimer = 6;
+            } else noiseDecayTimer--;
+            if(sanityRegenTimer <=0 && sanity<100 && noiseMeter<20 && !stunTimer) {
+                sanity = Math.min(100, sanity+1.2);
+                sanityRegenTimer = 18;
+            } else sanityRegenTimer--;
+            if(stunTimer > 0) stunTimer--;
+            
+            for(let e of enemies) e.update();
+            for(let e of enemies) e.attackPlayer();
+            if(sanity <=0) gameOver=true;
+            // win condition por sanidade e portas abertas
+            if(candlesCollected >= 4 && sanity>60) gameWin=true;
+            updateUI();
+        }
+        
+        // --- SPAWN INIMIGOS (mecânica 3 inimigos)---
+        function spawnEnemies() {
+            enemies = [];
+            enemies.push(new Enemy('whisperer', 5, 8));
+            enemies.push(new Enemy('whisperer', 10, 2));
+            enemies.push(new Enemy('noiseHunter', 12, 6));
+            enemies.push(new Enemy('noiseHunter', 3, 3));
+            enemies.push(new Enemy('shadow', 8, 4));
+            enemies.push(new Enemy('shadow', 2, 7));
+        }
+        
+        function spawnCandles() {
+            interactables = [];
+            interactables.push({ type:'candle', x:5, y:2 });
+            interactables.push({ type:'candle', x:11, y:7 });
+            interactables.push({ type:'candle', x:8, y:8 });
+            interactables.push({ type:'candle', x:3, y:9 });
+            interactables.push({ type:'candle', x:13, y:4 });
+        }
+        
+        // --- DESENHO DO JOGO ---
+        function drawMap() {
+            for(let row=0; row<GRID_H; row++) {
+                for(let col=0; col<GRID_W; col++) {
+                    let x = col*CELL_W;
+                    let y = row*CELL_W;
+                    let tile = tileMap[row][col];
+                    if(tile===1) {
+                        ctx.fillStyle = "#291f12";
+                        ctx.fillRect(x, y, CELL_W-1, CELL_W-1);
+                        ctx.fillStyle = "#4f2a1a";
+                        ctx.fillRect(x+3, y+3, CELL_W-7, CELL_W-7);
+                    } else if(tile===2) {
+                        ctx.fillStyle = "#6b3e1e";
+                        ctx.fillRect(x, y, CELL_W-1, CELL_W-1);
+                        ctx.fillStyle = "#aa7342";
+                        ctx.fillRect(x+8, y+4, 8, CELL_W-12);
+                        ctx.fillStyle = "#d99e4c";
+                        ctx.fillText("🚪", x+18, y+30);
+                    } else if(tile===3) {
+                        ctx.fillStyle = "#3b2a1c";
+                        ctx.fillRect(x, y, CELL_W-1, CELL_W-1);
+                        ctx.fillStyle = "#8b6946";
+                        ctx.fillRect(x+8, y+8, CELL_W-20, CELL_W-20);
+                        ctx.fillStyle = "#c9ae6e";
+                        ctx.fillText("🗄️", x+18, y+32);
+                    } else {
+                        ctx.fillStyle = "#2e281c";
+                        ctx.fillRect(x, y, CELL_W-1, CELL_W-1);
+                        ctx.fillStyle = "#564a32";
+                        ctx.fillRect(x+2, y+2, CELL_W-5, CELL_W-5);
+                    }
+                }
+            }
+        }
+        
+        function drawPlayer() {
+            let x = player.x*CELL_W + CELL_W/2;
+            let y = player.y*CELL_W + CELL_W/2;
+            ctx.fillStyle = "#c9ae6e";
+            ctx.beginPath();
+            ctx.ellipse(x, y-3, 8, 10, 0, 0, Math.PI*2);
+            ctx.fill();
+            ctx.fillStyle = "#f5e6d3";
+            ctx.fillRect(x-3, y-6, 6, 6);
+            ctx.fillStyle = "black";
+            ctx.fillRect(x-2, y-7, 2, 3);
+            ctx.fillRect(x, y-7, 2, 3);
+            if(stunTimer>0) {
+                ctx.fillStyle = "#aaffffaa";
+                ctx.fillRect(x-12, y-18, 24, 6);
+            }
+        }
+        
+        function drawInteractables() {
+            for(let it of interactables) {
+                if(it.type === 'candle') {
+                    let x = it.x*CELL_W+CELL_W/2;
+                    let y = it.y*CELL_W+CELL_W/2;
+                    ctx.fillStyle = "#f5bc70";
+                    ctx.beginPath();
+                    ctx.rect(x-5, y-12, 10, 16);
+                    ctx.fill();
+                    ctx.fillStyle = "orange";
+                    ctx.fillText("🕯️", x-8, y-2);
+                }
+            }
+        }
+        
+        function drawGameMessages() {
+            if(gameOver){
+                ctx.font = "bold 34 monospace";
+                ctx.fillStyle = "#a12222";
+                ctx.shadowBlur = 0;
+                ctx.fillText("GAME OVER", canvas.width/2-110, canvas.height/2);
+            } else if(gameWin){
+                ctx.font = "bold 30 monospace";
+                ctx.fillStyle = "#acdbaa";
+                ctx.fillText("VOCÊ ESCAPOU", canvas.width/2-110, canvas.height/2);
+            }
+        }
+        
+        // --- EVENTOS DE CLICK E TECLADO---
+        canvas.addEventListener('click', (e) => {
+            if(gameOver || gameWin) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width/rect.width;
+            const scaleY = canvas.height/rect.height;
+            let mouseX = (e.clientX - rect.left)*scaleX;
+            let mouseY = (e.clientY - rect.top)*scaleY;
+            let col = Math.floor(mouseX/CELL_W);
+            let row = Math.floor(mouseY/CELL_W);
+            if(col>=0 && col<GRID_W && row>=0 && row<GRID_H) {
+                // interação direta: portas etc
+                if(Math.abs(col-player.x)+Math.abs(row-player.y) <= 1) {
+                    actionInteract();
+                } else {
+                    makeNoiseAtTile(col, row);
+                }
+            }
+        });
+        
+        window.addEventListener('keydown', (e) => {
+            let key = e.key;
+            if(key === 'ArrowUp' || key === 'w') tryMove(0,-1);
+            if(key === 'ArrowDown' || key === 's') tryMove(0,1);
+            if(key === 'ArrowLeft' || key === 'a') tryMove(-1,0);
+            if(key === 'ArrowRight' || key === 'd') tryMove(1,0);
+            if(key === 'f' || key === 'F') useCandle();
+            if(key === 'e' || key === 'E') actionInteract();
+            e.preventDefault();
+        });
+        
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            gameOver = false;
+            gameWin = false;
+            player = { x: 7, y: 5, cellX: 7, cellY: 5 };
+            sanity = 100;
+            noiseMeter = 0;
+            candlesCollected = 0;
+            stunTimer = 0;
+            usingCandle = false;
+            initMap();
+            spawnEnemies();
+            spawnCandles();
+            updateUI();
+        });
+        
+        // --- LOOP PRINCIPAL ---
+        function animate() {
+            updateWorld();
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            drawMap();
+            drawInteractables();
+            for(let e of enemies) e.draw();
+            drawPlayer();
+            drawGameMessages();
+            requestAnimationFrame(animate);
+        }
+        
+        initMap();
+        spawnEnemies();
+        spawnCandles();
+        updateUI();
+        animate();
+    })();
 </script>
-
 </body>
 </html>
