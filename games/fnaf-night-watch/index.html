@@ -79,68 +79,60 @@
         #clock-display { position: absolute; top: 20px; right: 20px; z-index: 1000; font-size: 32px; font-weight: bold; }
         #night-indicator { position: absolute; top: 20px; right: 20px; font-size: 20px; top: 55px; }
         
-diff --git a/games/fnaf-night-watch/index.html b/games/fnaf-night-watch/index.html
-index ec0d7ee70b79d03bd67d73d82fc35df14e8aa660..8508dbb7e35922f7accbc9d99c7accf08d4f2d60 100644
---- a/games/fnaf-night-watch/index.html
-+++ b/games/fnaf-night-watch/index.html
-@@ -82,54 +82,54 @@
-         #monitor-trigger { position: absolute; bottom: 0; left: 30%; width: 40%; height: 40px; background: rgba(255,255,255,0.1); border-top: 2px solid #fff; z-index: 1100; cursor: pointer; color: #fff; text-align: center; line-height: 40px; }
- 
-         /* 6 AM SCREEN */
-         #win-screen {
-             display: none; background: #000; z-index: 2500;
-         }
-     </style>
- </head>
- <body>
-     <div id="screen-container">
-         
-         <div id="main-menu" class="menu-screen">
-             <div class="menu-title">FNAF<br><span style="font-size:40px">Mobile Edition</span></div>
-             <button class="menu-btn" onclick="game.initGame(false)">New Game</button>
-             <button class="menu-btn" onclick="game.initGame(true)">Continue</button>
-             <div class="night-display" id="menu-night-display">Night 1</div>
-         </div>
- 
-         <div id="win-screen" class="menu-screen">
-             <div class="menu-title" style="font-size: 100px;">6:00 AM</div>
-             <div style="font-size: 30px; margin-top: 20px;">SURVIVED</div>
-         </div>
- 
-         <div id="office">
-             <div id="visual-L" style="position:absolute; left:-20px; bottom:0; width:200px; height:100%; z-index:45; display:none; overflow:hidden;">
--                <img src="imagem/bonnie.jpg" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.8);" alt="Bonnie Door">
-+                <img src="imagens/bonnie.jpg" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.8);" alt="Bonnie Door">
-             </div>
-             <div id="visual-R" style="position:absolute; right:-20px; bottom:0; width:200px; height:100%; z-index:45; display:none; overflow:hidden;">
--                <img src="imagem/chica.jpg" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.8);" alt="Chica Door">
-+                <img src="imagens/chica.jpg" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.8);" alt="Chica Door">
-             </div>
- 
-             <div id="door-L" class="door"></div>
-             <div id="light-L" class="light-effect"></div>
- 
-             <div class="side-panel" style="left: 130px;">
-                 <button class="btn btn-door" onclick="game.toggleDoor('L')">DOOR</button>
-                 <button class="btn" onclick="game.toggleLight('L')">LIGHT</button>
-             </div>
- 
-             <div id="door-R" class="door"></div>
-             <div id="light-R" class="light-effect"></div>
- 
-             <div class="side-panel" style="right: 130px;">
-                 <button class="btn btn-door" onclick="game.toggleDoor('R')">DOOR</button>
-                 <button class="btn" onclick="game.toggleLight('R')">LIGHT</button>
-             </div>
-         </div>
- 
-         <div id="camera-monitor">
-             <div id="cam-view">
-                 <img id="cam-image" src="https://images.unsplash.com/photo-1533130061792-64b345e4a833?w=1000">
-                 <div id="animatronic-visual"></div>
-                 <div id="static"></div>
-                 <div id="map">
+        #monitor-trigger { position: absolute; bottom: 0; left: 30%; width: 40%; height: 40px; background: rgba(255,255,255,0.1); border-top: 2px solid #fff; z-index: 1100; cursor: pointer; color: #fff; text-align: center; line-height: 40px; }
 
+        /* 6 AM SCREEN */
+        #win-screen {
+            display: none; background: #000; z-index: 2500;
+        }
+    </style>
+</head>
+<body>
+    <div id="screen-container">
+        
+        <div id="main-menu" class="menu-screen">
+            <div class="menu-title">FNAF<br><span style="font-size:40px">Mobile Edition</span></div>
+            <button class="menu-btn" onclick="game.initGame(false)">New Game</button>
+            <button class="menu-btn" onclick="game.initGame(true)">Continue</button>
+            <div class="night-display" id="menu-night-display">Night 1</div>
+        </div>
+
+        <div id="win-screen" class="menu-screen">
+            <div class="menu-title" style="font-size: 100px;">6:00 AM</div>
+            <div style="font-size: 30px; margin-top: 20px;">SURVIVED</div>
+        </div>
+
+        <div id="office">
+            <div id="visual-L" style="position:absolute; left:-20px; bottom:0; width:200px; height:100%; z-index:45; display:none; overflow:hidden;">
+                <img src="imagem/bonnie.jpg" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.8);" alt="Bonnie Door">
+            </div>
+            <div id="visual-R" style="position:absolute; right:-20px; bottom:0; width:200px; height:100%; z-index:45; display:none; overflow:hidden;">
+                <img src="imagem/chica.jpg" style="width:100%; height:100%; object-fit:cover; filter:brightness(0.8);" alt="Chica Door">
+            </div>
+
+            <div id="door-L" class="door"></div>
+            <div id="light-L" class="light-effect"></div>
+
+            <div class="side-panel" style="left: 130px;">
+                <button class="btn btn-door" onclick="game.toggleDoor('L')">DOOR</button>
+                <button class="btn" onclick="game.toggleLight('L')">LIGHT</button>
+            </div>
+
+            <div id="door-R" class="door"></div>
+            <div id="light-R" class="light-effect"></div>
+
+            <div class="side-panel" style="right: 130px;">
+                <button class="btn btn-door" onclick="game.toggleDoor('R')">DOOR</button>
+                <button class="btn" onclick="game.toggleLight('R')">LIGHT</button>
+            </div>
+        </div>
+
+        <div id="camera-monitor">
+            <div id="cam-view">
+                <img id="cam-image" src="https://images.unsplash.com/photo-1533130061792-64b345e4a833?w=1000">
+                <div id="animatronic-visual"></div>
+                <div id="static"></div>
+                <div id="map">
                     <button class="cam-btn active" style="top:10px; left:40%" onclick="game.setCam('1A', this)">1A</button>
                     <button class="cam-btn" style="top:40px; left:35%" onclick="game.setCam('1B', this)">1B</button>
                     <button class="cam-btn" style="top:90px; left:5%" onclick="game.setCam('1C', this)">1C</button>
@@ -186,7 +178,7 @@ class FNAF {
             5: [5, 10, 5, 4],      // Noite 5
             6: [10, 12, 6, 10],    // Noite 6
             7: [20, 20, 20, 20]    // Custom Night (improvisada)
-        };
+};
     }
 
     updateMenu() {
@@ -366,7 +358,7 @@ class FNAF {
                 foxy.stage++;
                 if(foxy.stage > 3) {
                     // Attack
-                    if(this.doors.L) {
+if(this.doors.L) {
                         foxy.stage = 0; // Bate na porta e reseta
                         this.pwr -= 5; // Perde energia
                     } else {
