@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Neon Orbit - Protetor Planetário</title>
+    <!-- Tailwind CSS para estilização rápida e moderna da interface -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts para tipografia de estilo arcade futurista -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -49,10 +51,14 @@
 </head>
 <body class="w-screen h-screen flex items-center justify-center relative select-none">
 
+    <!-- CANVAS DO JOGO (Fundo) -->
     <canvas id="gameCanvas" class="absolute top-0 left-0 w-full h-full block z-0"></canvas>
 
+    <!-- INTERFACE DO JOGO (HUD) -->
     <div id="hud" class="absolute top-0 left-0 w-full h-full pointer-events-none z-10 flex flex-col justify-between p-4 md:p-6 hidden">
+        <!-- Linha Superior: Pontuação, Vaga e Integridade do Núcleo -->
         <div class="flex justify-between items-start w-full">
+            <!-- Pontuação e Cristais -->
             <div class="flex flex-col gap-1">
                 <div class="text-gray-400 text-sm tracking-widest uppercase">Pontos</div>
                 <div id="scoreDisplay" class="text-3xl md:text-4xl font-black font-orbitron text-blue-400 neon-text-blue">00000</div>
@@ -64,11 +70,13 @@
                 </div>
             </div>
 
+            <!-- Vaga (Wave) / Alerta de Chefe -->
             <div class="text-center">
                 <div id="waveTitle" class="text-gray-400 text-xs tracking-widest uppercase">Vaga</div>
                 <div id="waveDisplay" class="text-2xl md:text-3xl font-black font-orbitron text-pink-500 neon-text-pink">1</div>
             </div>
 
+            <!-- Integridade do Planeta -->
             <div class="flex flex-col items-end w-1/3 max-w-[200px]">
                 <div class="text-gray-400 text-sm tracking-widest uppercase mb-1">Integridade</div>
                 <div class="w-full bg-gray-800/80 border border-gray-700 rounded-full h-4 overflow-hidden p-[2px]">
@@ -78,6 +86,7 @@
             </div>
         </div>
 
+        <!-- Barra de Vida do Chefe (Apenas visível durante combates de chefe) -->
         <div id="bossHealthContainer" class="absolute top-24 left-1/2 -translate-x-1/2 w-4/5 max-w-md flex flex-col items-center gap-1 hidden">
             <div class="text-red-500 font-bold font-orbitron text-sm tracking-widest uppercase neon-text-red">NÚCLEO DO GUARDIÃO CORROMPIDO</div>
             <div class="w-full bg-gray-950 border border-red-500/50 rounded-full h-3 overflow-hidden p-[1px]">
@@ -85,27 +94,34 @@
             </div>
         </div>
 
+        <!-- Notificação Central -->
         <div id="centerNotification" class="self-center text-center opacity-0 transform scale-50 transition-all duration-500 pointer-events-none">
             <h2 id="notificationText" class="text-3xl md:text-5xl font-black font-orbitron text-pink-500 neon-text-pink tracking-widest uppercase">VAGA 1</h2>
             <p id="notificationSubtext" class="text-sm md:text-base text-gray-400 tracking-wider mt-1">Velocidade orbital aumentada!</p>
         </div>
 
+        <!-- Controlos e Indicador de EMP de Emergência -->
         <div class="flex justify-between items-end w-full">
+            <!-- Informação de Botões -->
             <div class="text-gray-500 text-xs hidden md:block">
                 Manobra: RATO (Apontar) ou TECLADO (A-D) | <strong class="text-pink-400">ESPAÇO para EMP</strong>
             </div>
             
+            <!-- Botão de EMP Mobile (Visível apenas em dispositivos táteis) -->
             <button id="empMobileBtn" class="pointer-events-auto sm:hidden w-16 h-16 bg-pink-600/25 active:bg-pink-500/70 border-2 border-pink-500 text-pink-400 font-orbitron font-black text-xs rounded-full flex items-center justify-center shadow-lg shadow-pink-500/20 active:scale-95 transition-all">
                 EMP
             </button>
 
+            <!-- Células EMP Disponíveis -->
             <div class="flex flex-col items-center gap-1">
                 <div class="text-gray-400 text-xs font-orbitron uppercase tracking-wider">Células EMP</div>
                 <div class="flex gap-1.5" id="empChargesContainer">
+                    <!-- Gerado dinamicamente -->
                     <div class="w-4 h-6 bg-pink-500 rounded border border-pink-400 shadow shadow-pink-500/50"></div>
                 </div>
             </div>
 
+            <!-- Botão de Pausa -->
             <button id="pauseBtn" class="pointer-events-auto bg-gray-900/80 hover:bg-gray-800 border border-gray-700 hover:border-blue-500 text-blue-400 rounded-lg px-4 py-2 flex items-center gap-2 font-orbitron transition-all">
                 <svg id="pauseIcon" class="w-4 h-4 fill-current" viewBox="0 0 24 24"><rect x="4" y="4" width="4" height="16"/><rect x="16" y="4" width="4" height="16"/></svg>
                 <span>PAUSA</span>
@@ -113,13 +129,20 @@
         </div>
     </div>
 
+    <!-- INÍCIO (MENU PRINCIPAL) -->
     <div id="startMenu" class="absolute inset-0 bg-gray-950/90 z-20 flex flex-col items-center justify-center p-6 text-center">
+        <!-- Título Estilizado Neon -->
         <div class="mb-8">
-            <h1 class="text-5xl md:text-7xl font-black font-orbitron tracking-tighter text-blue-400 neon-text-blue leading-none">NEON</h1>
-            <h1 class="text-6xl md:text-8xl font-black font-orbitron tracking-widest text-pink-500 neon-text-pink leading-none -mt-2">ORBIT</h1>
+            <h1 class="text-5xl md:text-7xl font-black font-orbitron tracking-tighter text-blue-400 neon-text-blue leading-none">
+                NEON
+            </h1>
+            <h1 class="text-6xl md:text-8xl font-black font-orbitron tracking-widest text-pink-500 neon-text-pink leading-none -mt-2">
+                ORBIT
+            </h1>
             <p class="text-gray-400 tracking-widest uppercase text-xs md:text-sm mt-3">Defensor Planetário com Sistema de Contra-Ataque</p>
         </div>
 
+        <!-- Instruções de Jogo -->
         <div class="max-w-md bg-gray-900/60 border border-gray-800 rounded-xl p-5 mb-8 text-left text-gray-300">
             <h3 class="text-blue-400 font-orbitron font-bold text-lg mb-2">Manual de Defesa:</h3>
             <ul class="space-y-2 text-sm">
@@ -142,15 +165,19 @@
             </ul>
         </div>
 
+        <!-- Botão Principal -->
         <button id="playBtn" class="bg-gradient-to-r from-blue-500 to-pink-500 hover:from-blue-600 hover:to-pink-600 text-white font-orbitron font-black text-xl tracking-widest px-10 py-4 rounded-full shadow-lg shadow-pink-500/20 transform hover:scale-105 transition-all duration-200">
             INICIAR DEFESA
         </button>
-        <p class="text-gray-600 text-xs mt-6 font-orbitron">Use auscultadores para melhor fidelidade de áudio sintético.</p>
+        
+        <p class="text-gray-600 text-xs mt-6 font-orbitron">Use auscultadores para melhor fidelidade de audio sintético.</p>
     </div>
 
+    <!-- TELA DE PAUSA & LOJA DE MELHORIAS -->
     <div id="pauseMenu" class="absolute inset-0 bg-gray-950/95 z-20 flex flex-col items-center justify-center p-6 hidden">
         <h2 id="pauseTitle" class="text-4xl md:text-6xl font-black font-orbitron text-blue-400 neon-text-blue tracking-wider mb-6">DEFESA EM PAUSA</h2>
 
+        <!-- Loja -->
         <div class="w-full max-w-lg bg-gray-900/50 border border-gray-800 rounded-2xl p-6 mb-8 flex flex-col">
             <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-800">
                 <h3 class="text-xl font-bold font-orbitron text-emerald-400">LOJA DE MELHORIAS</h3>
@@ -162,7 +189,9 @@
                 </div>
             </div>
 
+            <!-- Upgrades Grid -->
             <div class="space-y-3 overflow-y-auto max-h-[320px] pr-2">
+                <!-- 1. Velocidade do Escudo -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-gray-800/40 rounded-xl border border-gray-800 hover:border-gray-700">
                     <div>
                         <div class="font-bold text-gray-200 text-sm">Torque de Rotação</div>
@@ -177,6 +206,7 @@
                     </button>
                 </div>
 
+                <!-- 2. Tamanho do Escudo -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-gray-800/40 rounded-xl border border-gray-800 hover:border-gray-700">
                     <div>
                         <div class="font-bold text-gray-200 text-sm">Arco de Cobertura</div>
@@ -191,6 +221,7 @@
                     </button>
                 </div>
 
+                <!-- 3. Velocidade de Disparo do Laser -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-gray-800/40 rounded-xl border border-gray-800 hover:border-gray-700">
                     <div>
                         <div class="font-bold text-gray-200 text-sm">Cadência de Fogo</div>
@@ -205,6 +236,7 @@
                     </button>
                 </div>
 
+                <!-- 4. Recarga de Célula EMP -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-gray-800/40 rounded-xl border border-gray-800 hover:border-gray-700">
                     <div>
                         <div class="font-bold text-gray-200 text-sm">Comprar Carga EMP</div>
@@ -219,6 +251,7 @@
                     </button>
                 </div>
 
+                <!-- 5. Reparar Planeta -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-gray-800/40 rounded-xl border border-gray-800 hover:border-gray-700">
                     <div>
                         <div class="font-bold text-gray-200 text-sm">Reparação de Emergência</div>
@@ -236,15 +269,21 @@
         </div>
 
         <div class="flex flex-col sm:flex-row gap-4">
-            <button id="resumeBtn" class="bg-gradient-to-r from-blue-500 to-pink-500 hover:from-blue-600 hover:to-pink-600 text-white font-orbitron font-bold tracking-wider px-8 py-3 rounded-full transition-all">RETOMAR JOGO</button>
-            <button id="restartFromPauseBtn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 font-orbitron font-bold tracking-wider px-8 py-3 rounded-full transition-all">REINICIAR</button>
+            <button id="resumeBtn" class="bg-gradient-to-r from-blue-500 to-pink-500 hover:from-blue-600 hover:to-pink-600 text-white font-orbitron font-bold tracking-wider px-8 py-3 rounded-full transition-all">
+                RETOMAR JOGO
+            </button>
+            <button id="restartFromPauseBtn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 font-orbitron font-bold tracking-wider px-8 py-3 rounded-full transition-all">
+                REINICIAR
+            </button>
         </div>
     </div>
 
+    <!-- TELA DE FIM DE JOGO (GAME OVER) -->
     <div id="gameOverMenu" class="absolute inset-0 bg-gray-950/95 z-20 flex flex-col items-center justify-center p-6 text-center hidden">
         <h2 class="text-5xl md:text-7xl font-black font-orbitron text-red-500 neon-text-pink tracking-tight uppercase mb-2">SISTEMA COLAPSOU</h2>
-        <p class="text-gray-400 tracking-widest text-sm uppercase mb-8">A sua órbita ruiu perante as forces invasoras</p>
+        <p class="text-gray-400 tracking-widest text-sm uppercase mb-8">A sua órbita ruiu perante as forças invasoras</p>
 
+        <!-- Estatísticas -->
         <div class="grid grid-cols-2 gap-4 max-w-sm w-full mb-10 bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
             <div>
                 <div class="text-gray-500 text-xs uppercase tracking-wider font-orbitron">Pontuação Total</div>
@@ -261,11 +300,16 @@
         </div>
 
         <div class="flex flex-col sm:flex-row gap-4">
-            <button id="retryBtn" class="bg-gradient-to-r from-blue-500 to-pink-500 hover:from-blue-600 hover:to-pink-600 text-white font-orbitron font-black text-lg tracking-widest px-8 py-3.5 rounded-full shadow-lg shadow-pink-500/10 transform hover:scale-105 transition-all">TENTAR DE NOVO</button>
-            <button id="menuBtn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 font-orbitron font-bold tracking-wider px-8 py-3.5 rounded-full transition-all">MENU PRINCIPAL</button>
+            <button id="retryBtn" class="bg-gradient-to-r from-blue-500 to-pink-500 hover:from-blue-600 hover:to-pink-600 text-white font-orbitron font-black text-lg tracking-widest px-8 py-3.5 rounded-full shadow-lg shadow-pink-500/10 transform hover:scale-105 transition-all">
+                TENTAR DE NOVO
+            </button>
+            <button id="menuBtn" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 font-orbitron font-bold tracking-wider px-8 py-3.5 rounded-full transition-all">
+                MENU PRINCIPAL
+            </button>
         </div>
     </div>
 
+    <!-- SCRIPT DO MOTOR DO JOGO -->
     <script>
         let audioCtx = null;
 
@@ -454,7 +498,7 @@
             scoreDisplay.textContent = String(game.score).padStart(5, '0');
             crystalDisplay.textContent = game.crystals;
             shopCrystalCount.textContent = game.crystals;
-            waveDisplay.textContent = game.boss ? "⚠ CHEFE" : game.wave;
+            waveDisplay.textContent = game.boss ? "CHEFE" : game.wave;
             
             if (game.boss) {
                 waveDisplay.className = "text-2xl md:text-3xl font-black font-orbitron text-red-500 neon-text-red";
@@ -489,13 +533,13 @@
             const notif = document.getElementById('centerNotification');
             document.getElementById('notificationText').textContent = title;
             document.getElementById('notificationSubtext').textContent = sub;
-            notif.classList.remove('hidden', 'opacity-0', 'scale-50');
+            notif.classList.remove('opacity-0', 'scale-50');
             notif.classList.add('opacity-100', 'scale-100');
             
             setTimeout(() => {
                 notif.classList.remove('opacity-100', 'scale-100');
                 notif.classList.add('opacity-0', 'scale-50');
-            }, 2500);
+            }, 3000);
         }
 
         function spawnBoss() {
@@ -503,11 +547,12 @@
             showNotification("INVASOR DETETADO", "Destrua o núcleo inimigo com os seus lasers!");
             document.getElementById('bossHealthContainer').classList.remove('hidden');
             
+            // Definição de órbita segura de combate intermediário
             game.boss = {
                 angle: -Math.PI / 2,
-                orbitRadius: Math.min(game.width, game.height) * 0.35, // Distância segura
-                maxHealth: 150 + game.wave * 50,
-                health: 150 + game.wave * 50,
+                orbitRadius: Math.min(game.width, game.height) * 0.38, 
+                maxHealth: 150 + game.wave * 40,
+                health: 150 + game.wave * 40,
                 shootTimer: 0,
                 pulse: 0
             };
@@ -518,7 +563,7 @@
             if (game.boss) return;
             game.timeInWave++;
             
-            if (game.timeInWave > 1000) { // Tempo limite da vaga antes do boss
+            if (game.timeInWave > 1000) { 
                 if (game.wave % 3 === 0) {
                     spawnBoss();
                 } else {
@@ -533,7 +578,7 @@
         }
 
         function spawnAsteroid() {
-            if (game.boss && Math.random() > 0.3) return; // Menos asteroides normais na batalha de chefe
+            if (game.boss && Math.random() > 0.3) return; // Limita asteróides na Boss Fight
             
             const angle = Math.random() * Math.PI * 2;
             const dist = Math.max(game.width, game.height) * 0.6;
@@ -544,7 +589,7 @@
                 y: game.planet.y + Math.sin(angle) * dist,
                 radius: Math.random() * 10 + 8,
                 speed: speed,
-                color: '#6b7280',
+                color: '#ef4444', // Vermelho néon de perigo
                 hp: Math.random() > 0.7 ? 2 : 1
             });
         }
@@ -645,12 +690,13 @@
             startMenu.classList.remove('hidden');
         });
 
-        // --- LOOP PRINCIPAL DO MOTOR GRÁFICO (UPDATE & DRAW) ---
         function loop() {
-            ctx.clearRect(0, 0, game.width, game.height);
+            // Efeito de rastro translúcido (Garante o brilho néon!)
+            ctx.fillStyle = 'rgba(3, 7, 18, 0.28)';
+            ctx.fillRect(0, 0, game.width, game.height);
 
-            // Efeito de Starfield (Fundo estelar) estático/suave
-            ctx.fillStyle = 'rgba(255,255,255,0.05)';
+            // Efeito de Estrelas Estáticas de Fundo
+            ctx.fillStyle = 'rgba(255,255,255,0.08)';
             for (let i = 0; i < 30; i++) {
                 let x = (Math.sin(i * 3323) * 0.5 + 0.5) * game.width;
                 let y = (Math.cos(i * 9821) * 0.5 + 0.5) * game.height;
@@ -671,7 +717,7 @@
                 if (game.keys['KeyA'] || game.keys['ArrowLeft']) game.shield.targetAngle -= 0.07;
                 if (game.keys['KeyD'] || game.keys['ArrowRight']) game.shield.targetAngle += 0.07;
 
-                // Suavização da rotação do escudo (Interpolação Angular)
+                // Suavização da rotação do escudo
                 let diff = game.shield.targetAngle - game.shield.angle;
                 while (diff < -Math.PI) diff += Math.PI * 2;
                 while (diff > Math.PI) diff -= Math.PI * 2;
@@ -710,7 +756,6 @@
                 if (game.screenShake > 0) game.screenShake *= 0.9;
             }
 
-            // Aplicar abalo de ecrã (Screen Shake) nas coordenadas principais
             ctx.save();
             if (game.screenShake > 0.5) {
                 let dx = (Math.random() - 0.5) * game.screenShake;
@@ -718,58 +763,54 @@
                 ctx.translate(dx, dy);
             }
 
-            // --- PROCESSAMENTO DO BOSS (COMPORTAMENTO BALANCEADO) ---
+            // --- PROCESSAMENTO DO CHEFE ---
             if (game.boss) {
                 if (game.state === 'playing') {
-                    game.boss.angle += 0.01; // Movimento suave ao redor da órbita
+                    game.boss.angle += 0.009; // Movimento suave ao redor da órbita
                     game.boss.pulse += 0.05;
                     
-                    // Atualiza coordenadas cartesianas na órbita protetora intermediária
+                    // Coordenadas cartesianas orbitais
                     game.boss.x = game.planet.x + Math.cos(game.boss.angle) * game.boss.orbitRadius;
                     game.boss.y = game.planet.y + Math.sin(game.boss.angle) * game.boss.orbitRadius;
 
-                    // Disparo balanceado em espiral
+                    // DISPARO ÚNICO EQUILIBRADO:
                     game.boss.shootTimer++;
-                    if (game.boss.shootTimer >= 45) { // Cadência justa
+                    if (game.boss.shootTimer >= 70) { // Cadência justa para tempo de reação confortável
                         game.boss.shootTimer = 0;
                         playSound('laser');
                         
-                        // Dispara rajada de 4 projéteis em espiral suave
-                        for (let i = 0; i < 4; i++) {
-                            let bulletAngle = game.boss.angle + Math.PI + (i * 0.25);
-                            game.bossProjectiles.push({
-                                x: game.boss.x, y: game.boss.y,
-                                angle: bulletAngle,
-                                speed: 2.2, // Velocidade moderada para reação do jogador
-                                radius: 5,
-                                spiralSpeed: 0.015, // Curvatura estilizada e previsível
-                                time: 0
-                            });
-                        }
+                        // Um único tiro grande direcionado ao centro do planeta!
+                        let angleToPlanet = Math.atan2(game.planet.y - game.boss.y, game.planet.x - game.boss.x);
+                        game.bossProjectiles.push({
+                            x: game.boss.x,
+                            y: game.boss.y,
+                            vx: Math.cos(angleToPlanet) * 2.8, // Velocidade controlada
+                            vy: Math.sin(angleToPlanet) * 2.8,
+                            radius: 8,
+                            color: '#ef4444'
+                        });
                     }
                 }
 
-                // Desenho do Boss (Estilo Neon Alienígena)
+                // Desenho do Boss (Estilo Néon Hexagonal)
+                ctx.save();
                 ctx.beginPath();
                 ctx.arc(game.boss.x, game.boss.y, 22 + Math.sin(game.boss.pulse) * 2, 0, Math.PI * 2);
                 ctx.fillStyle = '#111827';
                 ctx.strokeStyle = '#ef4444';
                 ctx.lineWidth = 4;
-                ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 15;
+                ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 20;
                 ctx.fill(); ctx.stroke();
-                ctx.shadowBlur = 0;
+                ctx.restore();
             }
 
-            // --- DESENHO E ATUALIZAÇÃO DE PROJÉTEIS DO BOSS ---
+            // --- ATUALIZAÇÃO DE PROJÉTEIS DO BOSS ---
             game.bossProjectiles = game.bossProjectiles.filter(p => {
                 if (game.state === 'playing') {
-                    p.time++;
-                    // Movimento espiral/curvilíneo calculado
-                    p.angle += p.spiralSpeed;
-                    p.x += Math.cos(p.angle) * p.speed;
-                    p.y += Math.sin(p.angle) * p.speed;
+                    p.x += p.vx;
+                    p.y += p.vy;
 
-                    // Testar colisão direta com o escudo protetor
+                    // Colisão direta com o escudo protetor
                     let distToPlanet = Math.sqrt((p.x - game.planet.x)**2 + (p.y - game.planet.y)**2);
                     if (Math.abs(distToPlanet - game.shield.distance) < game.shield.thickness + 5) {
                         let angleToBullet = Math.atan2(p.y - game.planet.y, p.x - game.planet.x);
@@ -779,8 +820,8 @@
 
                         if (Math.abs(diff) < game.shield.width / 2) {
                             playSound('hit');
-                            createExplosion(p.x, p.y, '#3b82f6', 8, 2);
-                            game.score += 10; updateHUD();
+                            createExplosion(p.x, p.y, '#3b82f6', 10, 3);
+                            game.score += 150; updateHUD();
                             return false; // Destruído pelo escudo
                         }
                     }
@@ -788,9 +829,9 @@
                     // Testar colisão com o núcleo planetário
                     if (distToPlanet < game.planet.radius + p.radius) {
                         game.health -= 15;
-                        game.screenShake = 10;
+                        game.screenShake = 12;
                         playSound('explosion');
-                        createExplosion(p.x, p.y, '#ef4444', 12, 4);
+                        createExplosion(p.x, p.y, '#ef4444', 16, 5);
                         updateHUD();
                         if (game.health <= 0) gameOver();
                         return false;
@@ -799,13 +840,14 @@
 
                 if (p.destroyed) return false;
 
-                // Desenho da bala inimiga com rastro de partículas neon
+                // Desenho da bala do chefe com rastro brilhante
+                ctx.save();
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = '#f87171';
-                ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 10;
+                ctx.fillStyle = '#ef4444';
+                ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 15;
                 ctx.fill();
-                ctx.shadowBlur = 0;
+                ctx.restore();
                 return p.x > 0 && p.x < game.width && p.y > 0 && p.y < game.height;
             });
 
@@ -815,7 +857,7 @@
                     let dx = game.planet.x - g.x, dy = game.planet.y - g.y;
                     let dist = Math.sqrt(dx*dx + dy*dy);
                     
-                    // Gravidade magnética em direção ao núcleo
+                    // Atração gravítica
                     g.x += (dx / dist) * 2.5;
                     g.y += (dy / dist) * 2.5;
 
@@ -827,15 +869,17 @@
                     }
                 }
 
+                ctx.save();
                 ctx.beginPath();
-                ctx.moveTo(g.x, g.y - 5);
-                ctx.lineTo(g.x + 4, g.y);
-                ctx.lineTo(g.x, g.y + 5);
-                ctx.lineTo(g.x - 4, g.y);
+                ctx.moveTo(g.x, g.y - 6);
+                ctx.lineTo(g.x + 5, g.y);
+                ctx.lineTo(g.x, g.y + 6);
+                ctx.lineTo(g.x - 5, g.y);
                 ctx.closePath();
-                ctx.fillStyle = '#34d399';
-                ctx.shadowColor = '#10b981'; ctx.shadowBlur = 8;
-                ctx.fill(); ctx.shadowBlur = 0;
+                ctx.fillStyle = '#10b981';
+                ctx.shadowColor = '#10b981'; ctx.shadowBlur = 12;
+                ctx.fill();
+                ctx.restore();
                 return true;
             });
 
@@ -847,24 +891,23 @@
                     // Colisão direta com o chefe ativo
                     if (game.boss) {
                         let bdx = b.x - game.boss.x, bdy = b.y - game.boss.y;
-                        if (Math.sqrt(bdx*bdx + bdy*bdy) < 22) {
-                            game.boss.health -= 2;
-                            createExplosion(b.x, b.y, '#ef4444', 4, 2);
+                        if (Math.sqrt(bdx*bdx + bdy*bdy) < 24) {
+                            game.boss.health -= 3; // Dano ajustado para diversão balanceada
+                            createExplosion(b.x, b.y, '#ef4444', 5, 2);
                             
-                            // Atualiza interface do chefe imediatamente
                             const bossPct = Math.max(0, (game.boss.health / game.boss.maxHealth) * 100);
                             document.getElementById('bossHealthBar').style.width = bossPct + '%';
 
                             if (game.boss.health <= 0) {
                                 playSound('explosion');
                                 createExplosion(game.boss.x, game.boss.y, '#ef4444', 40, 6);
-                                game.score += 1000;
-                                game.crystals += 15;
+                                game.score += 2000;
+                                game.crystals += 20;
                                 game.boss = null;
                                 document.getElementById('bossHealthContainer').classList.add('hidden');
                                 game.wave++;
                                 game.timeInWave = 0;
-                                showNotification(`VITÓRIA!`, `Vaga ${game.wave} iniciada.`);
+                                showNotification(`VITÓRIA!`, `Defesas preparadas para a Vaga ${game.wave}.`);
                                 updateHUD();
                             }
                             return false;
@@ -872,11 +915,13 @@
                     }
                 }
 
+                ctx.save();
                 ctx.beginPath();
                 ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
                 ctx.fillStyle = '#60a5fa';
-                ctx.shadowColor = '#3b82f6'; ctx.shadowBlur = 8;
-                ctx.fill(); ctx.shadowBlur = 0;
+                ctx.shadowColor = '#3b82f6'; ctx.shadowBlur = 12;
+                ctx.fill();
+                ctx.restore();
                 return b.x > 0 && b.x < game.width && b.y > 0 && b.y < game.height;
             });
 
@@ -896,16 +941,16 @@
                         if (bdist < a.radius + b.radius) {
                             game.bullets.splice(i, 1);
                             a.hp--;
-                            createExplosion(b.x, b.y, '#6b7280', 4, 1);
+                            createExplosion(b.x, b.y, '#f87171', 5, 2);
                             if (a.hp <= 0) break;
                         }
                     }
 
                     if (a.hp <= 0) {
                         playSound('explosion');
-                        createExplosion(a.x, a.y, '#9ca3af', 12, 3);
+                        createExplosion(a.x, a.y, '#f87171', 14, 3);
                         game.score += 100; updateHUD();
-                        if (Math.random() > 0.4) game.gems.push({ x: a.x, y: a.y });
+                        if (Math.random() > 0.45) game.gems.push({ x: a.x, y: a.y });
                         return false;
                     }
 
@@ -918,31 +963,34 @@
 
                         if (Math.abs(diff) < game.shield.width / 2) {
                             playSound('hit');
-                            createExplosion(a.x, a.y, '#3b82f6', 10, 2);
+                            createExplosion(a.x, a.y, '#3b82f6', 12, 3);
                             game.score += 50; updateHUD();
-                            if (Math.random() > 0.6) game.gems.push({ x: a.x, y: a.y });
+                            if (Math.random() > 0.5) game.gems.push({ x: a.x, y: a.y });
                             return false;
                         }
                     }
 
                     // Colisão direta com o Núcleo Planetário
                     if (dist < game.planet.radius + a.radius) {
-                        game.health -= 10;
-                        game.screenShake = 8;
+                        game.health -= 12;
+                        game.screenShake = 10;
                         playSound('explosion');
-                        createExplosion(a.x, a.y, '#f43f5e', 15, 4);
+                        createExplosion(a.x, a.y, '#f43f5e', 18, 5);
                         updateHUD();
                         if (game.health <= 0) gameOver();
                         return false;
                     }
                 }
 
-                // Desenho físico do asteroide
+                // Desenho físico do asteroide (Néon Avermelhado)
+                ctx.save();
                 ctx.beginPath();
                 ctx.arc(a.x, a.y, a.radius, 0, Math.PI * 2);
-                ctx.fillStyle = a.hp > 1 ? '#4b5563' : '#374151';
-                ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 2;
+                ctx.fillStyle = '#1e1b4b';
+                ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 3;
+                ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 12;
                 ctx.fill(); ctx.stroke();
+                ctx.restore();
                 return true;
             });
 
@@ -970,8 +1018,8 @@
                 ctx.arc(game.planet.x, game.planet.y, game.empRadius, 0, Math.PI * 2);
                 let gradient = ctx.createRadialGradient(game.planet.x, game.planet.y, game.empRadius * 0.8, game.planet.x, game.planet.y, game.empRadius);
                 gradient.addColorStop(0, 'rgba(236,72,153,0)');
-                gradient.addColorStop(0.8, 'rgba(236,72,153,0.2)');
-                gradient.addColorStop(1, 'rgba(59,130,246,0.6)');
+                gradient.addColorStop(0.8, 'rgba(236,72,153,0.15)');
+                gradient.addColorStop(1, 'rgba(59,130,246,0.5)');
                 ctx.fillStyle = gradient;
                 ctx.fill();
                 ctx.restore();
@@ -979,22 +1027,26 @@
 
             // --- DESENHO DOS COMPONENTES DO JOGADOR (NÚCLEO & ESCUDO) ---
             // 1. Núcleo central
-            game.planet.pulse += 0.02;
-            let currentRadius = game.planet.radius + Math.sin(game.planet.pulse) * 1.5;
+            game.planet.pulse += 0.03;
+            let currentRadius = game.planet.radius + Math.sin(game.planet.pulse) * 2;
+            
+            ctx.save();
             ctx.beginPath();
             ctx.arc(game.planet.x, game.planet.y, currentRadius, 0, Math.PI * 2);
             ctx.fillStyle = '#0f172a';
-            ctx.strokeStyle = '#ec4899'; ctx.lineWidth = 3;
-            ctx.shadowColor = '#ec4899'; ctx.shadowBlur = 15;
-            ctx.fill(); ctx.stroke(); ctx.shadowBlur = 0;
+            ctx.strokeStyle = '#ec4899'; ctx.lineWidth = 4;
+            ctx.shadowColor = '#ec4899'; ctx.shadowBlur = 20;
+            ctx.fill(); ctx.stroke();
+            ctx.restore();
 
             // Linha de órbita guia discreta
             ctx.beginPath();
             ctx.arc(game.planet.x, game.planet.y, game.shield.distance, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(59,130,246,0.15)'; ctx.lineWidth = 1;
+            ctx.strokeStyle = 'rgba(59,130,246,0.1)'; ctx.lineWidth = 1;
             ctx.stroke();
 
             // 2. Arco do Escudo Defetivo Neon
+            ctx.save();
             ctx.beginPath();
             ctx.arc(
                 game.planet.x, game.planet.y, 
@@ -1005,9 +1057,9 @@
             ctx.strokeStyle = '#3b82f6';
             ctx.lineWidth = game.shield.thickness;
             ctx.lineCap = 'round';
-            ctx.shadowColor = '#3b82f6'; ctx.shadowBlur = 12;
+            ctx.shadowColor = '#3b82f6'; ctx.shadowBlur = 18;
             ctx.stroke();
-            ctx.shadowBlur = 0;
+            ctx.restore();
 
             ctx.restore();
             requestAnimationFrame(loop);
