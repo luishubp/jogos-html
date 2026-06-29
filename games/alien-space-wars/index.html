@@ -123,10 +123,22 @@
         <div class="max-w-md bg-gray-900/60 border border-gray-800 rounded-xl p-5 mb-8 text-left text-gray-300">
             <h3 class="text-blue-400 font-orbitron font-bold text-lg mb-2">Manual de Defesa:</h3>
             <ul class="space-y-2 text-sm">
-                <li class="flex items-start gap-2"><span class="text-blue-500 mt-1">●</span><span>Use o <strong>rato</strong> ou as teclas <strong>A/D (Setas)</strong> para mover o escudo protector.</span></li>
-                <li class="flex items-start gap-2"><span class="text-pink-500 mt-1">●</span><span>O seu escudo **dispara lasers automáticos** para destruir asteroides de longe!</span></li>
-                <li class="flex items-start gap-2"><span class="text-emerald-500 mt-1">●</span><span>Apanhe **cristais verdes** para comprar melhorias e detonar o **EMP (Espaço)** quando estiver rodeado.</span></li>
-                <li class="flex items-start gap-2"><span class="text-red-500 mt-1">●</span><span>Sobreviva até à **Vaga 3** para enfrentar o primeiro Guardião Mecânico!</span></li>
+                <li class="flex items-start gap-2">
+                    <span class="text-blue-500 mt-1">●</span>
+                    <span>Use o <strong>rato</strong> ou as teclas <strong>A/D (Setas)</strong> para mover o escudo protector.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-pink-500 mt-1">●</span>
+                    <span>O seu escudo **dispara lasers automáticos** para destruir asteroides de longe!</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-emerald-500 mt-1">●</span>
+                    <span>Apanhe **cristais verdes** para comprar melhorias e detonar o **EMP (Espaço)** quando estiver rodeado.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-red-500 mt-1">●</span>
+                    <span>Sobreviva até à **Vaga 3** para enfrentar o primeiro Guardião Mecânico!</span>
+                </li>
             </ul>
         </div>
 
@@ -143,7 +155,9 @@
             <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-800">
                 <h3 class="text-xl font-bold font-orbitron text-emerald-400">LOJA DE MELHORIAS</h3>
                 <div class="flex items-center gap-1.5">
-                    <svg class="w-5 h-5 text-emerald-400 fill-current" viewBox="0 0 24 24"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg>
+                    <svg class="w-5 h-5 text-emerald-400 fill-current" viewBox="0 0 24 24">
+                        <polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/>
+                    </svg>
                     <span id="shopCrystalCount" class="text-emerald-400 font-bold font-orbitron text-xl">0</span>
                 </div>
             </div>
@@ -156,7 +170,10 @@
                     </div>
                     <button id="upgSpeedBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-orbitron text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-between gap-3 min-w-[110px] transition-all">
                         <span>Nív <span id="upgSpeedLvl">1</span></span>
-                        <span class="flex items-center gap-1 text-emerald-300"><span id="upgSpeedCost">10</span><svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg></span>
+                        <span class="flex items-center gap-1 text-emerald-300">
+                            <span id="upgSpeedCost">10</span>
+                            <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg>
+                        </span>
                     </button>
                 </div>
 
@@ -167,7 +184,10 @@
                     </div>
                     <button id="upgSizeBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-orbitron text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-between gap-3 min-w-[110px] transition-all">
                         <span>Nív <span id="upgSizeLvl">1</span></span>
-                        <span class="flex items-center gap-1 text-emerald-300"><span id="upgSizeCost">15</span><svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg></span>
+                        <span class="flex items-center gap-1 text-emerald-300">
+                            <span id="upgSizeCost">15</span>
+                            <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg>
+                        </span>
                     </button>
                 </div>
 
@@ -178,7 +198,10 @@
                     </div>
                     <button id="upgLaserBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-orbitron text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-between gap-3 min-w-[110px] transition-all">
                         <span>Nív <span id="upgLaserLvl">1</span></span>
-                        <span class="flex items-center gap-1 text-emerald-300"><span id="upgLaserCost">12</span><svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg></span>
+                        <span class="flex items-center gap-1 text-emerald-300">
+                            <span id="upgLaserCost">12</span>
+                            <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg>
+                        </span>
                     </button>
                 </div>
 
@@ -189,7 +212,10 @@
                     </div>
                     <button id="upgEmpBtn" class="bg-pink-600 hover:bg-pink-500 text-white font-orbitron text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-between gap-3 min-w-[110px] transition-all">
                         <span>Recarregar</span>
-                        <span class="flex items-center gap-1 text-emerald-300"><span id="upgEmpCost">20</span><svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg></span>
+                        <span class="flex items-center gap-1 text-emerald-300">
+                            <span id="upgEmpCost">20</span>
+                            <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg>
+                        </span>
                     </button>
                 </div>
 
@@ -200,7 +226,10 @@
                     </div>
                     <button id="upgHealBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-orbitron text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-between gap-3 min-w-[110px] transition-all">
                         <span>Reparar</span>
-                        <span class="flex items-center gap-1 text-emerald-300"><span id="upgHealCost">8</span><svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg></span>
+                        <span class="flex items-center gap-1 text-emerald-300">
+                            <span id="upgHealCost">8</span>
+                            <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5"/></svg>
+                        </span>
                     </button>
                 </div>
             </div>
@@ -214,7 +243,7 @@
 
     <div id="gameOverMenu" class="absolute inset-0 bg-gray-950/95 z-20 flex flex-col items-center justify-center p-6 text-center hidden">
         <h2 class="text-5xl md:text-7xl font-black font-orbitron text-red-500 neon-text-pink tracking-tight uppercase mb-2">SISTEMA COLAPSOU</h2>
-        <p class="text-gray-400 tracking-widest text-sm uppercase mb-8">A sua órbita ruiu perante as forças invasoras</p>
+        <p class="text-gray-400 tracking-widest text-sm uppercase mb-8">A sua órbita ruiu perante as forces invasoras</p>
 
         <div class="grid grid-cols-2 gap-4 max-w-sm w-full mb-10 bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
             <div>
@@ -239,13 +268,17 @@
 
     <script>
         let audioCtx = null;
+
         function initAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
         }
 
         function playSound(type) {
             if (!audioCtx) return;
             if (audioCtx.state === 'suspended') audioCtx.resume();
+
             try {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
@@ -254,67 +287,101 @@
                 const now = audioCtx.currentTime;
 
                 if (type === 'hit') {
-                    osc.type = 'triangle'; osc.frequency.setValueAtTime(480, now);
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(480, now);
                     osc.frequency.exponentialRampToValueAtTime(180, now + 0.12);
-                    gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
                     osc.start(now); osc.stop(now + 0.12);
                 } else if (type === 'laser') {
-                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(800, now);
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(800, now);
                     osc.frequency.exponentialRampToValueAtTime(300, now + 0.1);
-                    gain.gain.setValueAtTime(0.08, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
                     osc.start(now); osc.stop(now + 0.1);
                 } else if (type === 'emp') {
-                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(600, now);
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(600, now);
                     osc.frequency.exponentialRampToValueAtTime(40, now + 0.8);
-                    gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
                     osc.start(now); osc.stop(now + 0.8);
                 } else if (type === 'explosion') {
-                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, now);
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
                     osc.frequency.exponentialRampToValueAtTime(20, now + 0.45);
-                    gain.gain.setValueAtTime(0.35, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                    gain.gain.setValueAtTime(0.35, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
                     osc.start(now); osc.stop(now + 0.5);
                 } else if (type === 'gem') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, now);
-                    osc.frequency.setValueAtTime(659.25, now + 0.05); osc.frequency.setValueAtTime(783.99, now + 0.1);
-                    gain.gain.setValueAtTime(0.12, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.05);
+                    osc.frequency.setValueAtTime(783.99, now + 0.1);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
                     osc.start(now); osc.stop(now + 0.22);
                 } else if (type === 'upgrade') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(329.63, now);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(329.63, now);
                     osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.25);
-                    gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
                     osc.start(now); osc.stop(now + 0.25);
                 } else if (type === 'wave') {
-                    osc.type = 'square'; osc.frequency.setValueAtTime(220, now);
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(220, now);
                     osc.frequency.setValueAtTime(440, now + 0.25);
-                    gain.gain.setValueAtTime(0.12, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
                     osc.start(now); osc.stop(now + 0.5);
                 }
-            } catch (err) { console.warn(err); }
+            } catch (err) {
+                console.warn(err);
+            }
         }
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
         const game = {
-            state: 'menu', score: 0, crystals: 0, wave: 1, timeInWave: 0, maxHealth: 100, health: 100, screenShake: 0, bestScore: 0,
+            state: 'menu',
+            score: 0,
+            crystals: 0,
+            wave: 1,
+            timeInWave: 0,
+            maxHealth: 100,
+            health: 100,
+            screenShake: 0,
+            bestScore: parseInt(localStorage.getItem('neon_orbit_highscore')) || 0,
             planet: { x: 0, y: 0, radius: 40, pulse: 0 },
             shield: { angle: 0, width: Math.PI / 4, distance: 75, thickness: 9, speed: 0.08, targetAngle: 0 },
-            laserCooldown: 0, laserInterval: 30,
-            empCharges: 1, maxEmpCharges: 4, empActive: false, empRadius: 0, empMaxRadius: 0,
+            laserCooldown: 0,
+            laserInterval: 30,
+            empCharges: 1,
+            maxEmpCharges: 4,
+            empActive: false,
+            empRadius: 0,
+            empMaxRadius: 0,
             boss: null,
             upgrades: {
                 speed: { lvl: 1, max: 8, baseCost: 10, currentCost: 10 },
                 size: { lvl: 1, max: 6, baseCost: 15, currentCost: 15 },
                 laser: { lvl: 1, max: 7, baseCost: 12, currentCost: 12 }
             },
-            asteroids: [], gems: [], particles: [], bullets: [], bossProjectiles: [], keys: {},
-            spawnTimer: 0, spawnInterval: 120, width: window.innerWidth, height: window.innerHeight
+            asteroids: [], gems: [], particles: [], bullets: [], bossProjectiles: [],
+            keys: {}, spawnTimer: 0, spawnInterval: 120,
+            width: window.innerWidth, height: window.innerHeight
         };
 
         function resizeCanvas() {
-            game.width = window.innerWidth; game.height = window.innerHeight;
-            canvas.width = game.width; canvas.height = game.height;
-            game.planet.x = game.width / 2; game.planet.y = game.height / 2;
+            game.width = window.innerWidth;
+            game.height = window.innerHeight;
+            canvas.width = game.width;
+            canvas.height = game.height;
+            game.planet.x = game.width / 2;
+            game.planet.y = game.height / 2;
             const minDim = Math.min(game.width, game.height);
             game.planet.radius = Math.max(30, minDim * 0.06);
             game.shield.distance = game.planet.radius * 1.8;
@@ -328,8 +395,10 @@
                 const angle = Math.random() * Math.PI * 2;
                 const speed = Math.random() * maxSpeed + 1;
                 game.particles.push({
-                    x: x, y: y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
-                    radius: Math.random() * 3 + 1, color: color, alpha: 1, decay: Math.random() * 0.03 + 0.015
+                    x: x, y: y,
+                    vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+                    radius: Math.random() * 3 + 1, color: color, alpha: 1,
+                    decay: Math.random() * 0.03 + 0.015
                 });
             }
         }
@@ -354,8 +423,8 @@
         window.addEventListener('touchstart', (e) => {
             initAudio();
             if (game.state !== 'playing') return;
-            if (e.target.id === 'empMobileBtn') return;
             isPointerDown = true;
+            if (e.target.id === 'empMobileBtn') return;
             game.shield.targetAngle = getAngleFromCenter(e.touches[0].clientX, e.touches[0].clientY);
         }, { passive: true });
 
@@ -370,136 +439,199 @@
 
         function triggerEMP() {
             if (game.empCharges > 0 && !game.empActive) {
-                game.empCharges--; game.empActive = true;
-                game.empRadius = game.planet.radius; game.screenShake = 15;
-                playSound('emp'); updateHUD();
+                game.empCharges--;
+                game.empActive = true;
+                game.empRadius = game.planet.radius;
+                game.screenShake = 15;
+                playSound('emp');
+                updateHUD();
                 createExplosion(game.planet.x, game.planet.y, '#f472b6', 40, 5);
                 createExplosion(game.planet.x, game.planet.y, '#3b82f6', 40, 3);
             }
         }
 
-        const startMenu = document.getElementById('startMenu');
-        const pauseMenu = document.getElementById('pauseMenu');
-        const gameOverMenu = document.getElementById('gameOverMenu');
-        const hud = document.getElementById('hud');
-        const scoreDisplay = document.getElementById('scoreDisplay');
-        const crystalDisplay = document.getElementById('crystalDisplay');
-        const waveDisplay = document.getElementById('waveDisplay');
-        const healthBar = document.getElementById('healthBar');
-        const healthPercent = document.getElementById('healthPercent');
-        const bossHealthContainer = document.getElementById('bossHealthContainer');
-        const bossHealthBar = document.getElementById('bossHealthBar');
-        const centerNotification = document.getElementById('centerNotification');
-        const notificationText = document.getElementById('notificationText');
-        const notificationSubtext = document.getElementById('notificationSubtext');
-
         function updateHUD() {
             scoreDisplay.textContent = String(game.score).padStart(5, '0');
             crystalDisplay.textContent = game.crystals;
-            document.getElementById('shopCrystalCount').textContent = game.crystals;
-            waveDisplay.textContent = game.wave;
-            const hpPct = Math.max(0, Math.min(100, Math.floor((game.health / game.maxHealth) * 100)));
-            healthBar.style.width = hpPct + '%';
-            healthPercent.textContent = hpPct;
+            shopCrystalCount.textContent = game.crystals;
+            waveDisplay.textContent = game.boss ? "⚠ CHEFE" : game.wave;
+            
+            if (game.boss) {
+                waveDisplay.className = "text-2xl md:text-3xl font-black font-orbitron text-red-500 neon-text-red";
+                waveTitle.textContent = "Alerta";
+            } else {
+                waveDisplay.className = "text-2xl md:text-3xl font-black font-orbitron text-pink-500 neon-text-pink";
+                waveTitle.textContent = "Vaga";
+            }
+
+            const pct = Math.max(0, (game.health / game.maxHealth) * 100);
+            healthBar.style.width = pct + '%';
+            healthPercent.textContent = Math.ceil(pct);
 
             const container = document.getElementById('empChargesContainer');
             container.innerHTML = '';
             for (let i = 0; i < game.maxEmpCharges; i++) {
                 const charge = document.createElement('div');
-                charge.className = `w-4 h-6 rounded border transition-all ${i < game.empCharges ? 'bg-pink-500 border-pink-400 shadow shadow-pink-500/50' : 'bg-gray-900 border-gray-800'}`;
+                charge.className = `w-3 h-5 rounded border transition-all ${i < game.empCharges ? 'bg-pink-500 border-pink-400 shadow shadow-pink-500/50' : 'bg-gray-800 border-gray-700'}`;
                 container.appendChild(charge);
             }
 
-            if (game.boss) {
-                bossHealthContainer.classList.remove('hidden');
-                bossHealthBar.style.width = Math.max(0, (game.boss.health / game.boss.maxHealth) * 100) + '%';
-            } else {
-                bossHealthContainer.classList.add('hidden');
-            }
+            // Atualiza botões da loja
+            upgSpeedLvl.textContent = game.upgrades.speed.lvl >= game.upgrades.speed.max ? 'MÁX' : game.upgrades.speed.lvl;
+            upgSpeedCost.textContent = game.upgrades.speed.lvl >= game.upgrades.speed.max ? '-' : game.upgrades.speed.currentCost;
+            upgSizeLvl.textContent = game.upgrades.size.lvl >= game.upgrades.size.max ? 'MÁX' : game.upgrades.size.lvl;
+            upgSizeCost.textContent = game.upgrades.size.lvl >= game.upgrades.size.max ? '-' : game.upgrades.size.currentCost;
+            upgLaserLvl.textContent = game.upgrades.laser.lvl >= game.upgrades.laser.max ? 'MÁX' : game.upgrades.laser.lvl;
+            upgLaserCost.textContent = game.upgrades.laser.lvl >= game.upgrades.laser.max ? '-' : game.upgrades.laser.currentCost;
         }
 
-        function showNotification(txt, subtxt) {
-            notificationText.textContent = txt;
-            notificationSubtext.textContent = subtxt;
-            centerNotification.style.opacity = '1';
-            centerNotification.style.transform = 'scale(1) translate(-50%, -50%)';
-            centerNotification.className = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 text-center transition-all duration-500 pointer-events-none scale-100 opacity-100";
+        function showNotification(title, sub) {
+            const notif = document.getElementById('centerNotification');
+            document.getElementById('notificationText').textContent = title;
+            document.getElementById('notificationSubtext').textContent = sub;
+            notif.classList.remove('hidden', 'opacity-0', 'scale-50');
+            notif.classList.add('opacity-100', 'scale-100');
+            
             setTimeout(() => {
-                centerNotification.style.opacity = '0';
-                centerNotification.style.transform = 'scale(0.5) translate(-50%, -50%)';
+                notif.classList.remove('opacity-100', 'scale-100');
+                notif.classList.add('opacity-0', 'scale-50');
             }, 2500);
         }
 
         function spawnBoss() {
             playSound('wave');
-            const orbitDist = Math.min(game.width, game.height) * 0.35; // Mantém uma distância segura e escalável do centro
+            showNotification("INVASOR DETETADO", "Destrua o núcleo inimigo com os seus lasers!");
+            document.getElementById('bossHealthContainer').classList.remove('hidden');
+            
             game.boss = {
                 angle: -Math.PI / 2,
-                orbitDistance: orbitDist,
-                radius: 28,
-                health: 250,
-                maxHealth: 250,
+                orbitRadius: Math.min(game.width, game.height) * 0.35, // Distância segura
+                maxHealth: 150 + game.wave * 50,
+                health: 150 + game.wave * 50,
                 shootTimer: 0,
-                spiralAngle: 0,
-                speed: 0.015
+                pulse: 0
             };
-            showNotification("ALERTA DE CHEFE", "Destrua o núcleo inimigo com os seus lasers!");
             updateHUD();
         }
 
-        function startWave() {
-            game.timeInWave = 0;
-            if (game.wave === 3) {
-                spawnBoss();
-            } else {
-                playSound('wave');
-                showNotification(`VAGA ${game.wave}`, game.wave === 1 ? "Defenda a base dos detritos espaciais!" : "Atividade de asteroides duplicada!");
-                game.spawnInterval = Math.max(45, 120 - (game.wave * 25));
+        function checkWaveProgress() {
+            if (game.boss) return;
+            game.timeInWave++;
+            
+            if (game.timeInWave > 1000) { // Tempo limite da vaga antes do boss
+                if (game.wave % 3 === 0) {
+                    spawnBoss();
+                } else {
+                    game.wave++;
+                    game.timeInWave = 0;
+                    game.spawnInterval = Math.max(40, 120 - game.wave * 12);
+                    playSound('wave');
+                    showNotification(`VAGA ${game.wave}`, "Frequência de asteróides intensificada!");
+                    updateHUD();
+                }
             }
+        }
+
+        function spawnAsteroid() {
+            if (game.boss && Math.random() > 0.3) return; // Menos asteroides normais na batalha de chefe
+            
+            const angle = Math.random() * Math.PI * 2;
+            const dist = Math.max(game.width, game.height) * 0.6;
+            const speed = Math.random() * 1.5 + 0.8 + (game.wave * 0.15);
+            
+            game.asteroids.push({
+                x: game.planet.x + Math.cos(angle) * dist,
+                y: game.planet.y + Math.sin(angle) * dist,
+                radius: Math.random() * 10 + 8,
+                speed: speed,
+                color: '#6b7280',
+                hp: Math.random() > 0.7 ? 2 : 1
+            });
+        }
+
+        function handleUpgrades(type) {
+            const upg = game.upgrades[type];
+            if (!upg || upg.lvl >= upg.max || game.crystals < upg.currentCost) return;
+
+            game.crystals -= upg.currentCost;
+            upg.lvl++;
+            upg.currentCost = Math.round(upg.baseCost * Math.pow(1.5, upg.lvl - 1));
+            
+            if (type === 'speed') game.shield.speed += 0.025;
+            if (type === 'size') game.shield.width += Math.PI / 24;
+            if (type === 'laser') game.laserInterval = Math.max(10, 30 - (upg.lvl * 3));
+
+            playSound('upgrade');
             updateHUD();
         }
+
+        document.getElementById('upgSpeedBtn').addEventListener('click', () => handleUpgrades('speed'));
+        document.getElementById('upgSizeBtn').addEventListener('click', () => handleUpgrades('size'));
+        document.getElementById('upgLaserBtn').addEventListener('click', () => handleUpgrades('laser'));
+        
+        document.getElementById('upgEmpBtn').addEventListener('click', () => {
+            if (game.empCharges < game.maxEmpCharges && game.crystals >= 20) {
+                game.crystals -= 20;
+                game.empCharges++;
+                playSound('upgrade');
+                updateHUD();
+            }
+        });
+
+        document.getElementById('upgHealBtn').addEventListener('click', () => {
+            if (game.health < game.maxHealth && game.crystals >= 8) {
+                game.crystals -= 8;
+                game.health = Math.min(game.maxHealth, game.health + 25);
+                playSound('upgrade');
+                updateHUD();
+            }
+        });
 
         function startGame() {
             initAudio();
             game.state = 'playing';
             game.score = 0; game.crystals = 0; game.wave = 1; game.health = 100;
             game.asteroids = []; game.gems = []; game.particles = []; game.bullets = []; game.bossProjectiles = [];
-            game.boss = null; game.empCharges = 1;
-            
-            // Reset Upgrades
-            game.upgrades.speed = { lvl: 1, max: 8, baseCost: 10, currentCost: 10 };
-            game.upgrades.size = { lvl: 1, max: 6, baseCost: 15, currentCost: 15 };
-            game.upgrades.laser = { lvl: 1, max: 7, baseCost: 12, currentCost: 12 };
-            game.shield.width = Math.PI / 4; game.shield.speed = 0.08; game.laserInterval = 30;
-            
-            updateUpgradeButtons();
-            startMenu.classList.add('hidden'); pauseMenu.classList.add('hidden'); gameOverMenu.classList.add('hidden');
+            game.boss = null; game.timeInWave = 0; game.empCharges = 1; game.spawnInterval = 120;
+            game.shield.speed = 0.08; game.shield.width = Math.PI / 4; game.laserInterval = 30;
+            game.upgrades.speed.lvl = 1; game.upgrades.speed.currentCost = game.upgrades.speed.baseCost;
+            game.upgrades.size.lvl = 1; game.upgrades.size.currentCost = game.upgrades.size.baseCost;
+            game.upgrades.laser.lvl = 1; game.upgrades.laser.currentCost = game.upgrades.laser.baseCost;
+
+            startMenu.classList.add('hidden');
+            pauseMenu.classList.add('hidden');
+            gameOverMenu.classList.add('hidden');
             hud.classList.remove('hidden');
-            startWave();
-            requestAnimationFrame(gameLoop);
+            document.getElementById('bossHealthContainer').classList.add('hidden');
+            updateHUD();
+            showNotification("SISTEMA ATIVADO", "Proteja o núcleo a todo o custo!");
         }
 
         function pauseGame() {
             if (game.state !== 'playing') return;
             game.state = 'paused';
             pauseMenu.classList.remove('hidden');
+            updateHUD();
         }
 
         function resumeGame() {
             if (game.state !== 'paused') return;
             game.state = 'playing';
             pauseMenu.classList.add('hidden');
-            requestAnimationFrame(gameLoop);
         }
 
         function gameOver() {
             game.state = 'gameover';
-            if (game.score > game.bestScore) game.bestScore = game.score;
-            document.getElementById('finalScore').textContent = String(game.score).padStart(5, '0');
-            document.getElementById('finalWaves').textContent = game.wave - 1;
-            document.getElementById('highScore').textContent = String(game.bestScore).padStart(5, '0');
             hud.classList.add('hidden');
             gameOverMenu.classList.remove('hidden');
+            finalScore.textContent = String(game.score).padStart(5, '0');
+            finalWaves.textContent = game.wave - 1;
+            
+            if (game.score > game.bestScore) {
+                game.bestScore = game.score;
+                localStorage.setItem('neon_orbit_highscore', game.bestScore);
+            }
+            highScore.textContent = String(game.bestScore).padStart(5, '0');
         }
 
         document.getElementById('playBtn').addEventListener('click', startGame);
@@ -510,397 +642,379 @@
         document.getElementById('menuBtn').addEventListener('click', () => {
             game.state = 'menu';
             gameOverMenu.classList.add('hidden');
-            pauseMenu.classList.add('hidden');
             startMenu.classList.remove('hidden');
         });
 
-        // Configuração e manipulação dos Upgrades da Loja
-        function updateUpgradeButtons() {
-            document.getElementById('upgSpeedLvl').textContent = game.upgrades.speed.lvl;
-            document.getElementById('upgSpeedCost').textContent = game.upgrades.speed.lvl >= game.upgrades.speed.max ? 'MAX' : game.upgrades.speed.currentCost;
-            document.getElementById('upgSizeLvl').textContent = game.upgrades.size.lvl;
-            document.getElementById('upgSizeCost').textContent = game.upgrades.size.lvl >= game.upgrades.size.max ? 'MAX' : game.upgrades.size.currentCost;
-            document.getElementById('upgLaserLvl').textContent = game.upgrades.laser.lvl;
-            document.getElementById('upgLaserCost').textContent = game.upgrades.laser.lvl >= game.upgrades.laser.max ? 'MAX' : game.upgrades.laser.currentCost;
-        }
-
-        function buyUpgrade(type) {
-            const upg = game.upgrades[type];
-            if (upg.lvl >= upg.max || game.crystals < upg.currentCost) return;
-
-            game.crystals -= upg.currentCost;
-            upg.lvl++;
-            upg.currentCost = Math.floor(upg.baseCost * Math.pow(1.6, upg.lvl - 1));
-            playSound('upgrade');
-
-            if (type === 'speed') game.shield.speed = 0.08 + (upg.lvl - 1) * 0.025;
-            if (type === 'size') game.shield.width = (Math.PI / 4) + (upg.lvl - 1) * (Math.PI / 24);
-            if (type === 'laser') game.laserInterval = Math.max(10, 30 - (upg.lvl - 1) * 3);
-
-            updateUpgradeButtons(); updateHUD();
-        }
-
-        document.getElementById('upgSpeedBtn').addEventListener('click', () => buyUpgrade('speed'));
-        document.getElementById('upgSizeBtn').addEventListener('click', () => buyUpgrade('size'));
-        document.getElementById('upgLaserBtn').addEventListener('click', () => buyUpgrade('laser'));
-        document.getElementById('upgEmpBtn').addEventListener('click', () => {
-            if (game.empCharges < game.maxEmpCharges && game.crystals >= 20) {
-                game.crystals -= 20; game.empCharges++; playSound('upgrade'); updateHUD();
-            }
-        });
-        document.getElementById('upgHealBtn').addEventListener('click', () => {
-            if (game.health < game.maxHealth && game.crystals >= 8) {
-                game.crystals -= 8; game.health = Math.min(game.maxHealth, game.health + 25);
-                playSound('upgrade'); updateHUD();
-            }
-        });
-
-        // Loop de Atualização e Renderização do Canvas Principal
-        function gameLoop() {
-            if (game.state !== 'playing') return;
-
-            // 1. Atualizações lógicas de posições
-            game.timeInWave++;
-            if (!game.boss && game.timeInWave > 1800) { // Próxima vaga a cada 30 segundos se não houver chefe ativo
-                game.wave++; startWave();
-            }
-
-            // Movimento Angular Suave do Escudo Protector
-            if (game.keys['KeyA'] || game.keys['ArrowLeft']) game.shield.targetAngle -= game.shield.speed;
-            if (game.keys['KeyD'] || game.keys['ArrowRight']) game.shield.targetAngle += game.shield.speed;
-
-            let angleDiff = game.shield.targetAngle - game.shield.angle;
-            while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
-            while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
-            game.shield.angle += angleDiff * 0.4;
-
-            // Disparos Lasers Automáticos da Órbita
-            if (game.laserCooldown > 0) game.laserCooldown--;
-            else {
-                game.laserCooldown = game.laserInterval;
-                playSound('laser');
-                game.bullets.push({
-                    x: game.planet.x + Math.cos(game.shield.angle) * game.shield.distance,
-                    y: game.planet.y + Math.sin(game.shield.angle) * game.shield.distance,
-                    vx: Math.cos(game.shield.angle) * 7, vy: Math.sin(game.shield.angle) * 7,
-                    radius: 3
-                });
-            }
-
-            // Geração Contínua de Asteróides (Apenas se o Boss não estiver ativo)
-            if (!game.boss) {
-                if (game.spawnTimer > 0) game.spawnTimer--;
-                else {
-                    game.spawnTimer = game.spawnInterval;
-                    const spawnAngle = Math.random() * Math.PI * 2;
-                    const spawnDist = Math.max(game.width, game.height) * 0.6;
-                    const targetX = game.planet.x + (Math.random() * 20 - 10);
-                    const targetY = game.planet.y + (Math.random() * 20 - 10);
-                    const spawnX = game.planet.x + Math.cos(spawnAngle) * spawnDist;
-                    const spawnY = game.planet.y + Math.sin(spawnAngle) * spawnDist;
-                    const angleToCenter = Math.atan2(targetY - spawnY, targetX - spawnX);
-                    const astSpeed = Math.random() * 1.5 + 1 + (game.wave * 0.2);
-
-                    game.asteroids.push({
-                        x: spawnX, y: spawnY,
-                        vx: Math.cos(angleToCenter) * astSpeed, vy: Math.sin(angleToCenter) * astSpeed,
-                        radius: Math.random() * 14 + 8,
-                        hp: game.wave > 2 ? 2 : 1, scoreValue: 10,
-                        color: `hsl(${190 + Math.random() * 40}, 80%, 60%)`
-                    });
-                }
-            }
-
-            // Gerenciamento Inteligente do Boss Inimigo
-            if (game.boss) {
-                const b = game.boss;
-                b.angle += b.speed; // Movimento orbital regular
-                b.x = game.planet.x + Math.cos(b.angle) * b.orbitDistance;
-                b.y = game.planet.y + Math.sin(b.angle) * b.orbitDistance;
-
-                // Sistema de Disparos em Espiral Balanceado do Chefe
-                b.shootTimer++;
-                if (b.shootTimer % 12 === 0) {
-                    b.spiralAngle += 0.35; // Incremento controlado para belos padrões geométricos evitáveis
-                    const bulletAngle = b.spiralAngle;
-                    const bpSpeed = 3.2; // Velocidade perfeitamente justa para reação do jogador
-                    game.bossProjectiles.push({
-                        x: b.x, y: b.y,
-                        vx: Math.cos(bulletAngle) * bpSpeed, vy: Math.sin(bulletAngle) * bpSpeed,
-                        radius: 5
-                    });
-                    playSound('hit');
-                }
-            }
-
-            // Atualização de Projéteis Amigos (Lasers)
-            for (let i = game.bullets.length - 1; i >= 0; i--) {
-                const b = game.bullets[i];
-                b.x += b.vx; b.y += b.vy;
-                if (b.x < 0 || b.x > game.width || b.y < 0 || b.y > game.height) {
-                    game.bullets.splice(i, 1); continue;
-                }
-                // Colisão de Projéteis com o Boss
-                if (game.boss) {
-                    const dx = b.x - game.boss.x, dy = b.y - game.boss.y;
-                    if (Math.sqrt(dx*dx + dy*dy) < game.boss.radius + b.radius) {
-                        game.bullets.splice(i, 1);
-                        game.boss.health -= 5;
-                        createExplosion(b.x, b.y, '#ef4444', 4, 2);
-                        if (game.boss.health <= 0) {
-                            createExplosion(game.boss.x, game.boss.y, '#ef4444', 50, 6);
-                            playSound('explosion'); game.score += 2000; game.crystals += 30;
-                            game.boss = null; game.wave++; startWave();
-                        } else { updateHUD(); }
-                        continue;
-                    }
-                }
-            }
-
-            // Ondas de Choque EMP Ativas
-            if (game.empActive) {
-                game.empRadius += 12;
-                if (game.empRadius > game.empMaxRadius) game.empActive = false;
-            }
-
-            // Processamento Físico de Asteróides
-            for (let i = game.asteroids.length - 1; i >= 0; i--) {
-                const a = game.asteroids[i];
-                a.x += a.vx; a.y += a.vy;
-
-                // Destruição por Onda EMP
-                if (game.empActive) {
-                    const dx = a.x - game.planet.x, dy = a.y - game.planet.y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-                    if (dist < game.empRadius && dist > game.planet.radius) {
-                        createExplosion(a.x, a.y, a.color, 12, 3);
-                        if (Math.random() < 0.45) game.gems.push({ x: a.x, y: a.y, radius: 5, pulse: 0 });
-                        game.score += a.scoreValue; game.asteroids.splice(i, 1); playSound('explosion');
-                        updateHUD(); continue;
-                    }
-                }
-
-                // Impacto Direto no Escudo Protector
-                const dx = a.x - game.planet.x, dy = a.y - game.planet.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                if (Math.abs(dist - game.shield.distance) < (game.shield.thickness/2 + a.radius)) {
-                    let astAngle = Math.atan2(dy, dx);
-                    let diff = astAngle - game.shield.angle;
-                    while (diff < -Math.PI) diff += Math.PI * 2;
-                    while (diff > Math.PI) diff -= Math.PI * 2;
-
-                    if (Math.abs(diff) <= game.shield.width / 2) {
-                        createExplosion(a.x, a.y, '#3b82f6', 10, 3);
-                        game.score += a.scoreValue; playSound('hit');
-                        if (Math.random() < 0.4) game.gems.push({ x: a.x, y: a.y, radius: 5, pulse: 0 });
-                        game.asteroids.splice(i, 1); updateHUD(); continue;
-                    }
-                }
-
-                // Colisão Fatídica com a Base Central
-                if (dist < (game.planet.radius + a.radius)) {
-                    game.health -= Math.floor(a.radius * 0.8);
-                    game.screenShake = 10; playSound('explosion');
-                    createExplosion(a.x, a.y, '#f472b6', 15, 4);
-                    game.asteroids.splice(i, 1); updateHUD();
-                    if (game.health <= 0) { gameOver(); return; }
-                    continue;
-                }
-
-                // Colisão de Projéteis Laser com Asteróides
-                for (let j = game.bullets.length - 1; j >= 0; j--) {
-                    const b = game.bullets[j];
-                    const bdx = b.x - a.x, bdy = b.y - a.y;
-                    if (Math.sqrt(bdx*bdx + bdy*bdy) < (a.radius + b.radius)) {
-                        game.bullets.splice(j, 1); a.hp--;
-                        createExplosion(b.x, b.y, a.color, 4, 2);
-                        if (a.hp <= 0) {
-                            createExplosion(a.x, a.y, a.color, 12, 3);
-                            game.score += a.scoreValue; playSound('explosion');
-                            if (Math.random() < 0.4) game.gems.push({ x: a.x, y: a.y, radius: 5, pulse: 0 });
-                            game.asteroids.splice(i, 1); updateHUD();
-                        }
-                        break;
-                    }
-                }
-            }
-
-            // Processamento dos Projéteis do Boss (Tiros Vermelhos)
-            for (let i = game.bossProjectiles.length - 1; i >= 0; i--) {
-                const bp = game.bossProjectiles[i];
-                bp.x += bp.vx; bp.y += bp.vy;
-
-                // Cancelamento por EMP ativa
-                if (game.empActive) {
-                    const dx = bp.x - game.planet.x, dy = bp.y - game.planet.y;
-                    if (Math.sqrt(dx*dx + dy*dy) < game.empRadius) {
-                        game.bossProjectiles.splice(i, 1); continue;
-                    }
-                }
-
-                const dx = bp.x - game.planet.x, dy = bp.y - game.planet.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-
-                // Defesa com o Escudo Protetor
-                if (Math.abs(dist - game.shield.distance) < (game.shield.thickness/2 + bp.radius)) {
-                    let bpAngle = Math.atan2(dy, dx);
-                    let diff = bpAngle - game.shield.angle;
-                    while (diff < -Math.PI) diff += Math.PI * 2;
-                    while (diff > Math.PI) diff -= Math.PI * 2;
-
-                    if (Math.abs(diff) <= game.shield.width / 2) {
-                        createExplosion(bp.x, bp.y, '#3b82f6', 4, 2);
-                        playSound('hit'); game.bossProjectiles.splice(i, 1); continue;
-                    }
-                }
-
-                // Impacto Direto na Base Planetária
-                if (dist < (game.planet.radius + bp.radius)) {
-                    game.health -= 6; game.screenShake = 5; playSound('explosion');
-                    createExplosion(bp.x, bp.y, '#ef4444', 8, 3);
-                    game.bossProjectiles.splice(i, 1); updateHUD();
-                    if (game.health <= 0) { gameOver(); return; }
-                    continue;
-                }
-
-                // Limpeza fora da tela
-                if (bp.x < 0 || bp.x > game.width || bp.y < 0 || bp.y > game.height) {
-                    game.bossProjectiles.splice(i, 1);
-                }
-            }
-
-            // Coleta de Cristais e Gemas de Energia
-            for (let i = game.gems.length - 1; i >= 0; i--) {
-                const g = game.gems[i]; g.pulse += 0.1;
-                const dx = g.x - game.planet.x, dy = g.y - game.planet.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-
-                // Atração magnética orbital passiva para o centro
-                g.x -= Math.cos(Math.atan2(dy, dx)) * 0.75;
-                g.y -= Math.sin(Math.atan2(dy, dx)) * 0.75;
-
-                if (dist < (game.planet.radius + 15) || Math.abs(dist - game.shield.distance) < (game.shield.thickness + 10)) {
-                    let gemAngle = Math.atan2(dy, dx);
-                    let diff = gemAngle - game.shield.angle;
-                    while (diff < -Math.PI) diff += Math.PI * 2;
-                    while (diff > Math.PI) diff -= Math.PI * 2;
-
-                    if (dist < game.planet.radius + 15 || Math.abs(diff) <= game.shield.width / 1.5) {
-                        game.crystals += 1; playSound('gem');
-                        game.gems.splice(i, 1); updateHUD(); continue;
-                    }
-                }
-            }
-
-            // Decaimento das Partículas Visuais
-            for (let i = game.particles.length - 1; i >= 0; i--) {
-                const p = game.particles[i];
-                p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
-                if (p.alpha <= 0) game.particles.splice(i, 1);
-            }
-
-            // 2. Renderização Completa dos Elementos do Jogo no Canvas
+        // --- LOOP PRINCIPAL DO MOTOR GRÁFICO (UPDATE & DRAW) ---
+        function loop() {
             ctx.clearRect(0, 0, game.width, game.height);
-            ctx.save();
-            if (game.screenShake > 0) {
-                const dx = (Math.random() - 0.5) * game.screenShake;
-                const dy = (Math.random() - 0.5) * game.screenShake;
-                ctx.translate(dx, dy); game.screenShake *= 0.9;
-                if (game.screenShake < 0.5) game.screenShake = 0;
+
+            // Efeito de Starfield (Fundo estelar) estático/suave
+            ctx.fillStyle = 'rgba(255,255,255,0.05)';
+            for (let i = 0; i < 30; i++) {
+                let x = (Math.sin(i * 3323) * 0.5 + 0.5) * game.width;
+                let y = (Math.cos(i * 9821) * 0.5 + 0.5) * game.height;
+                ctx.fillRect(x, y, 2, 2);
             }
 
-            // Fundo Dinâmico de Partículas Estelares Nebulosas
-            game.planet.pulse += 0.015;
+            if (game.state === 'playing') {
+                checkWaveProgress();
+                
+                // Spawn incremental de asteroides
+                game.spawnTimer++;
+                if (game.spawnTimer >= game.spawnInterval) {
+                    game.spawnTimer = 0;
+                    spawnAsteroid();
+                }
+
+                // Input por Teclado (A/D ou Setas)
+                if (game.keys['KeyA'] || game.keys['ArrowLeft']) game.shield.targetAngle -= 0.07;
+                if (game.keys['KeyD'] || game.keys['ArrowRight']) game.shield.targetAngle += 0.07;
+
+                // Suavização da rotação do escudo (Interpolação Angular)
+                let diff = game.shield.targetAngle - game.shield.angle;
+                while (diff < -Math.PI) diff += Math.PI * 2;
+                while (diff > Math.PI) diff -= Math.PI * 2;
+                game.shield.angle += diff * game.shield.speed;
+
+                // Disparos automáticos do Laser
+                game.laserCooldown++;
+                if (game.laserCooldown >= game.laserInterval) {
+                    game.laserCooldown = 0;
+                    playSound('laser');
+                    game.bullets.push({
+                        x: game.planet.x + Math.cos(game.shield.angle) * game.shield.distance,
+                        y: game.planet.y + Math.sin(game.shield.angle) * game.shield.distance,
+                        vx: Math.cos(game.shield.angle) * 7,
+                        vy: Math.sin(game.shield.angle) * 7,
+                        radius: 3
+                    });
+                }
+
+                // Processamento do Pulso EMP Ativo
+                if (game.empActive) {
+                    game.empRadius += 12;
+                    if (game.empRadius > game.empMaxRadius) {
+                        game.empActive = false;
+                    }
+                    // Destruição massiva perante raio de ação do pulso
+                    game.asteroids.forEach(a => {
+                        let dx = a.x - game.planet.x, dy = a.y - game.planet.y;
+                        if (Math.sqrt(dx*dx + dy*dy) < game.empRadius) a.hp = 0;
+                    });
+                    game.bossProjectiles.forEach(p => {
+                        let dx = p.x - game.planet.x, dy = p.y - game.planet.y;
+                        if (Math.sqrt(dx*dx + dy*dy) < game.empRadius) p.destroyed = true;
+                    });
+                }
+                if (game.screenShake > 0) game.screenShake *= 0.9;
+            }
+
+            // Aplicar abalo de ecrã (Screen Shake) nas coordenadas principais
+            ctx.save();
+            if (game.screenShake > 0.5) {
+                let dx = (Math.random() - 0.5) * game.screenShake;
+                let dy = (Math.random() - 0.5) * game.screenShake;
+                ctx.translate(dx, dy);
+            }
+
+            // --- PROCESSAMENTO DO BOSS (COMPORTAMENTO BALANCEADO) ---
+            if (game.boss) {
+                if (game.state === 'playing') {
+                    game.boss.angle += 0.01; // Movimento suave ao redor da órbita
+                    game.boss.pulse += 0.05;
+                    
+                    // Atualiza coordenadas cartesianas na órbita protetora intermediária
+                    game.boss.x = game.planet.x + Math.cos(game.boss.angle) * game.boss.orbitRadius;
+                    game.boss.y = game.planet.y + Math.sin(game.boss.angle) * game.boss.orbitRadius;
+
+                    // Disparo balanceado em espiral
+                    game.boss.shootTimer++;
+                    if (game.boss.shootTimer >= 45) { // Cadência justa
+                        game.boss.shootTimer = 0;
+                        playSound('laser');
+                        
+                        // Dispara rajada de 4 projéteis em espiral suave
+                        for (let i = 0; i < 4; i++) {
+                            let bulletAngle = game.boss.angle + Math.PI + (i * 0.25);
+                            game.bossProjectiles.push({
+                                x: game.boss.x, y: game.boss.y,
+                                angle: bulletAngle,
+                                speed: 2.2, // Velocidade moderada para reação do jogador
+                                radius: 5,
+                                spiralSpeed: 0.015, // Curvatura estilizada e previsível
+                                time: 0
+                            });
+                        }
+                    }
+                }
+
+                // Desenho do Boss (Estilo Neon Alienígena)
+                ctx.beginPath();
+                ctx.arc(game.boss.x, game.boss.y, 22 + Math.sin(game.boss.pulse) * 2, 0, Math.PI * 2);
+                ctx.fillStyle = '#111827';
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = 4;
+                ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 15;
+                ctx.fill(); ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+
+            // --- DESENHO E ATUALIZAÇÃO DE PROJÉTEIS DO BOSS ---
+            game.bossProjectiles = game.bossProjectiles.filter(p => {
+                if (game.state === 'playing') {
+                    p.time++;
+                    // Movimento espiral/curvilíneo calculado
+                    p.angle += p.spiralSpeed;
+                    p.x += Math.cos(p.angle) * p.speed;
+                    p.y += Math.sin(p.angle) * p.speed;
+
+                    // Testar colisão direta com o escudo protetor
+                    let distToPlanet = Math.sqrt((p.x - game.planet.x)**2 + (p.y - game.planet.y)**2);
+                    if (Math.abs(distToPlanet - game.shield.distance) < game.shield.thickness + 5) {
+                        let angleToBullet = Math.atan2(p.y - game.planet.y, p.x - game.planet.x);
+                        let diff = angleToBullet - game.shield.angle;
+                        while (diff < -Math.PI) diff += Math.PI * 2;
+                        while (diff > Math.PI) diff -= Math.PI * 2;
+
+                        if (Math.abs(diff) < game.shield.width / 2) {
+                            playSound('hit');
+                            createExplosion(p.x, p.y, '#3b82f6', 8, 2);
+                            game.score += 10; updateHUD();
+                            return false; // Destruído pelo escudo
+                        }
+                    }
+
+                    // Testar colisão com o núcleo planetário
+                    if (distToPlanet < game.planet.radius + p.radius) {
+                        game.health -= 15;
+                        game.screenShake = 10;
+                        playSound('explosion');
+                        createExplosion(p.x, p.y, '#ef4444', 12, 4);
+                        updateHUD();
+                        if (game.health <= 0) gameOver();
+                        return false;
+                    }
+                }
+
+                if (p.destroyed) return false;
+
+                // Desenho da bala inimiga com rastro de partículas neon
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#f87171';
+                ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 10;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                return p.x > 0 && p.x < game.width && p.y > 0 && p.y < game.height;
+            });
+
+            // --- DESENHO E ATUALIZAÇÃO DOS CRISTAIS (GEMS) ---
+            game.gems = game.gems.filter(g => {
+                if (game.state === 'playing') {
+                    let dx = game.planet.x - g.x, dy = game.planet.y - g.y;
+                    let dist = Math.sqrt(dx*dx + dy*dy);
+                    
+                    // Gravidade magnética em direção ao núcleo
+                    g.x += (dx / dist) * 2.5;
+                    g.y += (dy / dist) * 2.5;
+
+                    if (dist < game.planet.radius + 5) {
+                        game.crystals += 1;
+                        playSound('gem');
+                        updateHUD();
+                        return false;
+                    }
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(g.x, g.y - 5);
+                ctx.lineTo(g.x + 4, g.y);
+                ctx.lineTo(g.x, g.y + 5);
+                ctx.lineTo(g.x - 4, g.y);
+                ctx.closePath();
+                ctx.fillStyle = '#34d399';
+                ctx.shadowColor = '#10b981'; ctx.shadowBlur = 8;
+                ctx.fill(); ctx.shadowBlur = 0;
+                return true;
+            });
+
+            // --- DESENHO E ATUALIZAÇÃO DOS LASERS DO JOGADOR ---
+            game.bullets = game.bullets.filter(b => {
+                if (game.state === 'playing') {
+                    b.x += b.vx; b.y += b.vy;
+                    
+                    // Colisão direta com o chefe ativo
+                    if (game.boss) {
+                        let bdx = b.x - game.boss.x, bdy = b.y - game.boss.y;
+                        if (Math.sqrt(bdx*bdx + bdy*bdy) < 22) {
+                            game.boss.health -= 2;
+                            createExplosion(b.x, b.y, '#ef4444', 4, 2);
+                            
+                            // Atualiza interface do chefe imediatamente
+                            const bossPct = Math.max(0, (game.boss.health / game.boss.maxHealth) * 100);
+                            document.getElementById('bossHealthBar').style.width = bossPct + '%';
+
+                            if (game.boss.health <= 0) {
+                                playSound('explosion');
+                                createExplosion(game.boss.x, game.boss.y, '#ef4444', 40, 6);
+                                game.score += 1000;
+                                game.crystals += 15;
+                                game.boss = null;
+                                document.getElementById('bossHealthContainer').classList.add('hidden');
+                                game.wave++;
+                                game.timeInWave = 0;
+                                showNotification(`VITÓRIA!`, `Vaga ${game.wave} iniciada.`);
+                                updateHUD();
+                            }
+                            return false;
+                        }
+                    }
+                }
+
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#60a5fa';
+                ctx.shadowColor = '#3b82f6'; ctx.shadowBlur = 8;
+                ctx.fill(); ctx.shadowBlur = 0;
+                return b.x > 0 && b.x < game.width && b.y > 0 && b.y < game.height;
+            });
+
+            // --- DESENHO E ATUALIZAÇÃO DOS ASTERÓIDES ---
+            game.asteroids = game.asteroids.filter(a => {
+                if (game.state === 'playing') {
+                    let dx = game.planet.x - a.x, dy = game.planet.y - a.y;
+                    let dist = Math.sqrt(dx*dx + dy*dy);
+                    
+                    a.x += (dx / dist) * a.speed;
+                    a.y += (dy / dist) * a.speed;
+
+                    // Colisão com os lasers do jogador
+                    for (let i = game.bullets.length - 1; i >= 0; i--) {
+                        let b = game.bullets[i];
+                        let bdist = Math.sqrt((b.x - a.x)**2 + (b.y - a.y)**2);
+                        if (bdist < a.radius + b.radius) {
+                            game.bullets.splice(i, 1);
+                            a.hp--;
+                            createExplosion(b.x, b.y, '#6b7280', 4, 1);
+                            if (a.hp <= 0) break;
+                        }
+                    }
+
+                    if (a.hp <= 0) {
+                        playSound('explosion');
+                        createExplosion(a.x, a.y, '#9ca3af', 12, 3);
+                        game.score += 100; updateHUD();
+                        if (Math.random() > 0.4) game.gems.push({ x: a.x, y: a.y });
+                        return false;
+                    }
+
+                    // Colisão com o Escudo Protetor
+                    if (Math.abs(dist - game.shield.distance) < game.shield.thickness + a.radius) {
+                        let angleToAst = Math.atan2(a.y - game.planet.y, a.x - game.planet.x);
+                        let diff = angleToAst - game.shield.angle;
+                        while (diff < -Math.PI) diff += Math.PI * 2;
+                        while (diff > Math.PI) diff -= Math.PI * 2;
+
+                        if (Math.abs(diff) < game.shield.width / 2) {
+                            playSound('hit');
+                            createExplosion(a.x, a.y, '#3b82f6', 10, 2);
+                            game.score += 50; updateHUD();
+                            if (Math.random() > 0.6) game.gems.push({ x: a.x, y: a.y });
+                            return false;
+                        }
+                    }
+
+                    // Colisão direta com o Núcleo Planetário
+                    if (dist < game.planet.radius + a.radius) {
+                        game.health -= 10;
+                        game.screenShake = 8;
+                        playSound('explosion');
+                        createExplosion(a.x, a.y, '#f43f5e', 15, 4);
+                        updateHUD();
+                        if (game.health <= 0) gameOver();
+                        return false;
+                    }
+                }
+
+                // Desenho físico do asteroide
+                ctx.beginPath();
+                ctx.arc(a.x, a.y, a.radius, 0, Math.PI * 2);
+                ctx.fillStyle = a.hp > 1 ? '#4b5563' : '#374151';
+                ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 2;
+                ctx.fill(); ctx.stroke();
+                return true;
+            });
+
+            // --- DESENHO E ATUALIZAÇÃO DAS PARTÍCULAS ---
+            game.particles = game.particles.filter(p => {
+                if (game.state === 'playing') {
+                    p.x += p.vx; p.y += p.vy;
+                    p.alpha -= p.decay;
+                }
+                if (p.alpha <= 0) return false;
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+                ctx.restore();
+                return true;
+            });
+
+            // --- DESENHO DA EXPANSÃO VISUAL DO PULSO EMP ---
+            if (game.empActive) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(game.planet.x, game.planet.y, game.empRadius, 0, Math.PI * 2);
+                let gradient = ctx.createRadialGradient(game.planet.x, game.planet.y, game.empRadius * 0.8, game.planet.x, game.planet.y, game.empRadius);
+                gradient.addColorStop(0, 'rgba(236,72,153,0)');
+                gradient.addColorStop(0.8, 'rgba(236,72,153,0.2)');
+                gradient.addColorStop(1, 'rgba(59,130,246,0.6)');
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // --- DESENHO DOS COMPONENTES DO JOGADOR (NÚCLEO & ESCUDO) ---
+            // 1. Núcleo central
+            game.planet.pulse += 0.02;
+            let currentRadius = game.planet.radius + Math.sin(game.planet.pulse) * 1.5;
+            ctx.beginPath();
+            ctx.arc(game.planet.x, game.planet.y, currentRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#0f172a';
+            ctx.strokeStyle = '#ec4899'; ctx.lineWidth = 3;
+            ctx.shadowColor = '#ec4899'; ctx.shadowBlur = 15;
+            ctx.fill(); ctx.stroke(); ctx.shadowBlur = 0;
+
+            // Linha de órbita guia discreta
+            ctx.beginPath();
+            ctx.arc(game.planet.x, game.planet.y, game.shield.distance, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(59,130,246,0.15)'; ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // 2. Arco do Escudo Defetivo Neon
+            ctx.beginPath();
+            ctx.arc(
+                game.planet.x, game.planet.y, 
+                game.shield.distance, 
+                game.shield.angle - game.shield.width / 2, 
+                game.shield.angle + game.shield.width / 2
+            );
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = game.shield.thickness;
+            ctx.lineCap = 'round';
+            ctx.shadowColor = '#3b82f6'; ctx.shadowBlur = 12;
+            ctx.stroke();
             ctx.shadowBlur = 0;
 
-            // Renderização do Pulso EMP ativo
-            if (game.empActive) {
-                ctx.save(); ctx.shadowBlur = 30; ctx.shadowColor = '#ec4899';
-                ctx.strokeStyle = 'rgba(236, 72, 153, 0.4)'; ctx.lineWidth = 6;
-                ctx.beginPath(); ctx.arc(game.planet.x, game.planet.y, game.empRadius, 0, Math.PI * 2);
-                ctx.stroke(); ctx.restore();
-            }
-
-            // Renderização das Gemas / Cristais Coletáveis
-            ctx.save(); ctx.shadowBlur = 10;
-            for (const g of game.gems) {
-                ctx.shadowColor = '#10b981'; ctx.fillStyle = '#34d399';
-                const size = g.radius + Math.sin(g.pulse) * 1.5;
-                ctx.beginPath();
-                ctx.moveTo(g.x, g.y - size); ctx.lineTo(g.x + size, g.y);
-                ctx.lineTo(g.x, g.y + size); ctx.lineTo(g.x - size, g.y);
-                ctx.closePath(); ctx.fill();
-            }
             ctx.restore();
-
-            // Renderização de Projéteis Amigos (Lasers Celestes)
-            ctx.save(); ctx.shadowBlur = 8; ctx.shadowColor = '#60a5fa'; ctx.fillStyle = '#93c5fd';
-            for (const b of game.bullets) {
-                ctx.beginPath(); ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2); ctx.fill();
-            }
-            ctx.restore();
-
-            // Renderização dos Tiros Vermelhos do Boss
-            ctx.save(); ctx.shadowBlur = 10; ctx.shadowColor = '#ef4444'; ctx.fillStyle = '#f87171';
-            for (const bp of game.bossProjectiles) {
-                ctx.beginPath(); ctx.arc(bp.x, bp.y, bp.radius, 0, Math.PI * 2); ctx.fill();
-            }
-            ctx.restore();
-
-            // Renderização Gráfica de Asteróides Ativos
-            for (const a of game.asteroids) {
-                ctx.save(); ctx.shadowBlur = 12; ctx.shadowColor = a.color;
-                ctx.fillStyle = 'rgba(17, 24, 39, 0.85)'; ctx.strokeStyle = a.color; ctx.lineWidth = 2;
-                ctx.beginPath(); ctx.arc(a.x, a.y, a.radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-                // Detalhe de núcleo interno de energia
-                ctx.fillStyle = a.color; ctx.beginPath(); ctx.arc(a.x, a.y, a.radius * 0.3, 0, Math.PI * 2); ctx.fill();
-                ctx.restore();
-            }
-
-            // Renderização Gráfica do Guardião Boss
-            if (game.boss) {
-                ctx.save(); ctx.shadowBlur = 25; ctx.shadowColor = '#ef4444';
-                ctx.fillStyle = '#111827'; ctx.strokeStyle = '#f87171'; ctx.lineWidth = 3;
-                // Desenhar forma hexagonal icônica para o Boss conforme interface original
-                ctx.beginPath();
-                for (let i = 0; i < 6; i++) {
-                    const angle = game.boss.angle + (i * Math.PI / 3);
-                    const x = game.boss.x + Math.cos(angle) * game.boss.radius;
-                    const y = game.boss.y + Math.sin(angle) * game.boss.radius;
-                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-                }
-                ctx.closePath(); ctx.fill(); ctx.stroke();
-                // Núcleo brilhante central do Boss
-                ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(game.boss.x, game.boss.y, game.boss.radius * 0.35, 0, Math.PI * 2); ctx.fill();
-                ctx.restore();
-            }
-
-            // Renderização das Partículas Visuais de Explosões
-            for (const p of game.particles) {
-                ctx.save(); ctx.globalAlpha = p.alpha; ctx.fillStyle = p.color;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-            }
-
-            // Renderização do Escudo Protector Orbital do Jogador
-            ctx.save(); ctx.shadowBlur = 15; ctx.shadowColor = '#3b82f6';
-            ctx.strokeStyle = '#60a5fa'; ctx.lineWidth = game.shield.thickness; ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.arc(game.planet.x, game.planet.y, game.shield.distance, game.shield.angle - game.shield.width / 2, game.shield.angle + game.shield.width / 2);
-            ctx.stroke(); ctx.restore();
-
-            // Renderização da Base Planetária Central (Núcleo)
-            ctx.save(); ctx.shadowBlur = 20; ctx.shadowColor = '#ec4899';
-            const pulseRadius = game.planet.radius + Math.sin(game.planet.pulse * 3) * 2;
-            const grad = ctx.createRadialGradient(game.planet.x, game.planet.y, 5, game.planet.x, game.planet.y, pulseRadius);
-            grad.addColorStop(0, '#f472b6'); grad.addColorStop(0.6, '#db2777'); grad.addColorStop(1, '#4c0519');
-            ctx.fillStyle = grad; ctx.strokeStyle = '#f472b6'; ctx.lineWidth = 2;
-            ctx.beginPath(); ctx.arc(game.planet.x, game.planet.y, pulseRadius, 0, Math.PI * 2);
-            ctx.fill(); ctx.stroke();
-            ctx.restore();
-
-            ctx.restore();
-            requestAnimationFrame(gameLoop);
+            requestAnimationFrame(loop);
         }
+
+        // Ativação imediata do renderizador em tempo real
+        requestAnimationFrame(loop);
     </script>
 </body>
 </html>
